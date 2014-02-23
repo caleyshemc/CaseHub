@@ -133,7 +133,7 @@ public class MainActivity extends Activity
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
-        }
+        } 
 
         @Override
         public void onAttach(Activity activity) {
