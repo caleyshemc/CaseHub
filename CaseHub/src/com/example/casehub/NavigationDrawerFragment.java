@@ -183,6 +183,8 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        
+        
     }
 
     private void selectItem(int position) {
@@ -277,4 +279,6 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+    
 }
+
