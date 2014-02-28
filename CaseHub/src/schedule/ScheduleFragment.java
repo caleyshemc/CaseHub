@@ -1,4 +1,6 @@
-package com.example.casehub;
+package schedule;
+
+import com.example.casehub.R;
 
 import android.os.Bundle;
 import android.app.AlertDialog;

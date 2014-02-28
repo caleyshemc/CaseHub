@@ -1,4 +1,6 @@
-package com.example.casehub;
+package casehub;
+
+import com.example.casehub.R;
 
 import android.app.Activity;
 import android.app.ActionBar;
