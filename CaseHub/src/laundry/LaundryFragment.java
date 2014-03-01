@@ -1,6 +1,6 @@
 package laundry;
 
-import com.example.casehub.R;
+import com.casehub.R;
 
 import android.os.Bundle;
 import android.app.Fragment;

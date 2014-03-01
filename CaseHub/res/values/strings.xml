@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CWRU Hub</string>
+    <string name="app_name">CaseHub</string>
     
-    <string name="title_section1">Greenies</string>
-    <string name="title_section2">Laundry</string>
-    <string name="title_section3">Schedule</string>
-    <string name="title_section4">Campus Map</string>
-    <string name="title_section5">Dining Halls</string>
-    
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    
+    <!-- NAVIGATION DRAWER -->
+    <string-array name="titles_array">
+        <item>Greenies</item>
+        <item>Laundry</item>
+        <item>Schedule</item>
+        <item>Campus Map</item>
+        <item>Dining Halls</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+        
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
     

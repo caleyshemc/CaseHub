@@ -1,6 +1,6 @@
-package campus_map;
+package map;
 
-import com.example.casehub.R;
+import com.casehub.R;
 
 import android.os.Bundle;
 import android.app.Fragment;
@@ -13,7 +13,7 @@ public class CampusMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_greenie, container, false);
+        return inflater.inflate(R.layout.fragment_campusmap, container, false);
     }
 }
 
