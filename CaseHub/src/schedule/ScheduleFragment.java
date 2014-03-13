@@ -1,5 +1,7 @@
 package schedule;
 
+import java.util.concurrent.ExecutionException;
+
 import com.casehub.R;
 
 import android.app.Fragment;
@@ -25,11 +27,24 @@ public class ScheduleFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
 	
+	// TODO: this is just a test!
 	@Override
-	public void onViewCreated (View view, Bundle savedInstanceState) {
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		
+		String targetURL = "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule";
+		String text = "Failed in onViewCreated()";
+		try {
+			text = new CaseSSOConnector().execute("","").get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		TextView tv = (TextView) view.findViewById(R.id.test_text);  
-		tv.setText("Text to set");
+		tv.setText(text);
 		
 		super.onViewCreated(view, savedInstanceState);
 		
