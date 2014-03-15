@@ -22,5 +22,28 @@
     <string name="login_button">Log In</string>
     <string name="username">Case ID</string>
     <string name="password">Password</string>
+    
+    <string name="sunday">SUN</string>
+    <string name="monday">MON</string>
+    <string name="tuesday">TUES</string>
+    <string name="wednesday">WED</string>
+    <string name="thursday">THUR</string>
+    <string name="friday">FRI</string>
+    <string name="saturday">SAT</string>
+    
+    <string name="time6am">6 AM</string>
+    <string name="time7am">7 AM</string>
+    <string name="time8am">8 AM</string>
+    <string name="time9am">9 AM</string>
+    <string name="time10am">10 AM</string>
+    <string name="time11am">11 AM</string>
+    <string name="time12pm">12 PM</string>
+    <string name="time1pm">1 PM</string>
+    <string name="time2pm">2 PM</string>
+    <string name="time3pm">3 PM</string>
+    <string name="time4pm">4 PM</string>
+    <string name="time5pm">5 PM</string>
+    <string name="time6pm">6 PM</string>
+    <string name="time7pm">7 PM</string>
 
 </resources>
