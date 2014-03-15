@@ -3,6 +3,7 @@ package schedule;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -12,7 +13,7 @@ import android.os.AsyncTask;
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
  * TODO: Determine best I/O types for AsyncTask
  */
-public class CaseSSOConnector extends AsyncTask<String, String, String> {
+public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 
 	//private String destination;
 	
@@ -29,21 +30,40 @@ public class CaseSSOConnector extends AsyncTask<String, String, String> {
 	private String login(String user, String password) throws IOException {
 		
 		String result = "Login failed in login().";
+		// TODO
+		user = "crs133";
+		password = "Fuckingpass1";
 		
-		URL url = new URL(SSO_URL);
+		URL url = new URL(SSO_URL + "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule");
+		//URL url = new URL("https://sis.case.edu/psp/saprd/EMPLOYEE/PSFT_HR/c/CW_SR_MENU.CW_CONFID_AGREEMNT.GBL?&");
 		
 		// Specify POST request
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		/*
 		urlConnection.setDoOutput(true);
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		*/
-		urlConnection.setRequestMethod("GET");
-		urlConnection.setConnectTimeout(5000);
-		urlConnection.setReadTimeout(2000000);
+
+		// Specify POST parameters
+		//String postParameters = "username="+user+"&password="+password;
+		String postParameters = "userid="+user+"&pwd="+password;
+		urlConnection.setFixedLengthStreamingMode(postParameters.getBytes().length);
+		PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+		out.print(postParameters);
+		out.close();
 		
 		java.util.Scanner s = null;
+		
+		try {
+			int statusCode = urlConnection.getResponseCode();
+			result = "Response code: " + Integer.toString(statusCode);
+		} catch (IOException e) {
+			e.printStackTrace();
+			InputStream in = new BufferedInputStream(urlConnection.getErrorStream());
+			s = new java.util.Scanner(in).useDelimiter("\\A");
+		    result = s.hasNext() ? s.next() : "";
+		}
+         
+		
 		
 		try {
 			InputStream in = new BufferedInputStream(urlConnection.getInputStream());

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="header_text">#0a304e</color>
+    <color name="header_bg">#daecfb</color>
+    
+    <color name="main_text">#6e6e6e</color>
+    <color name="main_bg">#e0e0e0</color>
+    
+    <color name="border">#626262</color>
+    <color name="highlight">#135a90</color>
+
+</resources>

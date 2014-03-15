@@ -31,6 +31,7 @@ public class ScheduleFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
+		/*
 		String targetURL = "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule";
 		String text = "Failed in onViewCreated()";
 		try {
@@ -45,6 +46,7 @@ public class ScheduleFragment extends Fragment {
 		
 		TextView tv = (TextView) view.findViewById(R.id.test_text);  
 		tv.setText(text);
+		*/
 		
 		super.onViewCreated(view, savedInstanceState);
 		
