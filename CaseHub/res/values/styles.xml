@@ -1,19 +1,36 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
 
+    
     <!-- Scheduler -->
-    <style name="DayHeader" parent="android:Theme.Holo.Light.DarkActionBar">
+    
+    <style name="DayHeaderTextView" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_marginLeft">6dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="DayHeaderRelativeLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TimeTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">6dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="DayView" parent="android:Theme.Holo.Light.DarkActionBar"></style>
