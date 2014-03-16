@@ -8,11 +8,11 @@
 
     <LinearLayout
         android:id="@+id/dayLabelsLinearLayout"
-        android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp" >
+        android:layout_marginTop="0dp"
+        android:baselineAligned="false" >
 
         <RelativeLayout
             android:id="@+id/timeHeaderRelativeLayout"
@@ -138,114 +138,84 @@
                     <TextView
                         android:id="@+id/time8amTextView"
                         style="@style/TimeTextView"
-                        android:layout_marginTop="60dp"
+                        android:layout_below="@+id/time7amTextView"
                         android:text="@string/time8am" />
 
                     <TextView
                         android:id="@+id/time9amTextView"
                         style="@style/TimeTextView"
-                        android:layout_marginTop="540dp"
+                        android:layout_below="@+id/time8amTextView"
                         android:text="@string/time9am" />
 
                     <TextView
                         android:id="@+id/time10amTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="600dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time9amTextView"
                         android:text="@string/time10am" />
 
                     <TextView
                         android:id="@+id/time11amTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="660dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time10amTextView"
                         android:text="@string/time11am" />
 
                     <TextView
                         android:id="@+id/time12pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="720dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time11amTextView"
                         android:text="@string/time12pm" />
 
                     <TextView
                         android:id="@+id/time1pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="780dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time12pmTextView"
                         android:text="@string/time1pm" />
 
                     <TextView
                         android:id="@+id/time2pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="840dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time1pmTextView"
                         android:text="@string/time2pm" />
 
                     <TextView
                         android:id="@+id/time3pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="900dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time2pmTextView"
                         android:text="@string/time3pm" />
 
                     <TextView
                         android:id="@+id/time4pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="960dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time3pmTextView"
                         android:text="@string/time4pm" />
 
                     <TextView
                         android:id="@+id/time5pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="1020dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time4pmTextView"
                         android:text="@string/time5pm" />
 
                     <TextView
                         android:id="@+id/time6pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="1080dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time5pmTextView"
                         android:text="@string/time6pm" />
 
                     <TextView
                         android:id="@+id/time7pmTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginTop="1140dp"
-                        android:gravity="center"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time6pmTextView"
                         android:text="@string/time7pm" />
+                    <TextView
+                        android:id="@+id/time8pmTextView"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time7pmTextView"
+                        android:text="@string/time8pm" />
+                    <TextView
+                        android:id="@+id/time9pmTextView"
+                        style="@style/TimeTextView"
+                        android:layout_below="@+id/time8pmTextView"
+                        android:text="@string/time9pm" />
                 </RelativeLayout>
 
                 <RelativeLayout
