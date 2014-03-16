@@ -31,7 +31,6 @@
     <string name="friday">FRI</string>
     <string name="saturday">SAT</string>
     
-    <string name="time6am">6 AM</string>
     <string name="time7am">7 AM</string>
     <string name="time8am">8 AM</string>
     <string name="time9am">9 AM</string>
@@ -45,5 +44,7 @@
     <string name="time5pm">5 PM</string>
     <string name="time6pm">6 PM</string>
     <string name="time7pm">7 PM</string>
+    <string name="time8pm">8 PM</string>
+    <string name="time9pm">9 PM</string>
 
 </resources>
