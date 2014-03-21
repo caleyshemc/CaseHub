@@ -5,9 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
-    
     <!-- Scheduler -->
-    
+
     <style name="DayHeaderTextView" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -18,22 +17,29 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="DayHeaderRelativeLayout">
+    <style name="DayHeaderRelativeLayout" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_weight">2</item>
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="TimeTextView">
+    <style name="TimeTextView" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">6dp</item>
         <item name="android:height">60dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="DayView" parent="android:Theme.Holo.Light.DarkActionBar"></style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
 
 </resources>
