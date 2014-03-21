@@ -21,6 +21,7 @@
             android:layout_weight="1" >
         </RelativeLayout>
 
+        <!-- REMOVED SAT/SUN FOR NOW
         <RelativeLayout
             android:id="@+id/sundayHeaderRelativeLayout"
             style="@style/DayHeaderRelativeLayout" >
@@ -30,6 +31,7 @@
                 style="@style/DayHeaderTextView"
                 android:text="@string/sunday" />
         </RelativeLayout>
+         -->
 
         <RelativeLayout
             android:id="@+id/mondayHeaderRelativeLayout"
@@ -81,6 +83,7 @@
                 android:text="@string/friday" />
         </RelativeLayout>
 
+        <!-- 
         <RelativeLayout
             android:id="@+id/saturdayHeaderRelativeLayout"
             style="@style/DayHeaderRelativeLayout" >
@@ -90,6 +93,7 @@
                 style="@style/DayHeaderTextView"
                 android:text="@string/saturday" />
         </RelativeLayout>
+         -->
     </LinearLayout>
 
     <View
@@ -129,6 +133,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:padding="0dp" >
+                    
+                    <include layout="@layout/schedule_stripes" />
 
                     <TextView
                         android:id="@+id/time7amTextView"
@@ -206,11 +212,13 @@
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time6pmTextView"
                         android:text="@string/time7pm" />
+
                     <TextView
                         android:id="@+id/time8pmTextView"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time7pmTextView"
                         android:text="@string/time8pm" />
+
                     <TextView
                         android:id="@+id/time9pmTextView"
                         style="@style/TimeTextView"
@@ -218,18 +226,21 @@
                         android:text="@string/time9pm" />
                 </RelativeLayout>
 
+                <!-- 
                 <RelativeLayout
                     android:id="@+id/sundayRelativeLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
                 </RelativeLayout>
+                 -->
 
                 <RelativeLayout
                     android:id="@+id/mondayRelativeLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
+                    <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -237,6 +248,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
+                    <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -244,6 +256,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
+                    <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -251,6 +264,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
+                    <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -258,14 +272,17 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
+                    <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
+                <!-- 
                 <RelativeLayout
                     android:id="@+id/saturdayRelativeLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" >
                 </RelativeLayout>
+                 -->
             </LinearLayout>
 
             <LinearLayout
