@@ -30,9 +30,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	private String login(String user, String password) throws IOException {
 		
 		String result = "Login failed in login().";
-		// TODO
-		user = "crs133";
-		password = "Fuckingpass1";
+
 		
 		URL url = new URL(SSO_URL + "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule");
 		//URL url = new URL("https://sis.case.edu/psp/saprd/EMPLOYEE/PSFT_HR/c/CW_SR_MENU.CW_CONFID_AGREEMNT.GBL?&");
