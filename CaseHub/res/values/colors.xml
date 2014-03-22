@@ -9,5 +9,7 @@
     
     <color name="border">#626262</color>
     <color name="highlight">#135a90</color>
+    
+    <color name="event1">#ff4444</color>
 
 </resources>

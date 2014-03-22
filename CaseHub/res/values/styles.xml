@@ -7,7 +7,7 @@
 
     <!-- Scheduler -->
 
-    <style name="DayHeaderTextView" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="day_title" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentBottom">true</item>
@@ -17,9 +17,16 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="DayHeaderRelativeLayout" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="day_header" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">36dp</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="day">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">2</item>
         <item name="android:gravity">center</item>
     </style>
@@ -40,6 +47,23 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
+    </style>
+    
+    <style name="ScheduleEvent">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:background">@color/event1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    
+    <style name="ScheduleEventText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
     </style>
 
 </resources>

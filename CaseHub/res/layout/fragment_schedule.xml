@@ -7,7 +7,7 @@
     android:padding="0dp" >
 
     <LinearLayout
-        android:id="@+id/dayLabelsLinearLayout"
+        android:id="@+id/day_headers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,100 +15,76 @@
         android:baselineAligned="false" >
 
         <RelativeLayout
-            android:id="@+id/timeHeaderRelativeLayout"
+            android:id="@+id/time_header"
             android:layout_width="0dp"
             android:layout_height="36dp"
             android:layout_weight="1" >
         </RelativeLayout>
 
-        <!-- REMOVED SAT/SUN FOR NOW
         <RelativeLayout
-            android:id="@+id/sundayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
+            android:id="@+id/monday_header"
+            style="@style/day_header" >
 
             <TextView
-                android:id="@+id/sundayTextView"
-                style="@style/DayHeaderTextView"
-                android:text="@string/sunday" />
-        </RelativeLayout>
-         -->
-
-        <RelativeLayout
-            android:id="@+id/mondayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
-
-            <TextView
-                android:id="@+id/mondayTextView"
-                style="@style/DayHeaderTextView"
+                android:id="@+id/monday_title"
+                style="@style/day_title"
                 android:text="@string/monday" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/tuesdayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
+            android:id="@+id/tuesday_header"
+            style="@style/day_header" >
 
             <TextView
-                android:id="@+id/tuesdayTextView"
-                style="@style/DayHeaderTextView"
+                android:id="@+id/tuesday_title"
+                style="@style/day_title"
                 android:text="@string/tuesday" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/wednesdayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
+            android:id="@+id/wednesday_header"
+            style="@style/day_header" >
 
             <TextView
-                android:id="@+id/wednesdayTextView"
-                style="@style/DayHeaderTextView"
+                android:id="@+id/wednesday_title"
+                style="@style/day_title"
                 android:text="@string/wednesday" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/thursdayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
+            android:id="@+id/thursday_header"
+            style="@style/day_header" >
 
             <TextView
-                android:id="@+id/thursdayTextView"
-                style="@style/DayHeaderTextView"
+                android:id="@+id/thursday_title"
+                style="@style/day_title"
                 android:text="@string/thursday" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/fridayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
+            android:id="@+id/friday_header"
+            style="@style/day_header" >
 
             <TextView
-                android:id="@+id/fridayTextView"
-                style="@style/DayHeaderTextView"
+                android:id="@+id/friday_title"
+                style="@style/day_title"
                 android:text="@string/friday" />
         </RelativeLayout>
-
-        <!-- 
-        <RelativeLayout
-            android:id="@+id/saturdayHeaderRelativeLayout"
-            style="@style/DayHeaderRelativeLayout" >
-
-            <TextView
-                android:id="@+id/saturdayTextView"
-                style="@style/DayHeaderTextView"
-                android:text="@string/saturday" />
-        </RelativeLayout>
-         -->
     </LinearLayout>
 
     <View
-        android:id="@+id/dividerView"
+        android:id="@+id/header_divider"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/dayLabelsLinearLayout"
+        android:layout_below="@+id/day_headers"
         android:background="@color/border" />
 
     <ScrollView
-        android:id="@+id/scheduleScrollView"
+        android:id="@+id/schedule_scroll"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/dividerView"
+        android:layout_below="@+id/header_divider"
         android:fadingEdge="none"
         android:overScrollMode="never"
         android:padding="0dp"
@@ -128,161 +104,185 @@
                 android:padding="0dp" >
 
                 <RelativeLayout
-                    android:id="@+id/hoursRelativeLayout"
+                    android:id="@+id/hours"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:padding="0dp" >
-                    
+
                     <include layout="@layout/schedule_stripes" />
 
                     <TextView
-                        android:id="@+id/time7amTextView"
+                        android:id="@+id/time7am"
                         style="@style/TimeTextView"
                         android:text="@string/time7am" />
 
                     <TextView
-                        android:id="@+id/time8amTextView"
+                        android:id="@+id/time8am"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time7amTextView"
+                        android:layout_below="@+id/time7am"
                         android:text="@string/time8am" />
 
                     <TextView
-                        android:id="@+id/time9amTextView"
+                        android:id="@+id/time9am"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time8amTextView"
+                        android:layout_below="@+id/time8am"
                         android:text="@string/time9am" />
 
                     <TextView
-                        android:id="@+id/time10amTextView"
+                        android:id="@+id/time10am"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time9amTextView"
+                        android:layout_below="@+id/time9am"
                         android:text="@string/time10am" />
 
                     <TextView
-                        android:id="@+id/time11amTextView"
+                        android:id="@+id/time11am"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time10amTextView"
+                        android:layout_below="@+id/time10am"
                         android:text="@string/time11am" />
 
                     <TextView
-                        android:id="@+id/time12pmTextView"
+                        android:id="@+id/time12pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time11amTextView"
+                        android:layout_below="@+id/time11am"
                         android:text="@string/time12pm" />
 
                     <TextView
-                        android:id="@+id/time1pmTextView"
+                        android:id="@+id/time1pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time12pmTextView"
+                        android:layout_below="@+id/time12pm"
                         android:text="@string/time1pm" />
 
                     <TextView
-                        android:id="@+id/time2pmTextView"
+                        android:id="@+id/time2pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time1pmTextView"
+                        android:layout_below="@+id/time1pm"
                         android:text="@string/time2pm" />
 
                     <TextView
-                        android:id="@+id/time3pmTextView"
+                        android:id="@+id/time3pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time2pmTextView"
+                        android:layout_below="@+id/time2pm"
                         android:text="@string/time3pm" />
 
                     <TextView
-                        android:id="@+id/time4pmTextView"
+                        android:id="@+id/time4pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time3pmTextView"
+                        android:layout_below="@+id/time3pm"
                         android:text="@string/time4pm" />
 
                     <TextView
-                        android:id="@+id/time5pmTextView"
+                        android:id="@+id/time5pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time4pmTextView"
+                        android:layout_below="@+id/time4pm"
                         android:text="@string/time5pm" />
 
                     <TextView
-                        android:id="@+id/time6pmTextView"
+                        android:id="@+id/time6pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time5pmTextView"
+                        android:layout_below="@+id/time5pm"
                         android:text="@string/time6pm" />
 
                     <TextView
-                        android:id="@+id/time7pmTextView"
+                        android:id="@+id/time7pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time6pmTextView"
+                        android:layout_below="@+id/time6pm"
                         android:text="@string/time7pm" />
 
                     <TextView
-                        android:id="@+id/time8pmTextView"
+                        android:id="@+id/time8pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time7pmTextView"
+                        android:layout_below="@+id/time7pm"
                         android:text="@string/time8pm" />
 
                     <TextView
-                        android:id="@+id/time9pmTextView"
+                        android:id="@+id/time9pm"
                         style="@style/TimeTextView"
-                        android:layout_below="@+id/time8pmTextView"
+                        android:layout_below="@+id/time8pm"
                         android:text="@string/time9pm" />
                 </RelativeLayout>
 
-                <!-- 
-                <RelativeLayout
-                    android:id="@+id/sundayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
-                </RelativeLayout>
-                 -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/border" />
 
                 <RelativeLayout
-                    android:id="@+id/mondayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
+                    android:id="@+id/monday"
+                    style="@style/day" >
+
                     <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/border" />
+
                 <RelativeLayout
-                    android:id="@+id/tuesdayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
+                    android:id="@+id/tuesday"
+                    style="@style/day" >
+
+                    <include layout="@layout/schedule_stripes" />
+
+                    <LinearLayout
+                        android:id="@+id/testEvent"
+                        style="@style/ScheduleEvent"
+                        android:layout_height="59dp"
+                        android:layout_marginTop="90dp" >
+
+                        <TextView
+                            android:id="@+id/testEventTextView1"
+                            style="@style/ScheduleEventText"
+                            android:text="@string/monday" />
+
+                        <TextView
+                            android:id="@+id/testEventTextView2"
+                            style="@style/ScheduleEventText"
+                            android:text="@string/monday" />
+
+                        <TextView
+                            android:id="@+id/testEventTextView3"
+                            style="@style/ScheduleEventText"
+                            android:text="@string/monday" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/border" />
+
+                <RelativeLayout
+                    android:id="@+id/wednesday"
+                    style="@style/day" >
+
                     <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/border" />
+
                 <RelativeLayout
-                    android:id="@+id/wednesdayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
+                    android:id="@+id/thursday"
+                    style="@style/day" >
+
                     <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/thursdayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
-                    <include layout="@layout/schedule_stripes" />
-                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/border" />
 
                 <RelativeLayout
-                    android:id="@+id/fridayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
+                    android:id="@+id/friday"
+                    style="@style/day" >
+
                     <include layout="@layout/schedule_stripes" />
                 </RelativeLayout>
-
-                <!-- 
-                <RelativeLayout
-                    android:id="@+id/saturdayRelativeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" >
-                </RelativeLayout>
-                 -->
             </LinearLayout>
 
             <LinearLayout
@@ -296,7 +296,7 @@
                 android:padding="0dp" >
 
                 <View
-                    android:layout_width="0dp"
+                    android:layout_width="10dp"
                     android:layout_height="3dp"
                     android:layout_weight="1" />
 
