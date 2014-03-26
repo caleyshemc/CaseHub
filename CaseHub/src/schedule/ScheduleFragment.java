@@ -96,9 +96,10 @@ public class ScheduleFragment extends Fragment {
 		location.setText(event.getLocation());
 		
 		// Set event layout properties
-		
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
@@ -106,11 +107,9 @@ public class ScheduleFragment extends Fragment {
 		if (topMargin < 0) {
 			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
 		}
-		
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+		params.height = dpToPixels(height);
 		params.setMargins(0, dpToPixels(topMargin), 0, 0);
-		
 		layout.setLayoutParams(params);
 		
 		
@@ -137,8 +136,9 @@ public class ScheduleFragment extends Fragment {
 
 	}
 	
-	/**
-	 * Convert dp to pixels, as dp cannot be set directly at runtime.
+	/*
+	 * Converts dp to pixels, as dp cannot be set directly at runtime.
+	 * Used for setting layout parameters.
 	 */
 	private int dpToPixels(int dp) {
 		DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
