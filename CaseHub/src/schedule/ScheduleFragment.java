@@ -65,7 +65,7 @@ public class ScheduleFragment extends Fragment {
 		*/
 		
 		/* Testing event adding */
-		Day[] days = new Day[] {Day.WED};
+		Day[] days = new Day[] {Day.MON, Day.WED};
 		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
 		addEvent(event);
 		
@@ -83,16 +83,7 @@ public class ScheduleFragment extends Fragment {
 			    (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		LinearLayout layout = (LinearLayout) inflater.inflate( R.layout.template_event_layout, null );
 		
-		TextView name = (TextView) layout.findViewWithTag("name");
-		TextView time = (TextView) layout.findViewWithTag("time");
-		TextView location = (TextView) layout.findViewWithTag("location");
-				
-		// Set event text values
-		name.setText(event.getName());
-		time.setText(event.getTimeString());
-		location.setText(event.getLocation());
-		
-		// Set event layout properties
+		// Set event layout template dimensions
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -111,12 +102,24 @@ public class ScheduleFragment extends Fragment {
 		layout.setLayoutParams(params);
 		
 		// For each day of the week this event occurs, add to layout
-		// TODO currently fails when adding more than one.
-		// Perhaps I have to inflate the template twice, or duplicate it?
 		int layoutId;
+		LinearLayout eventLayout;
 		RelativeLayout parentLayout;
 		
 		for (Day day : event.getDays()) {
+			
+			// Clone layout by inflating template
+			eventLayout = (LinearLayout) inflater.inflate( R.layout.template_event_layout, null );
+			eventLayout.setLayoutParams(params);
+			
+			// Set event text values
+			TextView name = (TextView) eventLayout.findViewWithTag("name");
+			TextView time = (TextView) eventLayout.findViewWithTag("time");
+			TextView location = (TextView) eventLayout.findViewWithTag("location");
+					
+			name.setText(event.getName());
+			time.setText(event.getTimeString());
+			location.setText(event.getLocation());
 			
 			// Get parent layout
 			layoutId = getResources().getIdentifier(
@@ -126,7 +129,7 @@ public class ScheduleFragment extends Fragment {
 			parentLayout = (RelativeLayout) getView().findViewById(layoutId);
 			
 			// Add new event layout to parent layout
-			parentLayout.addView(layout);
+			parentLayout.addView(eventLayout);
 			
 		}
 		
