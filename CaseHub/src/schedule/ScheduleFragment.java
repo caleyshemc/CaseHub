@@ -37,10 +37,7 @@ public class ScheduleFragment extends Fragment {
 		
 		// TODO Check if login is needed
 		// https://login.case.edu/cas/login?service=http://scheduler.case.edu/
-		
-		
-
-		
+				
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
@@ -68,7 +65,7 @@ public class ScheduleFragment extends Fragment {
 		*/
 		
 		/* Testing event adding */
-		Day[] days = new Day[] {Day.MON};
+		Day[] days = new Day[] {Day.WED};
 		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
 		addEvent(event);
 		
@@ -79,7 +76,7 @@ public class ScheduleFragment extends Fragment {
 	/**
 	 * Add an event to the schedule.
 	 */
-	private void addEvent(ScheduleEvent event) {
+	public void addEvent(ScheduleEvent event) {
 		
 		// Grab event layout template
 		LayoutInflater inflater =
@@ -107,11 +104,11 @@ public class ScheduleFragment extends Fragment {
 		if (topMargin < 0) {
 			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
 		}
+		// TODO: ensure duration doesn't go past LAST_HOUR
 
-		params.height = dpToPixels(height);
+		params.height = dpToPixels(height - 1);
 		params.setMargins(0, dpToPixels(topMargin), 0, 0);
 		layout.setLayoutParams(params);
-		
 		
 		// For each day of the week this event occurs, add to layout
 		// TODO currently fails when adding more than one.
