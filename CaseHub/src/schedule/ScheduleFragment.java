@@ -9,13 +9,14 @@ import com.casehub.R;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 public class ScheduleFragment extends Fragment {
@@ -68,7 +69,7 @@ public class ScheduleFragment extends Fragment {
 		
 		/* Testing event adding */
 		Day[] days = new Day[] {Day.MON};
-		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now(), days);
+		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
 		addEvent(event);
 		
 		super.onViewCreated(view, savedInstanceState);
@@ -95,6 +96,7 @@ public class ScheduleFragment extends Fragment {
 		location.setText(event.getLocation());
 		
 		// Set event layout properties
+		
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
 		
@@ -105,10 +107,12 @@ public class ScheduleFragment extends Fragment {
 			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
 		}
 		
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layout.getLayoutParams();
-		params.setMargins(0, topMargin, 0, 0);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		params.setMargins(0, dpToPixels(topMargin), 0, 0);
 		
-		// TODO set layout_height and layout_marginTop according to time
+		layout.setLayoutParams(params);
+		
 		
 		// For each day of the week this event occurs, add to layout
 		// TODO currently fails when adding more than one.
@@ -131,6 +135,18 @@ public class ScheduleFragment extends Fragment {
 		}
 		
 
+	}
+	
+	/**
+	 * Convert dp to pixels, as dp cannot be set directly at runtime.
+	 */
+	private int dpToPixels(int dp) {
+		DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
+		
+		float fpixels = metrics.density * dp;
+		int pixels = (int) (fpixels + 0.5f);
+		
+		return pixels;
 	}
 
 }
