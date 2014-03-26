@@ -1,6 +1,7 @@
 package schedule;
 
 import java.security.InvalidParameterException;
+import java.util.concurrent.ExecutionException;
 
 import org.joda.time.LocalTime;
 
@@ -46,7 +47,7 @@ public class ScheduleFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
-		/* Log in using Case Single-Sign On
+		/* Log in using Case Single-Sign On*/
 		
 		String targetURL = "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule";
 		String text = "Failed in onViewCreated()";
@@ -60,16 +61,16 @@ public class ScheduleFragment extends Fragment {
 			e.printStackTrace();
 		}
 		
-		TextView tv = (TextView) view.findViewById(R.id.test_text);  
-		tv.setText(text);
-		*/
+		Log.d("RESPONSE TEXT", text);
 		
-		/* Testing event adding */
+		
+		/* Testing event adding 
 		Day[] days = new Day[] {Day.MON, Day.WED};
 		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
 		addEvent(event);
 		
 		placeTimeLine();
+		*/
 		
 		super.onViewCreated(view, savedInstanceState);
 		

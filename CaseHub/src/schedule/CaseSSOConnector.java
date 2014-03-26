@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 /*
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
@@ -31,9 +32,12 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		
 		String result = "Login failed in login().";
 
+		/*TODO TEST*/
+		user = "TEST";
+		password = "TEST";
 		
-		URL url = new URL(SSO_URL + "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule");
-		//URL url = new URL("https://sis.case.edu/psp/saprd/EMPLOYEE/PSFT_HR/c/CW_SR_MENU.CW_CONFID_AGREEMNT.GBL?&");
+		//URL url = new URL(SSO_URL + "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule");
+		URL url = new URL("https://login.case.edu/cas/login");
 		
 		// Specify POST request
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -42,8 +46,8 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
 		// Specify POST parameters
-		//String postParameters = "username="+user+"&password="+password;
-		String postParameters = "userid="+user+"&pwd="+password;
+		String postParameters = "username="+user+"&password="+password;
+		//String postParameters = "userid="+user+"&pwd="+password;
 		urlConnection.setFixedLengthStreamingMode(postParameters.getBytes().length);
 		PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
 		out.print(postParameters);
@@ -59,6 +63,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 			InputStream in = new BufferedInputStream(urlConnection.getErrorStream());
 			s = new java.util.Scanner(in).useDelimiter("\\A");
 		    result = s.hasNext() ? s.next() : "";
+		    Log.d("RESULT",result);
 		}
          
 		
@@ -67,8 +72,13 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 			InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 			s = new java.util.Scanner(in).useDelimiter("\\A");
 		    result = s.hasNext() ? s.next() : "";
-		}
-		finally {
+		} catch (IOException e) {
+			e.printStackTrace();
+			InputStream in = new BufferedInputStream(urlConnection.getErrorStream());
+			s = new java.util.Scanner(in).useDelimiter("\\A");
+			result = s.hasNext() ? s.next() : "";
+			Log.d("RESULT",result);
+		} finally {
 			urlConnection.disconnect();
 		}
 		
