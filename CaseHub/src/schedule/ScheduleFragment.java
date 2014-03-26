@@ -77,17 +77,8 @@ public class ScheduleFragment extends Fragment {
 	 * Add an event to the schedule.
 	 */
 	public void addEvent(ScheduleEvent event) {
-		
-		// Grab event layout template
-		LayoutInflater inflater =
-			    (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		LinearLayout layout = (LinearLayout) inflater.inflate( R.layout.template_event_layout, null );
-		
-		// Set event layout template dimensions
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
@@ -96,7 +87,15 @@ public class ScheduleFragment extends Fragment {
 			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
 		}
 		// TODO: ensure duration doesn't go past LAST_HOUR
-
+		
+		// Grab event layout template
+		LayoutInflater inflater =
+			    (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		LinearLayout layout = (LinearLayout) inflater.inflate( R.layout.template_event_layout, null );
+		
+		// Set event layout template dimensions
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		params.height = dpToPixels(height - 1);
 		params.setMargins(0, dpToPixels(topMargin), 0, 0);
 		layout.setLayoutParams(params);
@@ -133,7 +132,6 @@ public class ScheduleFragment extends Fragment {
 			
 		}
 		
-
 	}
 	
 	/*
