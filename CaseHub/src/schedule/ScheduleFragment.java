@@ -69,7 +69,31 @@ public class ScheduleFragment extends Fragment {
 		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
 		addEvent(event);
 		
+		placeTimeLine();
+		
 		super.onViewCreated(view, savedInstanceState);
+		
+	}
+	
+	/**
+	 * Places the line indicating the current time.
+	 * TODO: Call whenever fragment is opened.
+	 */
+	public void placeTimeLine() {
+		LocalTime now = LocalTime.now();
+		int minutes = (now.getHourOfDay() * 60) + now.getMinuteOfHour();
+		LinearLayout timeLine = (LinearLayout) getActivity().findViewById(R.id.current_time);
+		
+		// If current time within schedule hours
+		if (FIRST_HOUR*60 < minutes && minutes < LAST_HOUR*60) {
+			
+			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) timeLine.getLayoutParams();
+			params.topMargin = dpToPixels(minutes - (FIRST_HOUR*60));
+			
+		} else { 
+			// Hide line
+			// TODO
+		}
 		
 	}
 	
@@ -78,15 +102,17 @@ public class ScheduleFragment extends Fragment {
 	 */
 	public void addEvent(ScheduleEvent event) {
 		int height = event.getDuration();
-		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
+		int topMargin = event.getStartMinutes() - (FIRST_HOUR*60);
 		
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
 		}
 		if (topMargin < 0) {
-			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
+			throw new InvalidParameterException("Error: Events cannot start before hour " + FIRST_HOUR);
 		}
-		// TODO: ensure duration doesn't go past LAST_HOUR
+		if ((height + topMargin) > LAST_HOUR*60) {
+			throw new InvalidParameterException("Error: Events cannot end after hour " + LAST_HOUR);
+		}
 		
 		// Grab event layout template
 		LayoutInflater inflater =

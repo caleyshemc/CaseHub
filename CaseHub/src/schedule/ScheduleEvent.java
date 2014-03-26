@@ -35,7 +35,7 @@ public class ScheduleEvent {
 	 */
 	public int getDuration() {
 		// Minutes since midnight
-		int startMinutes = (start.getHourOfDay() * 60) + start.getMinuteOfHour();
+		int startMinutes = getStartMinutes();
 		int endMinutes = (end.getHourOfDay() * 60) + end.getMinuteOfHour();
 		
 		return endMinutes - startMinutes;
