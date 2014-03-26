@@ -16,7 +16,7 @@
 
 package casehub;
 
-import greenie.GreenieFragment;
+// TODO import greenie.GreenieFragment;
 import laundry.LaundryFragment;
 import map.CampusMapFragment;
 import schedule.ScheduleFragment;
@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
     	Fragment fragment = null;
         switch (position) {
 	        case 0:
-	            fragment = new GreenieFragment();
+	            // TODO fragment = new GreenieFragment();
 	            break;
 	        case 1:
 	            fragment = new LaundryFragment();

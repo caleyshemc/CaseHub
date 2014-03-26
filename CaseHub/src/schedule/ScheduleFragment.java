@@ -1,5 +1,7 @@
 package schedule;
 
+import java.security.InvalidParameterException;
+
 import org.joda.time.LocalTime;
 
 import com.casehub.R;
@@ -13,9 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 public class ScheduleFragment extends Fragment {
+	
+	/**
+	 * Sets first and last hours displayed in Schedule view; used to determine
+	 * placement of events.
+	 * 
+	 * To change the first/last hours, both these constants and the layout must
+	 * be updated.
+	 */
+	public static final int FIRST_HOUR = 7;
+	public static final int LAST_HOUR = 21;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,13 +89,30 @@ public class ScheduleFragment extends Fragment {
 		TextView time = (TextView) layout.findViewWithTag("time");
 		TextView location = (TextView) layout.findViewWithTag("location");
 				
-		// Set layout text and attributes
+		// Set event text values
 		name.setText(event.getName());
 		time.setText(event.getTimeString());
 		location.setText(event.getLocation());
+		
+		// Set event layout properties
+		int height = event.getDuration();
+		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
+		
+		if (height < 1) {
+			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
+		}
+		if (topMargin < 0) {
+			throw new InvalidParameterException("Error: Events cannot start before " + FIRST_HOUR);
+		}
+		
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+		params.setMargins(0, topMargin, 0, 0);
+		
 		// TODO set layout_height and layout_marginTop according to time
 		
 		// For each day of the week this event occurs, add to layout
+		// TODO currently fails when adding more than one.
+		// Perhaps I have to inflate the template twice, or duplicate it?
 		int layoutId;
 		RelativeLayout parentLayout;
 		
