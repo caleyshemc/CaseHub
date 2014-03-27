@@ -3,7 +3,7 @@ package schedule;
 import org.joda.time.LocalTime;
 
 /**
- * This class represents a schedule event (i.e. a class or custom weekly event).
+ * This class represents a schedule event (i.e. a class or custom weekly event). 
  */
 public class ScheduleEvent {
 
@@ -28,6 +28,27 @@ public class ScheduleEvent {
 	public String getTimeString() {
 		return start.toString("hh:mm") + " - " + end.toString("hh:mm");
 	}
+	
+	/**
+	 * Returns the event's duration in minutes. For determining
+	 * height in schedule layout.
+	 */
+	public int getDuration() {
+		// Minutes since midnight
+		int startMinutes = getStartMinutes();
+		int endMinutes = (end.getHourOfDay() * 60) + end.getMinuteOfHour();
+		
+		return endMinutes - startMinutes;
+	}
+	
+	/**
+	 * Returns number of minutes past midnight the start time is.
+	 * For determining margin in schedule layout.
+	 */
+	public int getStartMinutes() {
+		return (start.getHourOfDay() * 60) + start.getMinuteOfHour();
+	}
+
 
 	public String getName() {
 		return name;
