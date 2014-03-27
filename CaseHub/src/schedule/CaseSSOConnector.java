@@ -1,38 +1,24 @@
 package schedule;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
-import android.text.Html;
-import android.util.Log;
 
 /*
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
@@ -43,6 +29,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	private String cookies;
 	private DefaultHttpClient client = new DefaultHttpClient();
 	private final String USER_AGENT = "Mozilla/5.0";
+
 
 	//private String destination;
 	

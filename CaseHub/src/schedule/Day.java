@@ -12,5 +12,6 @@ public enum Day {
 		} else {
 			return this.toString().toLowerCase(Locale.getDefault()) + "day";
 		}
+
 	}
 }

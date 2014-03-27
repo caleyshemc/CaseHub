@@ -49,6 +49,7 @@ public class ScheduleEvent {
 		return (start.getHourOfDay() * 60) + start.getMinuteOfHour();
 	}
 
+
 	public String getName() {
 		return name;
 	}

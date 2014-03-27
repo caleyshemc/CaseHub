@@ -5,8 +5,6 @@ import java.util.concurrent.ExecutionException;
 
 import org.joda.time.LocalTime;
 
-import com.casehub.R;
-
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,6 +17,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.casehub.R;
 
 public class ScheduleFragment extends Fragment {
 	
@@ -71,6 +71,7 @@ public class ScheduleFragment extends Fragment {
 		
 		placeTimeLine();
 		*/
+
 		
 		super.onViewCreated(view, savedInstanceState);
 		
@@ -114,6 +115,7 @@ public class ScheduleFragment extends Fragment {
 		if ((height + topMargin) > LAST_HOUR*60) {
 			throw new InvalidParameterException("Error: Events cannot end after hour " + LAST_HOUR);
 		}
+
 		
 		// Grab event layout template
 		LayoutInflater inflater =
@@ -130,6 +132,7 @@ public class ScheduleFragment extends Fragment {
 		// For each day of the week this event occurs, add to layout
 		int layoutId;
 		LinearLayout eventLayout;
+
 		RelativeLayout parentLayout;
 		
 		for (Day day : event.getDays()) {
@@ -147,6 +150,7 @@ public class ScheduleFragment extends Fragment {
 			time.setText(event.getTimeString());
 			location.setText(event.getLocation());
 			
+
 			// Get parent layout
 			layoutId = getResources().getIdentifier(
 					day.getString(),
@@ -172,6 +176,7 @@ public class ScheduleFragment extends Fragment {
 		int pixels = (int) (fpixels + 0.5f);
 		
 		return pixels;
+
 	}
 
 }
