@@ -52,7 +52,7 @@ public class ScheduleFragment extends Fragment {
 		String targetURL = "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule";
 		String text = "Failed in onViewCreated()";
 		try {
-			text = new CaseSSOConnector().execute("","").get();
+			text = CaseSSOConnector.getInstance().execute("","").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,45 +1,34 @@
 package schedule;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
-import android.text.Html;
-import android.util.Log;
 
-/*
+/**
+ * Singleton class.
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
  * TODO: Determine best I/O types for AsyncTask
  */
 public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 
+	private static CaseSSOConnector instance = null;
+	
 	private String cookies;
 	private DefaultHttpClient client = new DefaultHttpClient();
 	private final String USER_AGENT = "Mozilla/5.0";
@@ -49,6 +38,21 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	// TODO: define in file
 	private static final String SSO_URL = "https://login.case.edu/cas/login?service=";
 	// https://login.case.edu/cas/login?service=https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule
+	
+	
+	protected CaseSSOConnector() {
+		// Exists to defeat instantiation as part of the Singleton pattern.
+	}
+
+	/**
+	 * Returns singleton instance.
+	 */
+	public static CaseSSOConnector getInstance() {
+		if (instance == null) {
+			instance = new CaseSSOConnector();
+		}
+		return instance;
+	}
 	
 	/**
 	 * 
@@ -62,23 +66,13 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 
 		/*TODO TEST*/
 		user = "crs133";
-		password = "Fuckingpass1";
+		password = "TEST";
 		String url = "https://login.case.edu/cas/login";
 		
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
 
-	    
-	    /*
-		HttpPost post = new HttpPost(url);
-		
-		
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("username", user));
-			params.add(new BasicNameValuePair("password", password));
-		*/
-			
-			
+	    			
 
 		HttpGet httpGet = new HttpGet(url);
 		HttpResponse result = client.execute(httpGet);
@@ -102,12 +96,17 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		entity = result.getEntity();
 		response = EntityUtils.toString(entity, "UTF-8");
 
-		/*
+		
 		httpGet = new HttpGet("https://m.case.edu/gadget_s.html?_gid=myschedule");
-		params.setParameter(ClientPNames.COOKIE_POLICY, "easy");
-		client.execute(httpGet, handler);
-		*/
-
+		//params.setParameter(ClientPNames.COOKIE_POLICY, "easy");
+		
+		result = client.execute(httpGet);
+		entity = result.getEntity();
+		response = EntityUtils.toString(entity, "UTF-8");
+		
+		if (response.contains("successfully logged in")) {
+			return "successful login!";
+		}
 		    
 		return response;
 		
