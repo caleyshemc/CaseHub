@@ -3,7 +3,7 @@ package schedule;
 import org.joda.time.LocalTime;
 
 /**
- * This class represents a schedule event (i.e. a class or custom weekly event).
+ * This class represents a schedule event (i.e. a class or custom weekly event). 
  */
 public class ScheduleEvent {
 
