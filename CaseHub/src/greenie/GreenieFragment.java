@@ -152,8 +152,8 @@ private void setUpMap() {
         XmlPullParser parser = factory.newPullParser();
         tinstr = assetManager.open("nextbusSetupMap.xml");
         parser.setInput(new InputStreamReader(tinstr));
-        xmlParse derp = new xmlParse();
-        derp.parse(parser);
+        xmlParse xparser = new xmlParse();
+        route = xparser.parse(parser);
         
     } catch (FileNotFoundException e1) {
         // TODO Auto-generated catch block

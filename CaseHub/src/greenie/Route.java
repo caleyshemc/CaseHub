@@ -12,8 +12,8 @@ public class Route {
 	private String oppositeColor;
 	private LatLng minLatLng;
 	private LatLng maxLatLng;
-	private ArrayList<Direction> directions;
-	private ArrayList<Path> paths;
+	private ArrayList<Direction> directions = new ArrayList<Direction>();
+	private ArrayList<Path> paths = new ArrayList<Path>();
 	
 	public Route() {
 		// TODO Auto-generated constructor stub
@@ -116,6 +116,10 @@ public class Route {
 	public void setDirections(ArrayList<Direction> directions) {
 		this.directions = directions;
 	}
+	
+	public void addDirection(Direction direction){
+		this.directions.add(direction);
+	}
 
 	public ArrayList<Path> getPaths() {
 		return paths;
@@ -123,6 +127,10 @@ public class Route {
 
 	public void setPaths(ArrayList<Path> paths) {
 		this.paths = paths;
+	}
+	
+	public void addPath(Path path){
+		this.paths.add(path);
 	}
 
 	public class Stop{
@@ -179,12 +187,20 @@ public class Route {
 	public class Direction{
 		private String tag;
 		private String title;
-		private ArrayList<Stop> stops;
+		private Boolean useForUI;
+		private ArrayList<Stop> stops = new ArrayList<Stop>();
 		
-		public Direction(String tag, String title, ArrayList<Stop> stops) {
+		public Direction(String tag, String title, Boolean useForUI, ArrayList<Stop> stops) {
 			this.tag = tag;
 			this.title = title;
+			this.useForUI = useForUI;
 			this.stops = stops;
+		}
+
+		public Direction() {
+			this.tag = "";
+			this.title = "";
+			this.useForUI = false;
 		}
 
 		public String getTag(){
@@ -201,6 +217,14 @@ public class Route {
 
 		public void setTitle(String title){
 			this.title = title;
+		}
+
+		public Boolean getUseForUI() {
+			return useForUI;
+		}
+
+		public void setUseForUI(Boolean useForUI) {
+			this.useForUI = useForUI;
 		}
 
 		public ArrayList<Stop> getStops(){
@@ -221,10 +245,13 @@ public class Route {
 	}
 
 	public class Path{
-		private ArrayList<LatLng> points;
+		private ArrayList<LatLng> points = new ArrayList<LatLng>();
 
 		public Path(ArrayList<LatLng> points) {
 			this.points = points;
+		}
+
+		public Path() {
 		}
 
 		public ArrayList<LatLng> getPoints() {
