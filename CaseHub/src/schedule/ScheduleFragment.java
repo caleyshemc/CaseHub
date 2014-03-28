@@ -48,11 +48,9 @@ public class ScheduleFragment extends Fragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
 		/* Log in using Case Single-Sign On*/
-		
-		String targetURL = "https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule";
 		String text = "Failed in onViewCreated()";
 		try {
-			text = CaseSSOConnector.getInstance().execute("","").get();
+			text = CaseSSOConnector.getInstance().execute("crs133", "cscCSC333", "http://scheduler.case.edu/").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

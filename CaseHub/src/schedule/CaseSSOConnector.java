@@ -28,17 +28,10 @@ import android.os.AsyncTask;
 public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 
 	private static CaseSSOConnector instance = null;
+	private static DefaultHttpClient client = new DefaultHttpClient();	
 	
-	private String cookies;
-	private DefaultHttpClient client = new DefaultHttpClient();
-	private final String USER_AGENT = "Mozilla/5.0";
-
-
-	//private String destination;
-	
-	// TODO: define in file
-	private static final String SSO_URL = "https://login.case.edu/cas/login?service=";
-	// https://login.case.edu/cas/login?service=https%3a%2f%2fm.case.edu%2fgadget_s.html%3f_gid%3dmyschedule
+	private static final String USER_AGENT = "Mozilla/5.0";
+	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	
 	
 	protected CaseSSOConnector() {
@@ -61,21 +54,14 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	 * @param password
 	 * @throws IOException
 	 */
-	private String login(String user, String password) throws IOException {
+	private String login(String user, String password, String url) throws IOException {
 		
 		String response = "Login failed in login().";
-
-		/*TODO TEST*/
-		user = "crs133";
-		password = "TEST";
-		String url = "https://login.case.edu/cas/login";
 		
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
 
-	    			
-
-		HttpGet httpGet = new HttpGet(url);
+		HttpGet httpGet = new HttpGet(SSO_URL);
 		HttpResponse result = client.execute(httpGet);
 
 		HttpEntity entity = result.getEntity();
@@ -85,7 +71,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		Elements input = doc.getElementsByAttributeValue("name", "lt");
 		String login_ticket = input.attr("value");
 
-		HttpPost httpPost = new HttpPost(url);
+		HttpPost httpPost = new HttpPost(SSO_URL);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("lt", login_ticket));
 		nameValuePairs.add(new BasicNameValuePair("username", user));
@@ -97,27 +83,20 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		entity = result.getEntity();
 		response = EntityUtils.toString(entity, "UTF-8");
 
-		
-		httpGet = new HttpGet("https://m.case.edu/gadget_s.html?_gid=myschedule");
-		//params.setParameter(ClientPNames.COOKIE_POLICY, "easy");
+		httpGet = new HttpGet(url);
 		
 		result = client.execute(httpGet);
 		entity = result.getEntity();
 		response = EntityUtils.toString(entity, "UTF-8");
-		
-		if (response.contains("successfully logged in")) {
-			return "successful login!";
-		}
 		    
 		return response;
-		
 	}
 
 	@Override
 	protected String doInBackground(String... args) {
 		String loginResult = "Login failed in doInBackground().";
 		try {
-			loginResult = login(args[0], args[1]);
+			loginResult = login(args[0], args[1], args[3]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
