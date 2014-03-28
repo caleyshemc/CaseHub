@@ -1,16 +1,16 @@
 <body copyright="All data copyright Case Western Reserve University 2014.">
 <route tag="circlelink" title="Circle Link Route" shortTitle="Circle Link Rt" color="cc33cc" oppositeColor="000000" latMin="41.5002201" latMax="41.514464" lonMin="-81.6128319" lonMax="-81.6028793">
 <stop tag="circlestat_d" title="Circle Station - Departure" lat="41.50026" lon="-81.60465"></stop>
-<stop tag="murrayhg" title="Murray Hill & Glennwood" lat="41.5002201" lon="-81.6034461"></stop>
-<stop tag="murrayadel" title="Murray Hill & Adelbert" lat="41.5018907" lon="-81.6033009"></stop>
+<stop tag="murrayhg" title="Murray Hill &amp; Glennwood" lat="41.5002201" lon="-81.6034461"></stop>
+<stop tag="murrayadel" title="Murray Hill &amp; Adelbert" lat="41.5018907" lon="-81.6033009"></stop>
 <stop tag="adel121e" title="Adelbert 1-2-1 East" lat="41.5036368" lon="-81.6057397"></stop>
-<stop tag="rainbow" title="Rainbow Babies & Children Hospital" lat="41.5040358" lon="-81.6060558"></stop>
+<stop tag="rainbow" title="Rainbow Babies &amp; Children Hospital" lat="41.5040358" lon="-81.6060558"></stop>
 <stop tag="adellot13ae" title="Adelbert Lot 13A East" lat="41.505747" lon="-81.6087013"></stop>
 <stop tag="eastlot29e" title="East Blvd Lot 29 East" shortTitle="East Lot 29 East" lat="41.5061168" lon="-81.6099998"></stop>
 <stop tag="eastce" title="East Blvd Central East" shortTitle="East Central East" lat="41.5077645" lon="-81.6105578"></stop>
 <stop tag="belcias" title="Bellflower CIA South" lat="41.5086675" lon="-81.6090958"></stop>
 <stop tag="belpbls" title="Bellflower PBL South" lat="41.5098388" lon="-81.6074518"></stop>
-<stop tag="junipw" title="Ford & Juniper" lat="41.5110248" lon="-81.6083772"></stop>
+<stop tag="junipw" title="Ford &amp; Juniper" lat="41.5110248" lon="-81.6083772"></stop>
 <stop tag="cim" title="CIM" lat="41.512882" lon="-81.6088673"></stop>
 <stop tag="hazeln" title="Hazel North" lat="41.514464" lon="-81.6081892"></stop>
 <stop tag="magnolian" title="Magnolia North" lat="41.5143144" lon="-81.6118125"></stop>
@@ -31,7 +31,7 @@
 <stop tag="adelsmith" title="Adelbert Kent Hale Smith" lat="41.5039381" lon="-81.6063518"></stop>
 <stop tag="adel121w" title="Adelbert 1-2-1 West" lat="41.5035513" lon="-81.6057746"></stop>
 <stop tag="adellot47" title="Adelbert Lot 47" lat="41.5018511" lon="-81.6034412"></stop>
-<stop tag="murrayhf" title="Murray Hill & Fairchild" lat="41.5012899" lon="-81.60326"></stop>
+<stop tag="murrayhf" title="Murray Hill &amp; Fairchild" lat="41.5012899" lon="-81.60326"></stop>
 <stop tag="circlestat_a" title="Circle Station - Arrival" lat="41.5004919" lon="-81.6046388"></stop>
 <direction tag="2artmus" title="To Cleveland Museum of Art" name="" useForUI="true">
 <stop tag="circlestat_d"></stop>

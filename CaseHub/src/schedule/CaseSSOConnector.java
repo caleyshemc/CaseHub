@@ -33,6 +33,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	private DefaultHttpClient client = new DefaultHttpClient();
 	private final String USER_AGENT = "Mozilla/5.0";
 
+
 	//private String destination;
 	
 	// TODO: define in file
