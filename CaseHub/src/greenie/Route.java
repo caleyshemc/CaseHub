@@ -132,6 +132,10 @@ public class Route {
 	public void addPath(Path path){
 		this.paths.add(path);
 	}
+	
+	public int numPaths(){
+		return this.paths.size();
+	}
 
 	public class Stop{
 		private String tag;
@@ -264,6 +268,10 @@ public class Route {
 		
 		public void addPoint(LatLng point){
 			this.points.add(point);
+		}
+		
+		public LatLng getPoint(int i){
+			return this.points.get(i);
 		}
 		
 		public int numPoints(){
