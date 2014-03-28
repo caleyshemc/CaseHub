@@ -1,5 +1,7 @@
 package greenie;
 
+import greenie.Route.Path;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -134,9 +136,9 @@ private void setUpMapIfNeeded() {
                     }
                 });
             setUpMap();
+            mMap.setPadding(0, 130, 0, 85);
         }
     }
-    mMap.setPadding(0, 130, 0, 85);
 }
 
 private void setUpMap() {
@@ -166,30 +168,7 @@ private void setUpMap() {
 		e.printStackTrace();		
 	}
 	
-	try {
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(assetManager.open("circlelinkpath.txt")));
-		// do reading, usually loop until end of file reading  
-		String mLine = reader.readLine();
-		while (mLine != null) {
-			//process line
-			String[] latlong = mLine.split(",");
-			LatLng temp = new LatLng(Float.parseFloat(latlong[0]),Float.parseFloat(latlong[1]));
-			path.add(temp);
-			mLine = reader.readLine(); 
-		}
-		reader.close();
-	} catch (IOException e) {
-		//log the exception
-	}
-	for (int i = 0; i < path.size() - 1; i++) {
-		LatLng src = path.get(i);
-		LatLng dest = path.get(i + 1);
-		Polyline line = mMap.addPolyline(new PolylineOptions() //mMap is the Map Object
-		.add(new LatLng(src.latitude, src.longitude),
-				new LatLng(dest.latitude,dest.longitude))
-				.width(10).color(Color.RED).geodesic(true));
-	}
+	drawRoute(route);
 }
 
 
@@ -215,6 +194,20 @@ public void onConnected(Bundle connectionHint) {
     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15.5f);
     mMap.animateCamera(cameraUpdate);
+}
+
+public void drawRoute(Route route){
+	ArrayList<Path> paths = route.getPaths();
+	for(int i = 0; i < route.numPaths(); i++){
+		for(int j = 0; j < paths.get(i).numPoints() - 1; j++){
+			LatLng src = paths.get(i).getPoint(j);
+			LatLng dest = paths.get(i).getPoint(j + 1);
+			Polyline line = mMap.addPolyline(new PolylineOptions() //mMap is the Map Object
+			.add(new LatLng(src.latitude, src.longitude),
+					new LatLng(dest.latitude,dest.longitude))
+					.width(8).color(Color.BLUE).geodesic(true));
+		}
+	}
 }
 
 @Override
