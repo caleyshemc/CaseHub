@@ -2,6 +2,7 @@ package greenie;
 
 import java.util.ArrayList;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 public class Route {
 	
@@ -117,6 +118,10 @@ public class Route {
 		this.directions = directions;
 	}
 	
+	public int numDirections(){
+		return this.directions.size();
+	}
+	
 	public void addDirection(Direction direction){
 		this.directions.add(direction);
 	}
@@ -141,6 +146,7 @@ public class Route {
 		private String tag;
 		private String title;
 		private LatLng latlng;
+		private Marker marker;
 		
 		public Stop(){
 			this.tag = "";
@@ -184,6 +190,14 @@ public class Route {
 		
 		public double getLng(){
 			return this.latlng.longitude;
+		}
+
+		public Marker getMarker() {
+			return marker;
+		}
+
+		public void setMarker(Marker marker) {
+			this.marker = marker;
 		}
 		
 	}
@@ -245,6 +259,10 @@ public class Route {
 		
 		public int numStops(){
 			return this.stops.size();
+		}
+		
+		public Stop getStop(int i){
+			return this.stops.get(i);
 		}
 	}
 
