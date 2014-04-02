@@ -49,7 +49,7 @@ public class ScheduleFragment extends Fragment {
 		/* Log in using Case Single-Sign On*/
 		String text = "Failed in onViewCreated()";
 		try {
-			text = CaseSSOConnector.getInstance().execute("crs133", "cscCSC333", "http://scheduler.case.edu/day.php?day=M").get();
+			text = new CaseSSOConnector().execute("crs133", "cscCSC333").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
