@@ -191,12 +191,10 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 	}
 
 	public void drawStops(Route route){
-		ArrayList<Direction> directions = route.getDirections();
-		for(int i = 0; i < directions.size(); i++){
-			for(int j = 0; j < directions.get(i).numStops(); j++){
-				Marker stop = mMap.addMarker(new MarkerOptions().position(directions.get(i).getStop(j).getLatlng()));
-				directions.get(i).getStop(j).setMarker(stop);
-			}
+		ArrayList<Stop> stops = route.getAllStops();
+		for(int i = 0; i < stops.size(); i++){
+				Marker stop = mMap.addMarker(new MarkerOptions().position(stops.get(i).getLatlng()));
+				stops.get(i).setMarker(stop);
 		}
 	}
 
@@ -240,6 +238,11 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 					mMap.clear();
 					drawRoute(currentRoute);
 					drawStops(currentRoute);
+					String[] stops = currentRoute.listStops();
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.c, android.R.layout.simple_spinner_dropdown_item, stops);
+					Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
+					sSpinner.setAdapter(adapter);
+					break;
 				}
 			}
 			break;
@@ -253,6 +256,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 						TextView text = (TextView) mView.findViewById(R.id.predictions);
 						text.setText(currentRoute.getDirections().get(i).getStop(j).getTitle());
 					}
+					break;
 				}
 			}
 			//Update prediction for that stop
@@ -266,6 +270,8 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		//Do nothing
 
 	}
+	
+	
 
 	public void loadRoutes(){
 		String[] list = null;

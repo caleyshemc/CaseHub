@@ -50,12 +50,12 @@
 	
     <!-- GREENIE -->
     <string-array name="routes_array">
-        <item>Heights AM</item>
         <item>101st Service</item>
         <item>Circle Link Route</item>
         <item>Commuter Shuttle</item>
         <item>Evening Shuttle North</item>
     	<item>Evening Shuttle South</item>
+    	<item>Heights AM</item>
     	<item>Route B</item>
     	<item>UCRC Route</item>
     </string-array>
