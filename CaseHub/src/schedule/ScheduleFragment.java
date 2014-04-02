@@ -37,7 +37,6 @@ public class ScheduleFragment extends Fragment {
         Bundle savedInstanceState) {
 		
 		// TODO Check if login is needed
-		// https://login.case.edu/cas/login?service=http://scheduler.case.edu/
 				
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_schedule, container, false);
@@ -50,7 +49,7 @@ public class ScheduleFragment extends Fragment {
 		/* Log in using Case Single-Sign On*/
 		String text = "Failed in onViewCreated()";
 		try {
-			text = CaseSSOConnector.getInstance().execute("crs133", "cscCSC333", "http://scheduler.case.edu/").get();
+			text = CaseSSOConnector.getInstance().execute("crs133", "cscCSC333", "http://scheduler.case.edu/day.php?day=M").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

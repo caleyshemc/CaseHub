@@ -49,28 +49,26 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	}
 	
 	/**
-	 * 
-	 * @param user
-	 * @param password
+	 * Logs in to Case's Single Sign-On and then loads the page specified in url
 	 * @throws IOException
 	 */
 	private String login(String user, String password, String url) throws IOException {
-		
-		String response = "Login failed in login().";
-		
+				
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
 
+	    // GET login form
 		HttpGet httpGet = new HttpGet(SSO_URL);
 		HttpResponse result = client.execute(httpGet);
-
 		HttpEntity entity = result.getEntity();
+		
+		// Parse HTML to find login ticket
 		String responseString = EntityUtils.toString(entity, "UTF-8");
-
 		Document doc = Jsoup.parse(responseString);
 		Elements input = doc.getElementsByAttributeValue("name", "lt");
 		String login_ticket = input.attr("value");
 
+		// Prepare POST to log in to SSO
 		HttpPost httpPost = new HttpPost(SSO_URL);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("lt", login_ticket));
@@ -78,25 +76,32 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
+		// Execute login POST
 		result = client.execute(httpPost);
 
-		entity = result.getEntity();
-		response = EntityUtils.toString(entity, "UTF-8");
-
-		httpGet = new HttpGet(url);
 		
-		result = client.execute(httpGet);
-		entity = result.getEntity();
-		response = EntityUtils.toString(entity, "UTF-8");
-		    
-		return response;
+		
+		// Execute GET of url
+				httpGet = new HttpGet("http://scheduler.case.edu");
+				HttpResponse result2 = client.execute(httpGet);
+				HttpEntity entity2 = result2.getEntity();
+		
+		
+		
+		
+		// Execute GET of url
+		httpGet = new HttpGet(url);
+		HttpResponse result3 = client.execute(httpGet);
+		HttpEntity entity3 = result3.getEntity();
+		
+		return EntityUtils.toString(entity3, "UTF-8");
 	}
 
 	@Override
 	protected String doInBackground(String... args) {
 		String loginResult = "Login failed in doInBackground().";
 		try {
-			loginResult = login(args[0], args[1], args[3]);
+			loginResult = login(args[0], args[1], args[2]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
