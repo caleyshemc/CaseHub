@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -52,10 +53,17 @@ public class ScheduleFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
-		/* Log in using Case Single-Sign On*/
-		String text = "Failed in onViewCreated()";
+		/*
+		 * Show login dialog
+		 */
+		DialogFragment newFragment = new LoginDialogFragment();
+	    newFragment.show(getFragmentManager(), "login");
+	    // TODO may need to getSupportFragmentManager instead
+		
+		/* Log in using Case Single-Sign On
+		String html;
 		try {
-			text = new CaseSSOConnector().execute("crs133", "cscCSC333").get();
+			html = new CaseSSOConnector().execute("crs133", "cscCSC333").get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,16 +72,19 @@ public class ScheduleFragment extends Fragment {
 			e.printStackTrace();
 		}
 		
-		Log.d("RESPONSE TEXT", text);
+		Log.d("RESPONSE TEXT", html);
+		*/
+		
 		
 		/*
 		 * TEST adding full schedule 
-		 */
-		ArrayList<ScheduleEvent> events = parseSchedule(text);
+		 
+		ArrayList<ScheduleEvent> events = parseSchedule(html);
 		
 		for (ScheduleEvent event : events) {
 			addEvent(event);
 		}
+		*/
 		
 		/* TODO Testing timeline placing
 		placeTimeLine();
