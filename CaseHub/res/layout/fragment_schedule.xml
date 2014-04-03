@@ -225,27 +225,6 @@
 
                     <include layout="@layout/schedule_stripes" />
 
-                    <LinearLayout
-                        android:id="@+id/testEvent"
-                        style="@style/ScheduleEvent"
-                        android:layout_height="59dp"
-                        android:layout_marginTop="90dp" >
-
-                        <TextView
-                            android:id="@+id/testEventTextView1"
-                            style="@style/ScheduleEventText"
-                            android:text="@string/monday" />
-
-                        <TextView
-                            android:id="@+id/testEventTextView2"
-                            style="@style/ScheduleEventText"
-                            android:text="@string/monday" />
-
-                        <TextView
-                            android:id="@+id/testEventTextView3"
-                            style="@style/ScheduleEventText"
-                            android:text="@string/monday" />
-                    </LinearLayout>
                 </RelativeLayout>
 
                 <View

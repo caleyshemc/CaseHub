@@ -1,9 +1,16 @@
 package schedule;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -42,7 +49,6 @@ public class ScheduleFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
 	
-	// TODO: this is just a test!
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
@@ -60,12 +66,16 @@ public class ScheduleFragment extends Fragment {
 		
 		Log.d("RESPONSE TEXT", text);
 		
+		/*
+		 * TEST adding full schedule 
+		 */
+		ArrayList<ScheduleEvent> events = parseSchedule(text);
 		
-		/* Testing event adding 
-		Day[] days = new Day[] {Day.MON, Day.WED};
-		ScheduleEvent event = new ScheduleEvent("EECS 395", "Olin 314", LocalTime.now(), LocalTime.now().plusHours(1), days);
-		addEvent(event);
+		for (ScheduleEvent event : events) {
+			addEvent(event);
+		}
 		
+		/* TODO Testing timeline placing
 		placeTimeLine();
 		*/
 
@@ -93,6 +103,57 @@ public class ScheduleFragment extends Fragment {
 			// Hide line
 			// TODO
 		}
+		
+	}
+	
+	/**
+	 * Parses schedule from HTML and creates appropriate ScheduleEvents
+	 * @param response
+	 */
+	public ArrayList<ScheduleEvent> parseSchedule(String html) {
+		
+		ArrayList<ScheduleEvent> scheduleEvents = new ArrayList<ScheduleEvent>();
+		Document doc = Jsoup.parse(html);
+
+		for (Day day : Day.values()) {
+			
+			// Select each event in this day
+			Element div = doc.getElementById(day.toString());
+			Elements events = div.select(".event");
+			
+			// Create ScheduleEvents
+			for (Element event : events) {
+				
+				// Get raw event info
+				String name = event.select(".eventname").first().text();
+				String times = event.select(".timespan").first().text();
+				String location = event.select(".location").first().text();
+				
+				// Extract start/end times
+				String[] split = times.split("-");
+				String startString = split[0] + "m";
+				String endString = split[1] + "m";
+				
+				// TODO do I need to clone it?
+				ArrayList<Day> days = new ArrayList<Day>();
+				days.add(day);
+				
+				// TODO may need to capitalize and add "m" to am/pm
+				
+				DateTimeFormatter format = DateTimeFormat.forPattern("hhmma");
+				LocalTime start = LocalTime.parse(startString, format);
+				LocalTime end = LocalTime.parse(endString, format);
+				
+				ScheduleEvent newEvent =  new ScheduleEvent(name, location, start, end, days);
+				
+				scheduleEvents.add(newEvent);
+				
+			}
+			
+		}
+		
+		
+		return scheduleEvents;
 		
 	}
 	

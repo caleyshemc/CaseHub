@@ -20,7 +20,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * Singleton class.
@@ -34,7 +33,6 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
-
 	
 	/**
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
@@ -73,16 +71,16 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	private String getSchedule() throws ClientProtocolException, IOException {
 		
 		String resultString = "";
-		String[] weekdays = {"M", "T", "W", "R", "F"};
+		
 		
 		// GET Scheduler to set appropriate cookies
 		HttpGet httpGet = new HttpGet(SCHEDULE_URL);
 		HttpResponse result = client.execute(httpGet);
 		HttpEntity entity = result.getEntity();
 		
-		for (String day : weekdays) {
+		for (Day day : Day.values()) {
 			
-			String url = SCHEDULE_URL + "/day.php?day=" + day;
+			String url = SCHEDULE_URL + "/day.php?day=" + day.getCode();
 			
 			// GET schedule events for each day of the week
 			httpGet = new HttpGet(url);
@@ -90,7 +88,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 			entity = result.getEntity();
 			
 			// Wrap each day in a div for easy parsing
-			resultString += "<div id='" + day + "'>";
+			resultString += "<div id='" + day.toString() + "'>";
 			resultString += EntityUtils.toString(entity, "UTF-8");
 			resultString += "</div>";
 		}
