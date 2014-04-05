@@ -41,50 +41,22 @@ public class ScheduleFragment extends Fragment {
 	public static final int LAST_HOUR = 21;
 
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-        Bundle savedInstanceState) {
-		
-		// TODO Check if login is needed
-				
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_schedule, container, false);
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		// Inflate the layout for this fragment
+		return inflater.inflate(R.layout.fragment_schedule, container, false);
+	}
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
+		// TODO Check if login is needed
 		/*
 		 * Show login dialog
 		 */
-		DialogFragment newFragment = new LoginDialogFragment();
-	    newFragment.show(getFragmentManager(), "login");
-	    // TODO may need to getSupportFragmentManager instead
-		
-		/* Log in using Case Single-Sign On
-		String html;
-		try {
-			html = new CaseSSOConnector().execute("crs133", "cscCSC333").get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		Log.d("RESPONSE TEXT", html);
-		*/
-		
-		
-		/*
-		 * TEST adding full schedule 
-		 
-		ArrayList<ScheduleEvent> events = parseSchedule(html);
-		
-		for (ScheduleEvent event : events) {
-			addEvent(event);
-		}
-		*/
+		DialogFragment loginDialog = new LoginDialogFragment();
+		loginDialog.show(getFragmentManager(), "login");
 		
 		/* TODO Testing timeline placing
 		placeTimeLine();

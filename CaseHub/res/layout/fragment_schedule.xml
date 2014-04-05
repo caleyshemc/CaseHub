@@ -224,7 +224,6 @@
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />
-
                 </RelativeLayout>
 
                 <View

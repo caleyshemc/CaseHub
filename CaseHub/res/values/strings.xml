@@ -18,11 +18,11 @@
     <string name="action_settings">Settings</string>
     
     <!-- SCHEDULER -->
-    <string name="login_prompt">Please log in with your CaseID.</string>
-    <string name="login_button">Log In</string>
-    <string name="cancel">Cancel</string>
+    <string name="login_prompt">Please log in with your Case ID.</string>
     <string name="username">Case ID</string>
     <string name="password">Password</string>
+    <string name="login_button">Log In</string>
+    <string name="cancel">Cancel</string>
     
     <string name="sunday">SUN</string>
     <string name="monday">MON</string>

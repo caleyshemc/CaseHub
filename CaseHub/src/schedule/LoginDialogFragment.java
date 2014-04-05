@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView.FindListener;
 import android.widget.EditText;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -22,6 +22,32 @@ public class LoginDialogFragment extends DialogFragment {
 	// Username and password fields
 	private EditText userText;
 	private EditText passText;
+	
+	OnLoginListener callback;
+
+	/**
+	 * Define callback interface for communicating with MainActivity.
+	 * Container Activity must implement this interface.
+	 */
+    public interface OnLoginListener {
+        public void onScheduleLogin(String html);
+    }
+    
+    /**
+     * Makes sure that the container activity has implemented
+     * the callback interface. If not, throws an exception.
+     */
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        try {
+            callback = (OnLoginListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnLoginListener");
+        }
+    }
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -60,9 +86,11 @@ public class LoginDialogFragment extends DialogFragment {
             				e.printStackTrace();
             			}
             			
-            			Log.d("RESPONSE TEXT", html);
+            			//Log.d("RESPONSE TEXT", html);
             			
-            			// TODO pass html to ScheduleFragment and close dialog
+            			// Pass HTML to MainActivity and dismiss dialog
+            			callback.onScheduleLogin(html);
+            			LoginDialogFragment.this.getDialog().dismiss();
 
                    }
                })
