@@ -59,14 +59,4 @@
     	<item>Route B</item>
     	<item>UCRC Route</item>
     </string-array>
-    <string-array name="stops_array">
-        <item>Circle Station - Departure</item>
-        <item>Murray Hill and Glennwood</item>
-        <item>Murray Hill and Adelbert</item>
-        <item>Adelbert 1–2–1 East</item>
-        <item>Rainbow Babies and Children Hospital</item>
-    	<item>Adelbert Lot 13A East</item>
-    	<item>East Blvd Lot 29 East</item>
-    	<item>East Blvd Central East</item>
-    </string-array>
 </resources>

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -61,6 +62,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			.setPriority(LocationRequest.PRIORITY_LOW_POWER);
 	Route currentRoute = new Route();
 	ArrayList<Route> routes = new ArrayList<Route>();
+	ArrayList<Stop> stops = new ArrayList<Stop>();
 
 	@Override
 	public void onResume() {
@@ -96,13 +98,6 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			rSpinner.setAdapter(adapter);
 			Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
 			sSpinner.setOnItemSelectedListener(this);
-			// Create an ArrayAdapter using the string array and a default spinner layout
-			adapter = ArrayAdapter.createFromResource(MainActivity.c,
-					R.array.stops_array, android.R.layout.simple_spinner_item);
-			// Specify the layout to use when the list of choices appears
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			// Apply the adapter to the spinner
-			sSpinner.setAdapter(adapter);
 			loadRoutes();
 			currentRoute = routes.get(0);
 		}
@@ -191,7 +186,6 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 	}
 
 	public void drawStops(Route route){
-		ArrayList<Stop> stops = route.getAllStops();
 		for(int i = 0; i < stops.size(); i++){
 				Marker stop = mMap.addMarker(new MarkerOptions().position(stops.get(i).getLatlng()));
 				stops.get(i).setMarker(stop);
@@ -215,15 +209,16 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		ArrayList<Direction> directions = currentRoute.getDirections();
-		for(int i = 0; i < directions.size(); i++){
-			for(int j = 0; j < directions.get(i).numStops(); j++){
-				if(directions.get(i).getStop(j).getMarker().equals(marker)){
+			for(int i = 0; i < stops.size(); i++){
+				if(stops.get(i).getMarker().equals(marker)){
+					Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
+					sSpinner.setSelection(i);
 					TextView text = (TextView) mView.findViewById(R.id.predictions);
-					text.setText(directions.get(i).getStop(j).getTitle());
+					String pred = getPrediction(currentRoute.getTag(), stops.get(i).getDir(), stops.get(i).getTag());
+					text.setText(pred);
+					break;
 				}
 			}
-		}
 		return false;
 	}
 
@@ -235,6 +230,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			for(int i = 0; i < routes.size(); i++){
 				if(parent.getItemAtPosition(position).toString().equals(routes.get(i).getTitle())){
 					currentRoute = routes.get(i);
+					stops = currentRoute.getAllStops();
 					mMap.clear();
 					drawRoute(currentRoute);
 					drawStops(currentRoute);
@@ -252,17 +248,17 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 				for(int j = 0; j < currentRoute.getDirections().get(i).numStops(); j++){
 					Stop tempStop = currentRoute.getDirections().get(i).getStop(j);
 					if(selectedItem.equals(tempStop.getTitle())){
-						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tempStop.getMarker().getPosition(), 15.5f));
+						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tempStop.getMarker().getPosition(), 17f));
 						TextView text = (TextView) mView.findViewById(R.id.predictions);
-						text.setText(currentRoute.getDirections().get(i).getStop(j).getTitle());
+						String pred = getPrediction(currentRoute.getTag(), currentRoute.getDirections().get(i).getTag(), tempStop.getTag());
+						text.setText(pred);	
+						break;
 					}
-					break;
 				}
 			}
 			//Update prediction for that stop
 			break;
 		}
-
 	}
 
 	@Override
@@ -271,43 +267,30 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	}
 	
-	
-
-	public void loadRoutes(){
-		String[] list = null;
-		AssetManager assetManager = getResources().getAssets();
-		Route tempRoute = new Route();
+	public String getPrediction(String route, String direction, String stop){
+		String pred = "";
 		try {
-			list = MainActivity.c.getAssets().list("routes");
-		} catch (IOException e) {
+			pred = new PredictionTask().execute(route, direction, stop).get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(list.length != 0){
-			for(int i = 0; i < list.length; i++){
-				InputStream tinstr = null;
-				try {
-					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-					factory.setNamespaceAware(true);
-					XmlPullParser parser = factory.newPullParser();
-					tinstr = assetManager.open("routes/" + list[i]);
-					parser.setInput(new InputStreamReader(tinstr));
-					xmlParse xparser = new xmlParse();
-					tempRoute = xparser.parse(parser);
-					routes.add(tempRoute);
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (XmlPullParserException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();		
-				}
-			}
-		}
+		return pred;
+	}
 
+	public void loadRoutes(){
+		try {
+			routes = new XmlParseTask().execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

@@ -145,6 +145,7 @@ public class Route {
 	public class Stop{
 		private String tag;
 		private String title;
+		private String dir;
 		private LatLng latlng;
 		private Marker marker;
 		
@@ -174,6 +175,14 @@ public class Route {
 
 		public void setTitle(String title){
 			this.title = title;
+		}
+
+		public String getDir() {
+			return dir;
+		}
+
+		public void setDir(String dir) {
+			this.dir = dir;
 		}
 
 		public LatLng getLatlng(){
