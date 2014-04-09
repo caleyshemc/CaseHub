@@ -14,12 +14,12 @@ public final class CaseHubContract {
      */
     public static abstract class ScheduleEventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
-        public static final String COLUMN_NAME_EVENT_ID = "event_id";
-        public static final String COLUMN_NAME_EVENT_NAME = "name";
-        public static final String COLUMN_NAME_EVENT_LOCATION = "location";
-        public static final String COLUMN_NAME_EVENT_START = "start";
-        public static final String COLUMN_NAME_EVENT_END = "end";
-        public static final String COLUMN_NAME_EVENT_DAY = "day";
+        public static final String COL_EVENT_ID = "event_id";
+        public static final String COL_EVENT_NAME = "name";
+        public static final String COL_EVENT_LOCATION = "location";
+        public static final String COL_EVENT_START = "start";
+        public static final String COL_EVENT_END = "end";
+        public static final String COL_EVENT_DAY = "day";
     }
     
     
@@ -36,12 +36,12 @@ public final class CaseHubContract {
     protected static final String SQL_CREATE_ENTRIES =
         "CREATE TABLE " + ScheduleEventEntry.TABLE_NAME + " (" +
         ScheduleEventEntry._ID + " INTEGER PRIMARY KEY," +
-        ScheduleEventEntry.COLUMN_NAME_EVENT_ID + INT_TYPE + COMMA_SEP +		
-        ScheduleEventEntry.COLUMN_NAME_EVENT_NAME + STRING_TYPE + COMMA_SEP +
-        ScheduleEventEntry.COLUMN_NAME_EVENT_LOCATION + STRING_TYPE + COMMA_SEP +
-        ScheduleEventEntry.COLUMN_NAME_EVENT_START + STRING_TYPE + COMMA_SEP +
-        ScheduleEventEntry.COLUMN_NAME_EVENT_END + STRING_TYPE + COMMA_SEP +
-        ScheduleEventEntry.COLUMN_NAME_EVENT_DAY + STRING_TYPE +   
+        ScheduleEventEntry.COL_EVENT_ID + INT_TYPE + COMMA_SEP +		
+        ScheduleEventEntry.COL_EVENT_NAME + STRING_TYPE + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_LOCATION + STRING_TYPE + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_START + STRING_TYPE + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_END + STRING_TYPE + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_DAY + STRING_TYPE +   
         " );";
 
     protected static final String SQL_DELETE_ENTRIES =

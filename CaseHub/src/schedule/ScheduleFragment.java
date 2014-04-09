@@ -2,11 +2,8 @@ package schedule;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,10 +14,10 @@ import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +41,7 @@ public class ScheduleFragment extends Fragment {
 	 * be updated.
 	 */
 	public static final int FIRST_HOUR = 7;
-	public static final int LAST_HOUR = 21;
-	
-	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hhmma");
+	public static final int LAST_HOUR = 21;	
 	
 	/**
 	 * Preferences filename to track whether user has logged in
@@ -64,27 +59,21 @@ public class ScheduleFragment extends Fragment {
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		
-		// Retrieve database
-		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
-		
-		// TODO query for events
-		
-		/* TODO removed for testing
+				
 		// Check if user has logged in previously
 		SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_PREF, 0);
 		boolean hasLoggedIn = settings.getBoolean(LOGGED_IN, false);
-		*/
-		// TEST
-		boolean hasLoggedIn = false;
 
 		if (!hasLoggedIn) {
+			
 			// Show login dialog
 			DialogFragment loginDialog = new LoginDialogFragment();
 			loginDialog.show(getFragmentManager(), "login");
+			
+		} else {
+			displaySchedule();
 		}
 		
-		/* Place timeline */
 		placeTimeLine();
 		
 		super.onViewCreated(view, savedInstanceState);
@@ -115,13 +104,10 @@ public class ScheduleFragment extends Fragment {
 	}
 	
 	/**
-	 * Parses schedule from HTML and creates appropriate ScheduleEvents
-	 * @param response
+	 * Parses schedule from HTML into list of ScheduleEvents
 	 */
 	public ArrayList<ScheduleEvent> parseSchedule(String html) {
-		
-		Log.d("TEST", html);
-		
+				
 		ArrayList<ScheduleEvent> scheduleEvents = new ArrayList<ScheduleEvent>();
 		Document doc = Jsoup.parse(html);
 
@@ -147,12 +133,9 @@ public class ScheduleFragment extends Fragment {
 				
 				// Extract start/end times
 				String[] split = times.split("-");
-				String startString = split[0] + "m";
-				String endString = split[1] + "m";
+				String start = split[0] + "m";
+				String end = split[1] + "m";
 								
-				LocalTime start = LocalTime.parse(startString, DATE_FORMAT);
-				LocalTime end = LocalTime.parse(endString, DATE_FORMAT);
-				
 				ScheduleEvent newEvent =  new ScheduleEvent(id, name, location, start, end, day);
 				
 				scheduleEvents.add(newEvent);
@@ -160,7 +143,6 @@ public class ScheduleFragment extends Fragment {
 			}
 			
 		}
-		
 		
 		return scheduleEvents;
 		
@@ -171,32 +153,98 @@ public class ScheduleFragment extends Fragment {
 	 */
 	public void addEvent(ScheduleEvent event) {
 
-		// TODO validate values!
-		// Values should be validated when ScheduleEvent is created
+		// TODO Values should be validated when ScheduleEvent is created
 		
 		// Create map of event values
 		ContentValues values = new ContentValues();
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_ID, event.getId());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_NAME, event.getName());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_LOCATION, event.getLocation());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_START, event.getStart().toString(DATE_FORMAT));
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_END, event.getEnd().toString(DATE_FORMAT));
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_DAY, event.getDay().toString());
+		values.put(ScheduleEventEntry.COL_EVENT_ID, event.getId());
+		values.put(ScheduleEventEntry.COL_EVENT_NAME, event.getName());
+		values.put(ScheduleEventEntry.COL_EVENT_LOCATION, event.getLocation());
+		values.put(ScheduleEventEntry.COL_EVENT_START, event.getStart().toString(ScheduleEvent.DATE_FORMAT));
+		values.put(ScheduleEventEntry.COL_EVENT_END, event.getEnd().toString(ScheduleEvent.DATE_FORMAT));
+		values.put(ScheduleEventEntry.COL_EVENT_DAY, event.getDay().toString());
 		
 		// Insert values into database
 		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
 		long newRowId = db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
 		
-		// return success/failure?
-		
 	}
 	
-	// TODO maybe just display with values right from DB!
-	// yeah, and if the name is the same, give them the same color!
-	// displaySchedule()
 	/*
+	 * Displays entire schedule as it exists in the database
+	 */
 	private void displaySchedule() {
 		
+		// Retrieve database
+		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
+		
+		// Define a projection that specifies which columns to retrieve
+		String[] projection = {
+			ScheduleEventEntry.COL_EVENT_ID,
+			ScheduleEventEntry.COL_EVENT_NAME,
+			ScheduleEventEntry.COL_EVENT_LOCATION,
+			ScheduleEventEntry.COL_EVENT_START,
+			ScheduleEventEntry.COL_EVENT_END,
+			ScheduleEventEntry.COL_EVENT_DAY
+			};
+		
+		// Query for all schedule events in table
+		Cursor c = db.query(
+				ScheduleEventEntry.TABLE_NAME,  // The table to query
+			    projection,    	// The columns to return
+			    null,          	// The columns for the WHERE clause
+			    null, 			// The values for the WHERE clause
+			    null,          	// don't group the rows
+			    null,          	// don't filter by row groups
+			    null	     	// The sort order
+			    );
+		
+		
+		/* Display each event */
+		
+		int id;
+		String name;
+		String location;
+		String start;
+		String end;
+		String day;
+		
+		// Grab column indices
+		int id_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_ID);
+		int name_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_NAME);
+		int loc_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_LOCATION);
+		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
+		int end_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
+		int day_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_DAY);
+		
+		c.moveToFirst();
+		
+		do {
+			
+			id = c.getInt(id_index);
+			name = c.getString(name_index);
+			location = c.getString(loc_index);
+			start = c.getString(start_index);
+			end = c.getString(end_index);
+			day = c.getString(day_index);
+			
+			// TODO set colors here?
+			
+			ScheduleEvent event = new ScheduleEvent(id, name, location, start, end, Day.valueOf(day));
+			displayEvent(event);
+			
+		} while (c.moveToNext());
+		
+		
+		
+
+	}
+	
+	/*
+	 * Displays a single event.
+	 */
+	private void displayEvent(ScheduleEvent event) {
+				
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
 
@@ -249,9 +297,7 @@ public class ScheduleFragment extends Fragment {
 
 		// Add new event layout to parent layout
 		parentLayout.addView(eventLayout);
-
 	}
-	*/
 
 	/*
 	 * Converts dp to pixels, as dp cannot be set directly at runtime.
