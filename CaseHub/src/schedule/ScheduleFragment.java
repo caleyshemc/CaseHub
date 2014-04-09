@@ -194,8 +194,9 @@ public class ScheduleFragment extends Fragment {
 	// TODO maybe just display with values right from DB!
 	// yeah, and if the name is the same, give them the same color!
 	// displaySchedule()
+	/*
 	private void displaySchedule() {
-
+		
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
 
@@ -250,6 +251,7 @@ public class ScheduleFragment extends Fragment {
 		parentLayout.addView(eventLayout);
 
 	}
+	*/
 
 	/*
 	 * Converts dp to pixels, as dp cannot be set directly at runtime.
