@@ -43,12 +43,17 @@ public class MainActivity extends Activity implements
 	private String[] mDrawerTitles;
 
 	public static Context c;
+	public static CaseHubDbHelper mDbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		c = this;
+		mDbHelper = new CaseHubDbHelper(c);
+		
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerTitles = getResources().getStringArray(R.array.titles_array);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

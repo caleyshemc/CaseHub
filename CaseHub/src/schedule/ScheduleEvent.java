@@ -1,7 +1,5 @@
 package schedule;
 
-import java.util.ArrayList;
-
 import org.joda.time.LocalTime;
 
 /**
@@ -9,19 +7,21 @@ import org.joda.time.LocalTime;
  */
 public class ScheduleEvent {
 
+	private int id;
 	private String name;
 	private String location;
 	private LocalTime start;
 	private LocalTime end;
-	private ArrayList<Day> days;
+	private Day day;
 
-	public ScheduleEvent(String name, String location, LocalTime start,
-			LocalTime end, ArrayList<Day> days) {
+	public ScheduleEvent(int id, String name, String location, LocalTime start,
+			LocalTime end, Day day) {
+		this.id = id;
 		this.name = name;
 		this.location = location;
 		this.start = start;
 		this.end = end;
-		this.days = days;
+		this.day = day;
 	}
 
 	/**
@@ -52,6 +52,10 @@ public class ScheduleEvent {
 	}
 
 
+	public int getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -68,20 +72,8 @@ public class ScheduleEvent {
 		return end;
 	}
 
-	public ArrayList<Day> getDays() {
-		return days;
+	public Day getDay() {
+		return day;
 	}
-	
-	public void setDays(ArrayList<Day> days) {
-		this.days = days;
-	}
-
-	@Override
-	public String toString() {
-		return "ScheduleEvent [name=" + name + ", location=" + location
-				+ ", start=" + start + ", end=" + end + "]";
-	}
-	
-	
 
 }

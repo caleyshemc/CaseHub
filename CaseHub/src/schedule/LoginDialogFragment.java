@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 
 public class LoginDialogFragment extends DialogFragment {
 	
@@ -86,8 +87,12 @@ public class LoginDialogFragment extends DialogFragment {
             				e.printStackTrace();
             			}
             			
-            			//Log.d("RESPONSE TEXT", html);
-            			
+            			// If successful, set preference indicating user has logged in
+            			SharedPreferences settings = getActivity().getSharedPreferences(ScheduleFragment.LOGIN_PREF, 0);
+            		    SharedPreferences.Editor editor = settings.edit();
+            		    editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
+            		    editor.commit();
+
             			// Pass HTML to MainActivity and dismiss dialog
             			callback.onScheduleLogin(html);
             			LoginDialogFragment.this.getDialog().dismiss();
