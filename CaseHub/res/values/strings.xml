@@ -24,6 +24,8 @@
     <string name="login_button">Log In</string>
     <string name="cancel">Cancel</string>
     
+    <string name="refresh_schedule">Refresh</string>
+    
     <string name="sunday">SUN</string>
     <string name="monday">MON</string>
     <string name="tuesday">TUES</string>

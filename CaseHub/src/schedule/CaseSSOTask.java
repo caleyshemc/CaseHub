@@ -22,11 +22,9 @@ import org.jsoup.select.Elements;
 import android.os.AsyncTask;
 
 /**
- * Singleton class.
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
- * TODO: Determine best I/O types for AsyncTask
  */
-public class CaseSSOConnector extends AsyncTask<String, Void, String> {
+public class CaseSSOTask extends AsyncTask<String, Void, String> {
 
 	private static boolean loggedIn = false;
 	private static DefaultHttpClient client = new DefaultHttpClient();	
@@ -38,7 +36,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
 	 * @throws IOException
 	 */
-	private String login(String user, String password) throws IOException {
+	private void login(String user, String password) throws IOException {
 				
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
@@ -65,7 +63,7 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 		// Execute login POST
 		result = client.execute(httpPost);
 		
-		return "der"; // TODO return boolean
+		// TODO return boolean to indicate successful login!
 	}
 
 	private String getSchedule() throws ClientProtocolException, IOException {
@@ -99,18 +97,23 @@ public class CaseSSOConnector extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected String doInBackground(String... args) {
-		String loginResult = "Login failed in doInBackground().";
+		
+		String result = "";
+		
 		try {
+			
 			if (!loggedIn) {
-				loginResult = login(args[0], args[1]);
+				login(args[0], args[1]);
 				loggedIn = true; // TODO check HTTP response!
 			}
-			loginResult = getSchedule();
+			
+			result = getSchedule();
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO
 		}
-		return loginResult;
+		
+		return result;
 	}
 	
 }

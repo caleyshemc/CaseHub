@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 import com.casehub.R;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -73,12 +72,11 @@ public class LoginDialogFragment extends DialogFragment {
             		   String pass = passText.getText().toString();
             		   
             		   // TODO save username!
-            		   // check for '@case.edu' and remove
             		   
             		   /* Log in using Case Single-Sign On*/
             			String html = "";
             			try {
-            				html = new CaseSSOConnector().execute(user, pass).get();
+            				html = new CaseSSOTask().execute(user, pass).get();
             			} catch (InterruptedException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();
@@ -88,7 +86,8 @@ public class LoginDialogFragment extends DialogFragment {
             			}
             			
             			// If successful, set preference indicating user has logged in
-            			SharedPreferences settings = getActivity().getSharedPreferences(ScheduleFragment.LOGIN_PREF, 0);
+            			SharedPreferences settings = getActivity().getSharedPreferences(
+            					ScheduleFragment.LOGIN_PREF, 0);
             		    SharedPreferences.Editor editor = settings.edit();
             		    editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
             		    editor.commit();

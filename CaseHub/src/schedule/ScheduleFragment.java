@@ -2,6 +2,7 @@ package schedule;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import org.joda.time.LocalTime;
 import org.jsoup.Jsoup;
@@ -19,6 +20,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -49,11 +52,17 @@ public class ScheduleFragment extends Fragment {
 	public static final String LOGIN_PREF = "LoginPrefsFile";
 	public static final String LOGGED_IN = "hasLoggedIn";
 
+	/*
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//setHasOptionsMenu(true);
+	}
+	*/
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_schedule, container, false);
 	}
 	
@@ -71,7 +80,22 @@ public class ScheduleFragment extends Fragment {
 			loginDialog.show(getFragmentManager(), "login");
 			
 		} else {
-			displaySchedule();
+			/* Display schedule from database */
+			try {
+				
+				ArrayList<ScheduleEvent> events = new ScheduleDBTask().execute().get();
+				
+				for (ScheduleEvent event : events) {
+					displayEvent(event);
+				}
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		placeTimeLine();
@@ -79,6 +103,13 @@ public class ScheduleFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		
 	}
+	
+	/*
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	   inflater.inflate(R.menu.schedule, menu);
+	}
+	*/
 	
 	/**
 	 * Places the line indicating the current time.
@@ -152,8 +183,6 @@ public class ScheduleFragment extends Fragment {
 	 * Add an event to the schedule.
 	 */
 	public void addEvent(ScheduleEvent event) {
-
-		// TODO Values should be validated when ScheduleEvent is created
 		
 		// Create map of event values
 		ContentValues values = new ContentValues();
@@ -166,84 +195,14 @@ public class ScheduleFragment extends Fragment {
 		
 		// Insert values into database
 		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
-		long newRowId = db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
+		db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
 		
 	}
 	
-	/*
-	 * Displays entire schedule as it exists in the database
+	/**
+	 * Displays a schedule event.
 	 */
-	private void displaySchedule() {
-		
-		// Retrieve database
-		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
-		
-		// Define a projection that specifies which columns to retrieve
-		String[] projection = {
-			ScheduleEventEntry.COL_EVENT_ID,
-			ScheduleEventEntry.COL_EVENT_NAME,
-			ScheduleEventEntry.COL_EVENT_LOCATION,
-			ScheduleEventEntry.COL_EVENT_START,
-			ScheduleEventEntry.COL_EVENT_END,
-			ScheduleEventEntry.COL_EVENT_DAY
-			};
-		
-		// Query for all schedule events in table
-		Cursor c = db.query(
-				ScheduleEventEntry.TABLE_NAME,  // The table to query
-			    projection,    	// The columns to return
-			    null,          	// The columns for the WHERE clause
-			    null, 			// The values for the WHERE clause
-			    null,          	// don't group the rows
-			    null,          	// don't filter by row groups
-			    null	     	// The sort order
-			    );
-		
-		
-		/* Display each event */
-		
-		int id;
-		String name;
-		String location;
-		String start;
-		String end;
-		String day;
-		
-		// Grab column indices
-		int id_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_ID);
-		int name_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_NAME);
-		int loc_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_LOCATION);
-		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
-		int end_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
-		int day_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_DAY);
-		
-		c.moveToFirst();
-		
-		do {
-			
-			id = c.getInt(id_index);
-			name = c.getString(name_index);
-			location = c.getString(loc_index);
-			start = c.getString(start_index);
-			end = c.getString(end_index);
-			day = c.getString(day_index);
-			
-			// TODO set colors here?
-			
-			ScheduleEvent event = new ScheduleEvent(id, name, location, start, end, Day.valueOf(day));
-			displayEvent(event);
-			
-		} while (c.moveToNext());
-		
-		
-		
-
-	}
-	
-	/*
-	 * Displays a single event.
-	 */
-	private void displayEvent(ScheduleEvent event) {
+	public void displayEvent(ScheduleEvent event) {
 				
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);

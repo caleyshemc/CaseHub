@@ -18,6 +18,7 @@ public class ScheduleEvent {
 	private LocalTime end;
 	private Day day;
 
+	// TODO Values should be validated when ScheduleEvent is created
 	public ScheduleEvent(int id, String name, String location, String start,
 			String end, Day day) {
 		this.id = id;

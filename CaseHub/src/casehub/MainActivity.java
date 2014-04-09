@@ -239,11 +239,12 @@ public class MainActivity extends Activity implements
 		// Send HTML
 		ArrayList<ScheduleEvent> events = schedFrag.parseSchedule(html);
 		
-		// Create schedule
+		// Save and display each event
 		for (ScheduleEvent event : events) {
 			schedFrag.addEvent(event);
+			schedFrag.displayEvent(event);
 		}
-
+		
 	}
 
 }
