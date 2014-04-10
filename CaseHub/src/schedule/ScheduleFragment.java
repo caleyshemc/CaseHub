@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +108,18 @@ public class ScheduleFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 	    MenuItem item = menu.add(0, 1, 10, R.string.schedule_refresh);
 	    item.setIcon(R.drawable.ic_action_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+	    switch (item.getItemId()) {
+	        case 1:
+	        	Log.d("TEST", "It works!");
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 	/**
