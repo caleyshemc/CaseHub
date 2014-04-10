@@ -51,14 +51,12 @@ public class ScheduleFragment extends Fragment {
 	 */
 	public static final String LOGIN_PREF = "LoginPrefsFile";
 	public static final String LOGGED_IN = "hasLoggedIn";
-
-	/*
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
 		super.onCreate(savedInstanceState);
-		//setHasOptionsMenu(true);
 	}
-	*/
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,13 +102,11 @@ public class ScheduleFragment extends Fragment {
 		
 	}
 	
-	/*
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	   inflater.inflate(R.menu.schedule, menu);
+		inflater.inflate(R.menu.schedule, menu);
 	}
-	*/
-	
+
 	/**
 	 * Places the line indicating the current time.
 	 * TODO: Call whenever fragment is opened.
