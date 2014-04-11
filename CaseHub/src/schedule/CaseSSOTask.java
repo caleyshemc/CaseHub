@@ -29,17 +29,16 @@ import android.os.AsyncTask;
 public class CaseSSOTask extends AsyncTask<String, Void, String> {
 	
 	Context mContext;
+	DefaultHttpClient client;
 	ProgressDialog pDialog;
-
-	private static boolean loggedIn = false;
-	private static DefaultHttpClient client = new DefaultHttpClient();	
-	
+		
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
 	
 	public CaseSSOTask(Context context) {
         mContext = context;
         pDialog = new ProgressDialog(mContext);
+        client = new DefaultHttpClient();	
     }
 	
 	/**
@@ -52,26 +51,28 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 	    client.setCookieStore(cookieStore);
 
 	    // GET login form
-		HttpGet httpGet = new HttpGet(SSO_URL);
-		HttpResponse result = client.execute(httpGet);
-		HttpEntity entity = result.getEntity();
+		HttpGet loginGet = new HttpGet(SSO_URL);
+		HttpResponse loginGetResult = client.execute(loginGet);
+		HttpEntity entity = loginGetResult.getEntity();
 		
 		// Parse HTML to find login ticket
 		String responseString = EntityUtils.toString(entity, "UTF-8");
 		Document doc = Jsoup.parse(responseString);
 		Elements input = doc.getElementsByAttributeValue("name", "lt");
 		String login_ticket = input.attr("value");
+		loginGetResult.getEntity().consumeContent();
 
 		// Prepare POST to log in to SSO
-		HttpPost httpPost = new HttpPost(SSO_URL);
+		HttpPost loginPost = new HttpPost(SSO_URL);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("lt", login_ticket));
 		nameValuePairs.add(new BasicNameValuePair("username", user));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
-		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		loginPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 		// Execute login POST
-		result = client.execute(httpPost);
+		HttpResponse postResult = client.execute(loginPost);
+		postResult.getEntity().consumeContent();
 		
 		// TODO return boolean to indicate successful login!
 	}
@@ -81,23 +82,25 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		String resultString = "";
 		
 		// GET Scheduler to set appropriate cookies
-		HttpGet httpGet = new HttpGet(SCHEDULE_URL);
-		HttpResponse result = client.execute(httpGet);
-		HttpEntity entity = result.getEntity();
+		HttpGet schedGet = new HttpGet(SCHEDULE_URL);
+		HttpResponse getSchedResult = client.execute(schedGet);
+		getSchedResult.getEntity().consumeContent();	
 		
 		for (Day day : Day.values()) {
 			
 			String url = SCHEDULE_URL + "/day.php?day=" + day.getCode();
 			
 			// GET schedule events for each day of the week
-			httpGet = new HttpGet(url);
-			result = client.execute(httpGet);
-			entity = result.getEntity();
-			
+			HttpGet dayGet = new HttpGet(url);
+			HttpResponse getDayResult = client.execute(dayGet);
+			HttpEntity dayEntity = getDayResult.getEntity();
+						
 			// Wrap each day in a div for easy parsing
 			resultString += "<div id='" + day.toString() + "'>";
-			resultString += EntityUtils.toString(entity, "UTF-8");
+			resultString += EntityUtils.toString(dayEntity, "UTF-8");
 			resultString += "</div>";
+			
+			getDayResult.getEntity().consumeContent();
 		}
 		
 		return resultString;
@@ -115,15 +118,11 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		
 		String result = "";
 		
+		// TODO check args!
+		
 		try {
-			
-			if (!loggedIn) {
-				login(args[0], args[1]);
-				loggedIn = true; // TODO check HTTP response!
-			}
-			
+			login(args[0], args[1]);
 			result = getSchedule();
-			
 		} catch (IOException e) {
 			// TODO
 		}
