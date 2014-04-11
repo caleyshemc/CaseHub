@@ -76,7 +76,7 @@ public class LoginDialogFragment extends DialogFragment {
             		   /* Log in using Case Single-Sign On*/
             			String html = "";
             			try {
-            				html = new CaseSSOTask().execute(user, pass).get();
+            				html = new CaseSSOTask(getActivity()).execute(user, pass).get();
             			} catch (InterruptedException e) {
             				// TODO Auto-generated catch block
             				e.printStackTrace();

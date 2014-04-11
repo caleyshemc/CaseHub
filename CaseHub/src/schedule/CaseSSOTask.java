@@ -19,18 +19,28 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 /**
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
  */
 public class CaseSSOTask extends AsyncTask<String, Void, String> {
+	
+	Context mContext;
+	ProgressDialog pDialog;
 
 	private static boolean loggedIn = false;
 	private static DefaultHttpClient client = new DefaultHttpClient();	
 	
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
+	
+	public CaseSSOTask(Context context) {
+        mContext = context;
+        pDialog = new ProgressDialog(mContext);
+    }
 	
 	/**
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
@@ -70,7 +80,6 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		
 		String resultString = "";
 		
-		
 		// GET Scheduler to set appropriate cookies
 		HttpGet httpGet = new HttpGet(SCHEDULE_URL);
 		HttpResponse result = client.execute(httpGet);
@@ -96,6 +105,12 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 	}
 	
 	@Override
+    protected void onPreExecute() {
+       pDialog.setMessage("Fetching schedule...");
+       pDialog.show();
+    }
+	
+	@Override
 	protected String doInBackground(String... args) {
 		
 		String result = "";
@@ -114,6 +129,12 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	protected void onPostExecute(String result) {
+		super.onPostExecute(result);
+        pDialog.dismiss();
 	}
 	
 }

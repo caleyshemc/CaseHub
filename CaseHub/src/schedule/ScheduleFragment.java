@@ -80,7 +80,7 @@ public class ScheduleFragment extends Fragment {
 			loginDialog.show(getFragmentManager(), "login");
 			
 		} else {
-			/* Display schedule from database */
+			/* Display schedule from database 
 			try {
 				
 				ArrayList<ScheduleEvent> events = new ScheduleDBTask().execute().get();
@@ -96,6 +96,7 @@ public class ScheduleFragment extends Fragment {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}
 		
 		placeTimeLine();
