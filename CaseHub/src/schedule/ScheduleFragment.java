@@ -115,7 +115,9 @@ public class ScheduleFragment extends Fragment {
 
 	    switch (item.getItemId()) {
 	        case 1:
-	        	Log.d("TEST", "It works!");
+	        	// Show login dialog
+				DialogFragment loginDialog = new LoginDialogFragment();
+				loginDialog.show(getFragmentManager(), "login");
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
