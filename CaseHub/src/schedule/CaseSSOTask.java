@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
@@ -31,6 +32,8 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 	Context mContext;
 	DefaultHttpClient client;
 	ProgressDialog pDialog;
+	
+	List<Exception> exceptions = new ArrayList<Exception>();
 		
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
@@ -40,6 +43,40 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
         pDialog = new ProgressDialog(mContext);
         client = new DefaultHttpClient();	
     }
+	
+	@Override
+    protected void onPreExecute() {
+       pDialog.setMessage("Fetching schedule...");
+       pDialog.show();
+    }
+	
+	@Override
+	protected String doInBackground(String... args) {
+		
+		String result = "";
+		
+		// TODO check args!
+		
+		try {
+			login(args[0], args[1]);
+			result = getSchedule();
+		} catch (IOException e) {
+			exceptions.add(e);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	protected void onPostExecute(String result) {
+		super.onPostExecute(result);
+        pDialog.dismiss();
+        
+        for (Exception e : exceptions) {
+        	Log.e("CASEHUB", "exception", e);
+        }
+        
+	}
 	
 	/**
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
@@ -77,7 +114,7 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		// TODO return boolean to indicate successful login!
 	}
 
-	private String getSchedule() throws ClientProtocolException, IOException {
+	private String getSchedule() throws IOException {
 		
 		String resultString = "";
 		
@@ -105,35 +142,6 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 		
 		return resultString;
 		
-	}
-	
-	@Override
-    protected void onPreExecute() {
-       pDialog.setMessage("Fetching schedule...");
-       pDialog.show();
-    }
-	
-	@Override
-	protected String doInBackground(String... args) {
-		
-		String result = "";
-		
-		// TODO check args!
-		
-		try {
-			login(args[0], args[1]);
-			result = getSchedule();
-		} catch (IOException e) {
-			// TODO
-		}
-		
-		return result;
-	}
-	
-	@Override
-	protected void onPostExecute(String result) {
-		super.onPostExecute(result);
-        pDialog.dismiss();
 	}
 	
 }
