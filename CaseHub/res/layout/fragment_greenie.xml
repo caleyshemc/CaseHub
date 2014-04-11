@@ -44,9 +44,7 @@
             android:layout_gravity="center_vertical"
             android:layout_row="0"
             android:layout_rowSpan="2"
-            android:contentDescription="My Location"
-            android:drawableTop="@drawable/maplocation"
-            tools:ignore="HardcodedText" />
+            android:drawableTop="@drawable/maplocation"/>
     </GridLayout>
 
     <GridLayout
@@ -65,20 +63,19 @@
             android:layout_marginTop="3dp"
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"
-            android:text="Next Bus: 1m, 2m, 3m"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            tools:ignore="HardcodedText" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/fav"
             style="android:borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:background="@drawable/stardark"
+            android:background="@drawable/favselect"
             android:gravity="center_vertical|center_horizontal"
             android:minWidth="48dip"
-            tools:ignore="HardcodedText" />
+            android:textOff=""
+            android:textOn="" />
 
     </GridLayout>
 

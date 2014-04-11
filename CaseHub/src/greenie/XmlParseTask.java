@@ -27,7 +27,7 @@ public class XmlParseTask extends AsyncTask<Void, Void, ArrayList<Route>>{
 	
 	ArrayList<Route> routes = new ArrayList<Route>();
 	
-	public void parse() throws XmlPullParserException, IOException{
+	private void parse() throws XmlPullParserException, IOException{
 		Map<String,String> attributes = null;
 		Route route = new Route();
 		ArrayList<Stop> tempStops = new ArrayList<Stop>();

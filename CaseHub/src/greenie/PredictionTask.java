@@ -12,7 +12,7 @@ public class PredictionTask extends AsyncTask<String, Void, String> {
 
 	private final String predURL = "http://www.nextbus.com/predictor/fancyNewPredictionLayer.jsp?a=case-western&r=%s&d=%s&s=%s";
 	
-	public String getPrediction(String route, String direction, String stop){
+	private String getPrediction(String route, String direction, String stop){
 		Document doc = new Document("");
 		StringBuilder prediction = new StringBuilder("Next bus: ");
 		String formatURL = String.format(predURL, route, direction, stop);

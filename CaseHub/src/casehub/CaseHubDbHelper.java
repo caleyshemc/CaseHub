@@ -20,7 +20,8 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
     }
     
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CaseHubContract.SQL_CREATE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_CREATE_SCHEDULE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_CREATE_GREENIE_ENTRIES);
     }
     
     /**
@@ -31,7 +32,8 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
 	 * Currently, it simply drops and recreates the database.
 	 */
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(CaseHubContract.SQL_DELETE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_DELETE_SCHEDULE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_DELETE_GREENIE_ENTRIES);
         onCreate(db);
     }
     
