@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -27,7 +26,7 @@ import android.util.Log;
 /**
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
  */
-public class CaseSSOTask extends AsyncTask<String, Void, String> {
+public class LoginTask extends AsyncTask<String, Void, String> {
 	
 	Context mContext;
 	DefaultHttpClient client;
@@ -38,10 +37,10 @@ public class CaseSSOTask extends AsyncTask<String, Void, String> {
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
 	
-	public CaseSSOTask(Context context) {
+	public LoginTask(Context context) {
         mContext = context;
         pDialog = new ProgressDialog(mContext);
-        client = new DefaultHttpClient();	
+        client = new DefaultHttpClient();
     }
 	
 	@Override

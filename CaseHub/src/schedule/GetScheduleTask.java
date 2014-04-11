@@ -11,7 +11,7 @@ import casehub.MainActivity;
 /**
  * Retrieves schedule information from database.
  */
-public class ScheduleDBTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
+public class GetScheduleTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
 	
 	/*
 	 * Displays entire schedule as it exists in the database

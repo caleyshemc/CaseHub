@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import com.casehub.R;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -59,6 +60,9 @@ public class LoginDialogFragment extends DialogFragment {
         view = inflater.inflate(R.layout.dialog_login, null);
         builder.setView(view);
         
+        // Create progress dialog now so it can be shown quicker
+        
+        
         builder.setMessage(R.string.login_prompt)
                .setPositiveButton(R.string.login_button, new DialogInterface.OnClickListener() {
             	   @Override
@@ -76,13 +80,11 @@ public class LoginDialogFragment extends DialogFragment {
             		   /* Log in using Case Single-Sign On*/
             			String html = "";
             			try {
-            				html = new CaseSSOTask(getActivity()).execute(user, pass).get();
+            				html = new LoginTask(getActivity()).execute(user, pass).get();
             			} catch (InterruptedException e) {
-            				// TODO Auto-generated catch block
-            				e.printStackTrace();
+            				Log.e("CASEHUB", "exception", e);
             			} catch (ExecutionException e) {
-            				// TODO Auto-generated catch block
-            				e.printStackTrace();
+            				Log.e("CASEHUB", "exception", e);
             			}
             			
             			// If successful, set preference indicating user has logged in
