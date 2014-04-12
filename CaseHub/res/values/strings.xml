@@ -23,8 +23,16 @@
     <string name="password">Password</string>
     <string name="login_button">Log In</string>
     <string name="cancel">Cancel</string>
+    <string name="okay">OK</string>
+    <string name="autosilent_title">AutoSilent Settings</string>
+    <string-array name="autosilent_options">
+        <item>Set phone to silent during classes</item>
+        <item>Set phone to vibrate during classes</item>
+        <item>Turn off AutoSilent</item>
+    </string-array>
     
     <string name="schedule_refresh">Refresh</string>
+    <string name="schedule_silent">AutoSilent</string>
     
     <string name="sunday">SUN</string>
     <string name="monday">MON</string>

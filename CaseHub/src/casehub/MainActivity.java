@@ -9,7 +9,7 @@ import map.CampusMapFragment;
 import schedule.ParseScheduleTask;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
-import schedule.LoginDialogFragment;
+import schedule.LoginDialog;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -35,7 +35,7 @@ import dining.DiningFragment;
  * MainActivity functions as app Controller, defines navigation drawer.
  */
 public class MainActivity extends Activity implements
-		LoginDialogFragment.OnLoginListener {
+		LoginDialog.OnLoginListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;

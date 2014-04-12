@@ -43,10 +43,15 @@ public class ScheduleFragment extends Fragment {
 	public static final int SILENT_ID = 2;
 	
 	/**
-	 * Preferences filename to track whether user has logged in
+	 * SharedPreferences fields and filenames
 	 */
-	public static final String LOGIN_PREF = "LoginPrefsFile";
+	public static final String LOGGED_IN_PREF = "LoginPrefsFile";
 	public static final String LOGGED_IN = "hasLoggedIn";
+	public static final String SILENT_PREF = "AutoSilentPrefsFile";
+	public static final String SILENT = "autoSilentSetting";
+	public static final int SILENT_ON = 0;
+	public static final int SILENT_VIBRATE = 1;
+	public static final int SILENT_OFF = 2;
 	
 	private ScheduleDBHelper dbHelper;
 	
@@ -68,13 +73,13 @@ public class ScheduleFragment extends Fragment {
 		dbHelper = new ScheduleDBHelper();
 				
 		// Check if user has logged in previously
-		SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_PREF, 0);
+		SharedPreferences settings = getActivity().getSharedPreferences(LOGGED_IN_PREF, 0);
 		boolean hasLoggedIn = settings.getBoolean(LOGGED_IN, false);
 
 		if (!hasLoggedIn) {
 			
 			// Show login dialog
-			DialogFragment loginDialog = new LoginDialogFragment();
+			DialogFragment loginDialog = new LoginDialog();
 			loginDialog.show(getFragmentManager(), "login");
 			
 		} else {
@@ -95,19 +100,41 @@ public class ScheduleFragment extends Fragment {
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	    MenuItem item = menu.add(0, REFRESH_ID, 10, R.string.schedule_refresh);
-	    item.setIcon(R.drawable.ic_action_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		// Show refresh button
+	    MenuItem refreshButton = menu.add(0, REFRESH_ID, 10, R.string.schedule_refresh);
+	    refreshButton.setIcon(R.drawable.ic_action_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    
+	    // Get autosilent setting
+	    SharedPreferences settings = getActivity().getSharedPreferences(SILENT_PREF, 0);
+		int autoSilentSetting = settings.getInt(SILENT, SILENT_OFF);
+		
+		// Show autosilent button
+	    MenuItem silentButton = menu.add(0, SILENT_ID, 20, R.string.schedule_silent);
+	    
+	    if (autoSilentSetting == SILENT_OFF) {
+	    	silentButton.setIcon(R.drawable.ic_action_volume_on).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    } else {
+	    	silentButton.setIcon(R.drawable.ic_action_volume_muted).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    }
 	}
 	
+	/**
+	 * Called when ActionBar button is selected.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 	    switch (item.getItemId()) {
 	        case REFRESH_ID:
-	        	// Show login dialog
-				DialogFragment loginDialog = new LoginDialogFragment();
+				DialogFragment loginDialog = new LoginDialog();
 				loginDialog.show(getFragmentManager(), "login");
 	            return true;
+	            
+	        case SILENT_ID:
+	        	DialogFragment silentDialog = new AutoSilentDialog();
+	        	silentDialog.show(getFragmentManager(), "login");
+	        	return true;
+	        	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -115,7 +142,6 @@ public class ScheduleFragment extends Fragment {
 
 	/**
 	 * Places the line indicating the current time.
-	 * TODO: Call whenever fragment is opened.
 	 */
 	public void placeTimeLine() {
 		LocalTime now = LocalTime.now();
