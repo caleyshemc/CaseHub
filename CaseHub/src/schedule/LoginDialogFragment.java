@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,6 +24,8 @@ public class LoginDialogFragment extends DialogFragment {
 	// Username and password fields
 	private EditText userText;
 	private EditText passText;
+	
+	ProgressBar progressBar;
 	
 	OnLoginListener callback;
 
@@ -60,28 +63,31 @@ public class LoginDialogFragment extends DialogFragment {
         view = inflater.inflate(R.layout.dialog_login, null);
         builder.setView(view);
         
-        // Create progress dialog now so it can be shown quicker
-        
+        // Find layout elements
+        userText = (EditText) view.findViewById(R.id.username);
+		passText = (EditText) view.findViewById(R.id.password);
+		progressBar = (ProgressBar) view.findViewById(R.id.login_progress);
         
         builder.setMessage(R.string.login_prompt)
                .setPositiveButton(R.string.login_button, new DialogInterface.OnClickListener() {
             	   @Override
                    public void onClick(DialogInterface dialog, int id) {
-
-                	   // Grab username and password
-            		   userText = (EditText) view.findViewById(R.id.username);
-            		   passText = (EditText) view.findViewById(R.id.password);
             		   
+                	   // Grab username and password
             		   String user = userText.getText().toString();
             		   String pass = passText.getText().toString();
             		   
-            		   // TODO save username!
+            		   // Hide fields, show progress bar
+            		   userText.setVisibility(2);
+            		   passText.setVisibility(2);
+            		   progressBar.setVisibility(0);
             		   
             		   /* Log in using Case Single-Sign On*/
             			String html = "";
             			try {
-            				html = new LoginTask(getActivity()).execute(user, pass).get();
+            				html = new LoginTask().execute(user, pass).get();
             			} catch (InterruptedException e) {
+            				// TODO handle
             				Log.e("CASEHUB", "exception", e);
             			} catch (ExecutionException e) {
             				Log.e("CASEHUB", "exception", e);

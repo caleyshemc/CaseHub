@@ -251,12 +251,12 @@ public class MainActivity extends Activity implements
 		ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
 				.findFragmentByTag("schedule_fragment");
 
+		// Clear old schedule
+		schedFrag.clearSchedule();
+		
 		// Save and display each event
-		for (ScheduleEvent event : events) {
-			schedFrag.addEvent(event);
-			schedFrag.displayEvent(event);
-		}
-
+		schedFrag.addEvents(events);
+		
 	}
 
 }

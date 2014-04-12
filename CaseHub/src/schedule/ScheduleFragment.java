@@ -4,17 +4,11 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import org.joda.time.LocalTime;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -27,8 +21,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import casehub.CaseHubContract.ScheduleEventEntry;
-import casehub.MainActivity;
 
 import com.casehub.R;
 
@@ -42,13 +34,21 @@ public class ScheduleFragment extends Fragment {
 	 * be updated.
 	 */
 	public static final int FIRST_HOUR = 7;
-	public static final int LAST_HOUR = 21;	
+	public static final int LAST_HOUR = 21;
+	
+	/**
+	 * ActionBar item IDs
+	 */
+	public static final int REFRESH_ID = 1;
+	public static final int SILENT_ID = 2;
 	
 	/**
 	 * Preferences filename to track whether user has logged in
 	 */
 	public static final String LOGIN_PREF = "LoginPrefsFile";
 	public static final String LOGGED_IN = "hasLoggedIn";
+	
+	private ScheduleDBHelper dbHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,8 @@ public class ScheduleFragment extends Fragment {
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
+		
+		dbHelper = new ScheduleDBHelper();
 				
 		// Check if user has logged in previously
 		SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_PREF, 0);
@@ -76,23 +78,13 @@ public class ScheduleFragment extends Fragment {
 			loginDialog.show(getFragmentManager(), "login");
 			
 		} else {
-			/* Display schedule from database 
-			try {
-				
-				ArrayList<ScheduleEvent> events = new ScheduleDBTask().execute().get();
-				
-				for (ScheduleEvent event : events) {
-					displayEvent(event);
-				}
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			/* Display schedule from database */
+			ArrayList<ScheduleEvent> events = dbHelper.getSchedule();
+			
+			for (ScheduleEvent event : events) {
+				displayEvent(event);
 			}
-			*/
+			
 		}
 		
 		placeTimeLine();
@@ -103,7 +95,7 @@ public class ScheduleFragment extends Fragment {
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	    MenuItem item = menu.add(0, 1, 10, R.string.schedule_refresh);
+	    MenuItem item = menu.add(0, REFRESH_ID, 10, R.string.schedule_refresh);
 	    item.setIcon(R.drawable.ic_action_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	}
 	
@@ -111,7 +103,7 @@ public class ScheduleFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 	    switch (item.getItemId()) {
-	        case 1:
+	        case REFRESH_ID:
 	        	// Show login dialog
 				DialogFragment loginDialog = new LoginDialogFragment();
 				loginDialog.show(getFragmentManager(), "login");
@@ -145,29 +137,28 @@ public class ScheduleFragment extends Fragment {
 	}
 	
 	/**
-	 * Add an event to the schedule.
+	 * Add events to the database and display in schedule.
 	 */
-	public void addEvent(ScheduleEvent event) {
+	public void addEvents(ArrayList<ScheduleEvent> events) {
 		
-		// Create map of event values
-		ContentValues values = new ContentValues();
-		values.put(ScheduleEventEntry.COL_EVENT_ID, event.getId());
-		values.put(ScheduleEventEntry.COL_EVENT_NAME, event.getName());
-		values.put(ScheduleEventEntry.COL_EVENT_LOCATION, event.getLocation());
-		values.put(ScheduleEventEntry.COL_EVENT_START, event.getStart().toString(ScheduleEvent.DATE_FORMAT));
-		values.put(ScheduleEventEntry.COL_EVENT_END, event.getEnd().toString(ScheduleEvent.DATE_FORMAT));
-		values.put(ScheduleEventEntry.COL_EVENT_DAY, event.getDay().toString());
-		
-		// Insert values into database
-		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
-		db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
+		for (ScheduleEvent event : events) {
+			dbHelper.addEvent(event);
+			displayEvent(event);
+		}
 		
 	}
 	
 	/**
+	 * Deletes all schedule information from the event table
+	 */
+	public void clearSchedule() {
+		dbHelper.clearSchedule();
+	}
+	
+	/*
 	 * Displays a schedule event.
 	 */
-	public void displayEvent(ScheduleEvent event) {
+	private void displayEvent(ScheduleEvent event) {
 				
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);

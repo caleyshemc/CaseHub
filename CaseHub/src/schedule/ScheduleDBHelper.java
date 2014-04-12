@@ -2,21 +2,43 @@ package schedule;
 
 import java.util.ArrayList;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import casehub.CaseHubContract.ScheduleEventEntry;
 import casehub.MainActivity;
 
 /**
- * Retrieves schedule information from database.
+ * Saves and retrieves schedule information from database.
  */
-public class GetScheduleTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
+public class ScheduleDBHelper {
 	
-	/*
+	/**
+	 * Add an event to the schedule.
+	 */
+	public void addEvent(ScheduleEvent event) {
+		
+		// Create map of event values
+		ContentValues values = new ContentValues();
+		values.put(ScheduleEventEntry.COL_EVENT_ID, event.getId());
+		values.put(ScheduleEventEntry.COL_EVENT_NAME, event.getName());
+		values.put(ScheduleEventEntry.COL_EVENT_LOCATION, event.getLocation());
+		values.put(ScheduleEventEntry.COL_EVENT_START, event.getStart().toString(ScheduleEvent.DATE_FORMAT));
+		values.put(ScheduleEventEntry.COL_EVENT_END, event.getEnd().toString(ScheduleEvent.DATE_FORMAT));
+		values.put(ScheduleEventEntry.COL_EVENT_DAY, event.getDay().toString());
+		
+		// Insert values into database
+		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
+		db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
+		
+	}
+
+	/**
 	 * Displays entire schedule as it exists in the database
 	 */
-	private ArrayList<ScheduleEvent> displaySchedule() {
+	// TODO deal with duplicates!
+	// Database should not allow copies (same event id, same start/end time, same day)
+	public ArrayList<ScheduleEvent> getSchedule() {
 		
 		// Retrieve database
 		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
@@ -62,7 +84,10 @@ public class GetScheduleTask extends AsyncTask<String, Void, ArrayList<ScheduleE
 		int end_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
 		int day_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_DAY);
 		
-		c.moveToFirst();
+		// If no entries found
+		if (!c.moveToFirst()) {
+			return events;
+		}
 		
 		do {
 			
@@ -78,14 +103,18 @@ public class GetScheduleTask extends AsyncTask<String, Void, ArrayList<ScheduleE
 			ScheduleEvent event = new ScheduleEvent(id, name, location, start, end, Day.valueOf(day));
 			events.add(event);
 			
+			
 		} while (c.moveToNext());
 
 		return events;
 	}
 
-	@Override
-	protected ArrayList<ScheduleEvent> doInBackground(String... arg0) {
-		return displaySchedule();
+	/**
+	 * Deletes all events from the database.
+	 */
+	public void clearSchedule() {
+		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
+		db.delete(ScheduleEventEntry.TABLE_NAME, null, null);
 	}
 
 }

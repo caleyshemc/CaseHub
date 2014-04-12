@@ -18,8 +18,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -28,29 +26,17 @@ import android.util.Log;
  */
 public class LoginTask extends AsyncTask<String, Void, String> {
 	
-	Context mContext;
 	DefaultHttpClient client;
-	ProgressDialog pDialog;
 	
 	List<Exception> exceptions = new ArrayList<Exception>();
 		
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
 	
-	public LoginTask(Context context) {
-        mContext = context;
-        pDialog = new ProgressDialog(mContext);
-        client = new DefaultHttpClient();
-    }
-	
-	@Override
-    protected void onPreExecute() {
-       pDialog.setMessage("Fetching schedule...");
-       pDialog.show();
-    }
-	
 	@Override
 	protected String doInBackground(String... args) {
+		
+		client = new DefaultHttpClient();
 		
 		String result = "";
 		
@@ -69,9 +55,9 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-        pDialog.dismiss();
         
         for (Exception e : exceptions) {
+        	// TODO inform login dialog that login failed
         	Log.e("CASEHUB", "exception", e);
         }
         
