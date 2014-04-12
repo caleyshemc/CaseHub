@@ -9,7 +9,7 @@ import map.CampusMapFragment;
 import schedule.ParseScheduleTask;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
-import schedule.LoginDialog;
+import schedule.login.LoginDialog;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;

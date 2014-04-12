@@ -1,6 +1,8 @@
-package schedule;
+package schedule.login;
 
 import java.util.concurrent.ExecutionException;
+
+import schedule.ScheduleFragment;
 
 import com.casehub.R;
 

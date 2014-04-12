@@ -1,4 +1,4 @@
-package schedule;
+package schedule.login;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import schedule.Day;
 
 import android.os.AsyncTask;
 import android.util.Log;

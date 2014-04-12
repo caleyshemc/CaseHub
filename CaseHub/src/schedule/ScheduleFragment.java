@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.joda.time.LocalTime;
 
+import schedule.autosilent.AutoSilentDialog;
+import schedule.login.LoginDialog;
+
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;

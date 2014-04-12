@@ -1,5 +1,6 @@
-package schedule;
+package schedule.autosilent;
 
+import schedule.ScheduleFragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -15,8 +16,23 @@ public class AutoSilentDialog extends DialogFragment {
 	
 	private View view;
 	
+	private static SilenceReceiver silenceReceiver;
+	private static UnsilenceReceiver unsilenceReceiver;
+	
 	private int newSetting;
 
+	public AutoSilentDialog() {
+		
+		// Keep receivers static
+		if (silenceReceiver == null) {
+			silenceReceiver = new SilenceReceiver();
+		}
+		
+		if (unsilenceReceiver == null) {
+			unsilenceReceiver = new UnsilenceReceiver();
+		}
+	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		
@@ -47,12 +63,28 @@ public class AutoSilentDialog extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								
-								// Set to selected option
+								// Save preference
 								SharedPreferences settings = getActivity().getSharedPreferences(
 		            					ScheduleFragment.SILENT_PREF, 0);
 		            		    SharedPreferences.Editor editor = settings.edit();
 		            		    editor.putInt(ScheduleFragment.SILENT, newSetting);
 		            		    editor.commit();
+		            		    
+		            		    // Create or cancel alarms for silent/unsilent events
+		            		    // and reset ActionBar icon
+		            		    if (newSetting == ScheduleFragment.SILENT_OFF) {
+		            		    	
+									silenceReceiver.cancel(getActivity());
+									unsilenceReceiver.cancel();
+									
+								} else {
+									
+									silenceReceiver.schedule(getActivity());
+									unsilenceReceiver.schedule(getActivity());
+									
+								}
+		            		    
+		            		    // TODO change icon
 		            		    
 							}
 						})
