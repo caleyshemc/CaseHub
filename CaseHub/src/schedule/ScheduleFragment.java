@@ -239,7 +239,7 @@ public class ScheduleFragment extends Fragment {
 			
 			if (!colorMap.containsKey(eventId)) {
 				colorMap.put(eventId, colorArray[colorIndex]);
-				colorIndex++;
+				colorIndex = (colorIndex + 1) % colorArray.length;
 			}
 			
 			displayEvent(event, colorMap.get(eventId));
