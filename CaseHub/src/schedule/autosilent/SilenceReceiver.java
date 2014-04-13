@@ -1,6 +1,12 @@
 package schedule.autosilent;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import org.joda.time.LocalTime;
+
+import schedule.ScheduleDBHelper;
+import schedule.ScheduleFragment;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,22 +14,41 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.util.Log;
 
 public class SilenceReceiver extends BroadcastReceiver {
-	
-	// TODO check option for silent vs vibrate
-	
+		
     // The app's AlarmManager, which provides access to the system alarm services.
     private AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
     private PendingIntent alarmIntent;
   
     @Override
-    public void onReceive(Context context, Intent intent) {   
+    public void onReceive(Context context, Intent intent) {
+    	
     	AudioManager audio = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-    	audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	
+    	SharedPreferences settings = context.getSharedPreferences(ScheduleFragment.SILENT_PREF, 0);
+		int autoSilentSetting = settings.getInt(ScheduleFragment.SILENT, ScheduleFragment.SILENT_OFF);
+    	
+    	// Set ringer to silent or vibrate
+    	switch (autoSilentSetting) {
+    	case ScheduleFragment.SILENT_OFF:
+    		audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    		break;
+    	case ScheduleFragment.SILENT_VIBRATE:
+    		audio.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    		break;
+    	default:
+    		audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    		Log.w("CASEHUB","SilenceReceiver did not retrieve autosilent preferences correctly.");
+    		break;
+    	}
+    	
+    	
     }
     
 	/**
@@ -38,26 +63,23 @@ public class SilenceReceiver extends BroadcastReceiver {
         Intent intent = new Intent(context, SilenceReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        // TODO determine whether to schedule silent or vibrate
         
+        /* Schedule broadcasts */
+        ScheduleDBHelper dbHelper = new ScheduleDBHelper();
+        ArrayList<LocalTime> startTimes = dbHelper.getStartTimes();
         
-        /*
-         * 
-         * TODO: test
-         * 
-         
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         
-        // Set the alarm's trigger time to 8:30 a.m.
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 30);
-		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
-				alarmIntent);
-		*/
-		
-		
+        for (LocalTime time : startTimes) {
+        	
+        	// Set daily trigger for this time
+            calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay());
+            calendar.set(Calendar.MINUTE, time.getMinuteOfHour());
+    		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+    				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
+    				alarmIntent);
+        }
     	
 		// Enable BootReceiver to automatically restart the alarm on device
 		// startup.

@@ -252,9 +252,7 @@ public class ScheduleFragment extends Fragment {
 	 * Displays a schedule event.
 	 */
 	private void displayEvent(ScheduleEvent event, int color) {
-		
-		Log.d("TEST", "color is " + color);
-		
+				
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
 		
