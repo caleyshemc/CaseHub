@@ -68,6 +68,11 @@ public class SilenceReceiver extends BroadcastReceiver {
         ScheduleDBHelper dbHelper = new ScheduleDBHelper();
         ArrayList<LocalTime> startTimes = dbHelper.getStartTimes();
         
+        if (startTimes.isEmpty()) {
+        	Log.w("CASEHUB", "Attempted to schedule AutoSilent events for empty schedule.");
+        	return;
+        }
+        
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         
@@ -101,9 +106,7 @@ public class SilenceReceiver extends BroadcastReceiver {
         if (alarmMgr!= null) {
             alarmMgr.cancel(alarmIntent);
         }
-        
-        // TODO call unsilence cancel()?
-    	
+            	
     	// Disable BootReceiver so that it doesn't automatically restart the 
         // alarm on device startup.
         ComponentName receiver = new ComponentName(context, BootReceiver.class);

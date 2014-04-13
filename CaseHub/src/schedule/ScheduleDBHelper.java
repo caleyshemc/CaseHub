@@ -7,6 +7,7 @@ import org.joda.time.LocalTime;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import casehub.CaseHubContract.ScheduleEventEntry;
 import casehub.MainActivity;
 
@@ -130,11 +131,11 @@ public class ScheduleDBHelper {
 	public int getEarliestHour() {
 
 		ArrayList<LocalTime> times = getStartTimes();
-		
+				
 		if (times.isEmpty()) {
 			return ScheduleFragment.FIRST_HOUR;
 		}
-
+		
 		// Find earliest time
 		LocalTime earliest = new LocalTime(23, 59);
 		for (LocalTime time : times) {
@@ -153,11 +154,11 @@ public class ScheduleDBHelper {
 	public int getLatestHour() {
 
 		ArrayList<LocalTime> times = getEndTimes();
-		
+				
 		if (times.isEmpty()) {
 			return ScheduleFragment.LAST_HOUR;
 		}
-		
+				
 		// Find latest time
 		LocalTime latest = new LocalTime(0, 0);
 		for (LocalTime time : times) {
@@ -200,13 +201,12 @@ public class ScheduleDBHelper {
 		// Retrieve and parse into LocalTime objects
 		String start;
 		LocalTime startTime;
-		ArrayList<LocalTime> times = new ArrayList<LocalTime>();
 		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
 
 		do {
 			start = c.getString(start_index);
 			startTime = LocalTime.parse(start, ScheduleEvent.DATE_FORMAT);
-			times.add(startTime);
+			startTimes.add(startTime);
 		} while (c.moveToNext());
 
 		return startTimes;
@@ -243,13 +243,12 @@ public class ScheduleDBHelper {
 		// Retrieve and parse into LocalTime objects
 		String end;
 		LocalTime endTime;
-		ArrayList<LocalTime> times = new ArrayList<LocalTime>();
 		int end_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
 		
 		do {
 			end = c.getString(end_index);
 			endTime = LocalTime.parse(end, ScheduleEvent.DATE_FORMAT);
-			times.add(endTime);
+			endTimes.add(endTime);
 		} while (c.moveToNext());
 
 		return endTimes;

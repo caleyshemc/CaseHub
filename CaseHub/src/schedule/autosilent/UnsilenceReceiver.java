@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.util.Log;
 
 public class UnsilenceReceiver extends BroadcastReceiver {
 		
@@ -41,6 +42,12 @@ public class UnsilenceReceiver extends BroadcastReceiver {
 		/* Schedule broadcasts */
         ScheduleDBHelper dbHelper = new ScheduleDBHelper();
         ArrayList<LocalTime> endTimes = dbHelper.getEndTimes();
+        
+        if (endTimes.isEmpty()) {
+        	Log.w("CASEHUB", "Attempted to schedule AutoSilent events for empty schedule.");
+        	return;
+        }
+
         
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
