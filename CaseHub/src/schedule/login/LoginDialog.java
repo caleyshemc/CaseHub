@@ -70,7 +70,7 @@ public class LoginDialog extends DialogFragment {
 		passText = (EditText) view.findViewById(R.id.password);
 		progressBar = (ProgressBar) view.findViewById(R.id.login_progress);
         
-        builder.setMessage(R.string.login_prompt)
+        builder.setTitle(R.string.login_prompt)
                .setPositiveButton(R.string.login_button, new DialogInterface.OnClickListener() {
             	   @Override
                    public void onClick(DialogInterface dialog, int id) {

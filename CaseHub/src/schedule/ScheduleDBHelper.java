@@ -7,7 +7,6 @@ import org.joda.time.LocalTime;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import casehub.CaseHubContract.ScheduleEventEntry;
 import casehub.MainActivity;
 
@@ -26,8 +25,8 @@ public class ScheduleDBHelper {
 		values.put(ScheduleEventEntry.COL_EVENT_ID, event.getId());
 		values.put(ScheduleEventEntry.COL_EVENT_NAME, event.getName());
 		values.put(ScheduleEventEntry.COL_EVENT_LOCATION, event.getLocation());
-		values.put(ScheduleEventEntry.COL_EVENT_START, event.getStart()
-				.toString(ScheduleEvent.DATE_FORMAT));
+		values.put(ScheduleEventEntry.COL_EVENT_START, 
+				event.getStart().toString(ScheduleEvent.DATE_FORMAT));
 		values.put(ScheduleEventEntry.COL_EVENT_END,
 				event.getEnd().toString(ScheduleEvent.DATE_FORMAT));
 		values.put(ScheduleEventEntry.COL_EVENT_DAY, event.getDay().toString());
@@ -80,16 +79,11 @@ public class ScheduleDBHelper {
 
 		// Grab column indices
 		int id_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_ID);
-		int name_index = c
-				.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_NAME);
-		int loc_index = c
-				.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_LOCATION);
-		int start_index = c
-				.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
-		int end_index = c
-				.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
-		int day_index = c
-				.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_DAY);
+		int name_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_NAME);
+		int loc_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_LOCATION);
+		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
+		int end_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
+		int day_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_DAY);
 
 		// If no entries found
 		if (!c.moveToFirst()) {
