@@ -2,6 +2,8 @@ package schedule;
 
 import java.util.ArrayList;
 
+import org.joda.time.LocalTime;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -123,8 +125,49 @@ public class ScheduleDBHelper {
 	 */
 	public int getEarliestHour() {
 		
-		// TODO
-		return 10;
+		// Retrieve database
+		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
+
+		// Define a projection that specifies which columns to retrieve
+		String[] projection = { ScheduleEventEntry.COL_EVENT_START };
+
+		// Query for all schedule events in table
+		Cursor c = db.query(ScheduleEventEntry.TABLE_NAME, // The table to query
+				projection, // The columns to return
+				null, // The columns for the WHERE clause
+				null, // The values for the WHERE clause
+				null, // don't group the rows
+				null, // don't filter by row groups
+				null  // The sort order
+				);
+		
+		String start;
+		LocalTime startTime;
+		ArrayList<LocalTime> times = new ArrayList<LocalTime>();
+		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_START);
+		
+		// If no entries found
+		if (!c.moveToFirst()) {
+			return ScheduleFragment.FIRST_HOUR;
+		}
+		
+		do {
+			
+			start = c.getString(start_index);
+			startTime = LocalTime.parse(start, ScheduleEvent.DATE_FORMAT);
+			times.add(startTime);
+			
+		} while (c.moveToNext());
+		
+		// Find earliest time
+		LocalTime earliest = new LocalTime(23,59);
+		for (LocalTime time : times) {
+			if (time.getHourOfDay() < earliest.getHourOfDay()) {
+				earliest = time;
+			}
+		}
+				
+		return earliest.getHourOfDay();
 	}
 	
 	/**
@@ -133,8 +176,50 @@ public class ScheduleDBHelper {
 	 */
 	public int getLatestHour() {
 		
-		// TODO
-		return 17;
+		// Retrieve database
+		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
+
+		// Define a projection that specifies which columns to retrieve
+		String[] projection = { ScheduleEventEntry.COL_EVENT_END };
+
+		// Query for all schedule events in table
+		Cursor c = db.query(ScheduleEventEntry.TABLE_NAME, // The table to query
+				projection, // The columns to return
+				null, // The columns for the WHERE clause
+				null, // The values for the WHERE clause
+				null, // don't group the rows
+				null, // don't filter by row groups
+				null // The sort order
+				);
+
+		String start;
+		LocalTime startTime;
+		ArrayList<LocalTime> times = new ArrayList<LocalTime>();
+		int start_index = c.getColumnIndexOrThrow(ScheduleEventEntry.COL_EVENT_END);
+
+		// If no entries found
+		if (!c.moveToFirst()) {
+			return ScheduleFragment.LAST_HOUR;
+		}
+
+		do {
+
+			start = c.getString(start_index);
+			startTime = LocalTime.parse(start, ScheduleEvent.DATE_FORMAT);
+			times.add(startTime);
+
+		} while (c.moveToNext());
+
+		// Find latest time
+		LocalTime latest = new LocalTime(0, 0);
+		for (LocalTime time : times) {
+			if (time.getHourOfDay() > latest.getHourOfDay()) {
+				latest = time;
+			}
+		}
+
+		return latest.getHourOfDay();
+
 	}
 
 	/**

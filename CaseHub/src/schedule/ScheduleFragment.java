@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -210,10 +211,10 @@ public class ScheduleFragment extends Fragment {
 	 * Displays a schedule event.
 	 */
 	private void displayEvent(ScheduleEvent event) {
-				
+		
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
-
+		
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
 		}
@@ -274,6 +275,9 @@ public class ScheduleFragment extends Fragment {
 		
 		current_first_hour = dbHelper.getEarliestHour() - 1;
 		current_last_hour = dbHelper.getLatestHour() + 1;
+		
+		Log.d("TEST","first hour is " + current_first_hour);
+		Log.d("TEST","last hour is " + current_last_hour);
 				
 		// Restrict to available hours
 		if (current_first_hour < FIRST_HOUR) {
@@ -283,32 +287,21 @@ public class ScheduleFragment extends Fragment {
 			current_last_hour = LAST_HOUR;
 		}
 		
-		// Show at least 8 hours (enough to fill the screen)
-		if ((current_last_hour - current_first_hour) < 8) {
-			current_last_hour = current_first_hour + 8;
+		// Show at least 9 hours (enough to fill the screen)
+		if ((current_last_hour - current_first_hour) < 9) {
+			current_last_hour = current_first_hour + 9;
 		}
 				
-		// Show/remove appropriate hours
-		for (int i = FIRST_HOUR; i <= LAST_HOUR; i++) {
-			
-			// If hour between first/last hours, show
-			if (i > current_first_hour && i < current_last_hour) {
-			
-				TextView textView = (TextView) view.findViewWithTag("time" + i);
-				textView.setVisibility(View.VISIBLE);
-			
-			// else hide hour
-			} else {
-				
-				TextView textView = (TextView) view.findViewWithTag("time" + i);
-				textView.setVisibility(View.GONE);
-				
-			}
+		// Remove hours before current_first_hour
+		for (int i = FIRST_HOUR; i < current_first_hour; i++) {
+
+			TextView textView = (TextView) view.findViewWithTag("time" + i);
+			textView.setVisibility(View.GONE);
 			
 		}
 		
 		// Set height of schedule layout
-		int height = 60 * (current_last_hour - current_first_hour - 1);
+		int height = 60 * (current_last_hour - current_first_hour + 1);
 		height = dpToPixels(height);
 		
 		LinearLayout scheduleLayout = (LinearLayout) view.findViewById(R.id.schedule_main);
