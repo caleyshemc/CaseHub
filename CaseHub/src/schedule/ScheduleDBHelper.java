@@ -34,7 +34,7 @@ public class ScheduleDBHelper {
 	}
 
 	/**
-	 * Displays entire schedule as it exists in the database
+	 * Returns list of schedule events as they exist in the database.
 	 */
 	// TODO deal with duplicates!
 	// Database should not allow copies (same event id, same start/end time, same day)
@@ -116,6 +116,48 @@ public class ScheduleDBHelper {
 		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
 		db.delete(ScheduleEventEntry.TABLE_NAME, null, null);
 	}
+	
+	/**
+	 * Gets the starting hour of the earliest event.
+	 * For setting visible hours in the layout.
+	 */
+	public int getEarliestHour() {
+		
+		// TODO
+		return 10;
+	}
+	
+	/**
+	 * Gets the ending hour of the latest event.
+	 * For setting visible hours in the layout.
+	 */
+	public int getLatestHour() {
+		
+		// TODO
+		return 17;
+	}
 
+	/**
+	 * Returns list of event start times for autosilent feature.
+	 */
+	public ArrayList<String> getStartTimes() {
+		ArrayList<String> startTimes = new ArrayList<String>();
+		
+		// TODO
+		
+		return startTimes;
+	}
+	
+	/**
+	 * Returns list of event end times for autosilent feature.
+	 */
+	public ArrayList<String> getEndTimes() {
+		ArrayList<String> endTimes = new ArrayList<String>();
+		
+		// TODO
+		
+		return endTimes;
+	}
+	
 }
 

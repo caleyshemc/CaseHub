@@ -30,14 +30,20 @@ import com.casehub.R;
 public class ScheduleFragment extends Fragment {
 	
 	/**
-	 * Sets first and last hours displayed in Schedule view; used to determine
-	 * placement of events.
+	 * Sets earliest/latest times displayed in Schedule view.
 	 * 
 	 * To change the first/last hours, both these constants and the layout must
 	 * be updated.
+	 * 
+	 * Uses 24-hour clock.
 	 */
 	public static final int FIRST_HOUR = 7;
 	public static final int LAST_HOUR = 21;
+	
+	// Currently displayed first/last hours
+	// For setting event placement
+	private int current_first_hour = FIRST_HOUR;
+	private int current_last_hour = LAST_HOUR;
 	
 	/**
 	 * ActionBar item IDs
@@ -57,6 +63,7 @@ public class ScheduleFragment extends Fragment {
 	public static final int SILENT_OFF = 2;
 	
 	private ScheduleDBHelper dbHelper;
+	private View view;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +74,8 @@ public class ScheduleFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_schedule, container, false);
+		view = inflater.inflate(R.layout.fragment_schedule, container, false);
+		return view;
 	}
 	
 	@Override
@@ -86,12 +94,10 @@ public class ScheduleFragment extends Fragment {
 			loginDialog.show(getFragmentManager(), "login");
 			
 		} else {
-			/* Display schedule from database */
-			ArrayList<ScheduleEvent> events = dbHelper.getSchedule();
 			
-			for (ScheduleEvent event : events) {
-				displayEvent(event);
-			}
+			// Display schedule from database
+			ArrayList<ScheduleEvent> events = dbHelper.getSchedule();
+			displayEvents(events);
 			
 		}
 		
@@ -152,11 +158,11 @@ public class ScheduleFragment extends Fragment {
 		LinearLayout timeLine = (LinearLayout) getActivity().findViewById(R.id.current_time);
 		
 		// If current time within schedule hours
-		if (FIRST_HOUR*60 < minutes && minutes < LAST_HOUR*60) {
+		if (current_first_hour*60 < minutes && minutes < current_last_hour*60) {
 			
 			// Set timeline margin
 			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) timeLine.getLayoutParams();
-			params.topMargin = dpToPixels(minutes - (FIRST_HOUR*60));
+			params.topMargin = dpToPixels(minutes - (current_first_hour*60));
 			
 		} else {
 			// Hide timeline
@@ -169,9 +175,25 @@ public class ScheduleFragment extends Fragment {
 	 * Add events to the database and display in schedule.
 	 */
 	public void addEvents(ArrayList<ScheduleEvent> events) {
-		
+				
+		// Add events to database
 		for (ScheduleEvent event : events) {
 			dbHelper.addEvent(event);
+		}
+		
+		// Display events
+		displayEvents(events);
+		
+	}
+	
+	/*
+	 * Displays events in the schedule.
+	 */
+	private void displayEvents(ArrayList<ScheduleEvent> events) {
+		
+		setVisibleHours();
+		
+		for (ScheduleEvent event : events) {
 			displayEvent(event);
 		}
 		
@@ -190,7 +212,7 @@ public class ScheduleFragment extends Fragment {
 	private void displayEvent(ScheduleEvent event) {
 				
 		int height = event.getDuration();
-		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
+		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
 
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
@@ -243,6 +265,57 @@ public class ScheduleFragment extends Fragment {
 		parentLayout.addView(eventLayout);
 	}
 
+	
+	/*
+	 * Hides hours more than one hour before/after the first/last event in the
+	 * schedule.
+	 */
+	private void setVisibleHours() {
+		
+		current_first_hour = dbHelper.getEarliestHour() - 1;
+		current_last_hour = dbHelper.getLatestHour() + 1;
+				
+		// Restrict to available hours
+		if (current_first_hour < FIRST_HOUR) {
+			current_first_hour = FIRST_HOUR;
+		}
+		if (current_last_hour > LAST_HOUR) {
+			current_last_hour = LAST_HOUR;
+		}
+		
+		// Show at least 8 hours (enough to fill the screen)
+		if ((current_last_hour - current_first_hour) < 8) {
+			current_last_hour = current_first_hour + 8;
+		}
+				
+		// Show/remove appropriate hours
+		for (int i = FIRST_HOUR; i <= LAST_HOUR; i++) {
+			
+			// If hour between first/last hours, show
+			if (i > current_first_hour && i < current_last_hour) {
+			
+				TextView textView = (TextView) view.findViewWithTag("time" + i);
+				textView.setVisibility(View.VISIBLE);
+			
+			// else hide hour
+			} else {
+				
+				TextView textView = (TextView) view.findViewWithTag("time" + i);
+				textView.setVisibility(View.GONE);
+				
+			}
+			
+		}
+		
+		// Set height of schedule layout
+		int height = 60 * (current_last_hour - current_first_hour - 1);
+		height = dpToPixels(height);
+		
+		LinearLayout scheduleLayout = (LinearLayout) view.findViewById(R.id.schedule_main);
+		scheduleLayout.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, height));
+		
+	}
+	
 	/*
 	 * Converts dp to pixels, as dp cannot be set directly at runtime.
 	 * Used for setting layout parameters.
@@ -256,6 +329,5 @@ public class ScheduleFragment extends Fragment {
 		return pixels;
 
 	}
-	
 }
 

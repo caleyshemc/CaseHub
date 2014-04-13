@@ -80,9 +80,9 @@ public class LoginDialog extends DialogFragment {
             		   String pass = passText.getText().toString();
             		   
             		   // Hide fields, show progress bar
-            		   userText.setVisibility(2);
-            		   passText.setVisibility(2);
-            		   progressBar.setVisibility(0);
+            		   userText.setVisibility(View.GONE);
+            		   passText.setVisibility(View.GONE);
+            		   progressBar.setVisibility(View.VISIBLE);
             		   
             		   /* Log in using Case Single-Sign On*/
             			String html = "";

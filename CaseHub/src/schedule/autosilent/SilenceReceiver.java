@@ -33,15 +33,15 @@ public class SilenceReceiver extends BroadcastReceiver {
 	 * Also enables BootReceiver so rec is set on device startup.
 	 */
     public void schedule(Context context) {
-    	/*
-    	// TODO call unsilence schedule()?
-    	// TODO determine whether to schedule silent or vibrate
-    	
+    	    	
     	alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, SilenceReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
+        // TODO determine whether to schedule silent or vibrate
         
+        
+        /*
          * 
          * TODO: test
          * 
@@ -55,7 +55,10 @@ public class SilenceReceiver extends BroadcastReceiver {
 		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
 				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
 				alarmIntent);
-
+		*/
+		
+		
+    	
 		// Enable BootReceiver to automatically restart the alarm on device
 		// startup.
 		ComponentName receiver = new ComponentName(context, BootReceiver.class);
@@ -63,7 +66,7 @@ public class SilenceReceiver extends BroadcastReceiver {
 		pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
-    	*/
+    	
     }
     
     /**
