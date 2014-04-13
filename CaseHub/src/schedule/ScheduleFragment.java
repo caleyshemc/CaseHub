@@ -65,7 +65,8 @@ public class ScheduleFragment extends Fragment {
 	
 	private ScheduleDBHelper dbHelper;
 	private View view;
-	
+	private MenuItem silentButton;
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,7 +120,7 @@ public class ScheduleFragment extends Fragment {
 		int autoSilentSetting = settings.getInt(SILENT, SILENT_OFF);
 		
 		// Show autosilent button
-	    MenuItem silentButton = menu.add(0, SILENT_ID, 20, R.string.schedule_silent);
+	    silentButton = menu.add(0, SILENT_ID, 20, R.string.schedule_silent);
 	    
 	    if (autoSilentSetting == SILENT_OFF) {
 	    	silentButton.setIcon(R.drawable.ic_action_volume_on).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -205,6 +206,19 @@ public class ScheduleFragment extends Fragment {
 	 */
 	public void clearSchedule() {
 		dbHelper.clearSchedule();
+	}
+	
+	/**
+	 * Changes autosilent button icon.
+	 */
+	public void setSilentButton(int setting) {
+		
+		if (setting == SILENT_OFF) {
+			silentButton.setIcon(R.drawable.ic_action_volume_on);
+		} else {
+			silentButton.setIcon(R.drawable.ic_action_volume_muted);
+		}
+		
 	}
 	
 	/*

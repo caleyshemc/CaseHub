@@ -70,21 +70,19 @@ public class AutoSilentDialog extends DialogFragment {
 		            		    editor.putInt(ScheduleFragment.SILENT, newSetting);
 		            		    editor.commit();
 		            		    
-		            		    // Create or cancel alarms for silent/unsilent events
-		            		    // and reset ActionBar icon
+		            		    // Create or cancel alarms for silent/unsilent events		            		    
 		            		    if (newSetting == ScheduleFragment.SILENT_OFF) {
-		            		    	
 									silenceReceiver.cancel(getActivity());
 									unsilenceReceiver.cancel();
-									
 								} else {
-									
 									silenceReceiver.schedule(getActivity());
 									unsilenceReceiver.schedule(getActivity());
-									
 								}
-		            		    
-		            		    // TODO change icon
+		            		
+		            		    // Set ActionBar icon
+		            		    ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
+		            					.findFragmentByTag("schedule_fragment");
+		            		    schedFrag.setSilentButton(newSetting);
 		            		    
 							}
 						})
