@@ -2,6 +2,7 @@ package schedule;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.joda.time.LocalTime;
 
@@ -188,18 +189,7 @@ public class ScheduleFragment extends Fragment {
 		
 	}
 	
-	/*
-	 * Displays events in the schedule.
-	 */
-	private void displayEvents(ArrayList<ScheduleEvent> events) {
-		
-		setVisibleHours();
-		
-		for (ScheduleEvent event : events) {
-			displayEvent(event);
-		}
-		
-	}
+	
 	
 	/**
 	 * Deletes all schedule information from the event table
@@ -222,9 +212,48 @@ public class ScheduleFragment extends Fragment {
 	}
 	
 	/*
+	 * Displays events in the schedule.
+	 */
+	private void displayEvents(ArrayList<ScheduleEvent> events) {
+
+		HashMap<Integer, Integer> colorMap = new HashMap<Integer, Integer>();
+		
+		int[] colorArray = {
+			getResources().getColor(R.color.event1),
+			getResources().getColor(R.color.event2),
+			getResources().getColor(R.color.event3),
+			getResources().getColor(R.color.event4),
+			getResources().getColor(R.color.event5),
+			getResources().getColor(R.color.event6)
+		};
+		
+		setVisibleHours();
+
+		int eventId;
+		int colorIndex = 0;
+		
+		// Set event color and display
+		for (ScheduleEvent event : events) {
+			
+			eventId = event.getId();
+			
+			if (!colorMap.containsKey(eventId)) {
+				colorMap.put(eventId, colorArray[colorIndex]);
+				colorIndex++;
+			}
+			
+			displayEvent(event, colorMap.get(eventId));
+			
+		}
+		
+	}
+	
+	/*
 	 * Displays a schedule event.
 	 */
-	private void displayEvent(ScheduleEvent event) {
+	private void displayEvent(ScheduleEvent event, int color) {
+		
+		Log.d("TEST", "color is " + color);
 		
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
@@ -245,22 +274,19 @@ public class ScheduleFragment extends Fragment {
 		LinearLayout layout = (LinearLayout) inflater.inflate(
 				R.layout.template_event_layout, null);
 
-		// Set event layout template dimensions
+		// Set layout dimensions
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		params.height = dpToPixels(height - 1);
 		params.setMargins(0, dpToPixels(topMargin), 0, 0);
 		layout.setLayoutParams(params);
 
-		// For each day of the week this event occurs, add to layout
-		int layoutId;
-		LinearLayout eventLayout;
-
-		RelativeLayout parentLayout;
-
 		// Clone layout by inflating template
-		eventLayout = (LinearLayout) inflater.inflate(R.layout.template_event_layout, null);
+		LinearLayout eventLayout = (LinearLayout) inflater.inflate(R.layout.template_event_layout, null);
 		eventLayout.setLayoutParams(params);
+		
+		// Set color
+		eventLayout.setBackgroundColor(color);
 
 		// Set event text values
 		TextView name = (TextView) eventLayout.findViewWithTag("name");
@@ -273,8 +299,8 @@ public class ScheduleFragment extends Fragment {
 
 		// Get parent layout
 		String day = event.getDay().getString();
-		layoutId = getResources().getIdentifier(day, "id", this.getActivity().getPackageName());
-		parentLayout = (RelativeLayout) getView().findViewById(layoutId);
+		int layoutId = getResources().getIdentifier(day, "id", this.getActivity().getPackageName());
+		RelativeLayout parentLayout = (RelativeLayout) getView().findViewById(layoutId);
 
 		// Add new event layout to parent layout
 		parentLayout.addView(eventLayout);
@@ -289,9 +315,6 @@ public class ScheduleFragment extends Fragment {
 		
 		current_first_hour = dbHelper.getEarliestHour() - 1;
 		current_last_hour = dbHelper.getLatestHour() + 1;
-		
-		Log.d("TEST","first hour is " + current_first_hour);
-		Log.d("TEST","last hour is " + current_last_hour);
 				
 		// Restrict to available hours
 		if (current_first_hour < FIRST_HOUR) {
