@@ -120,13 +120,12 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			if(showFavorites){
 				showFavorites = false;
 				item.setIcon(R.drawable.starlight);
+				getFavoriteStops();
 				toggleFavStops(showFavorites);
 			}else{
 				showFavorites = true;
 				item.setIcon(R.drawable.staryellow);
-				if(favStops.isEmpty()){
-					getFavoriteStops();
-				}
+				getFavoriteStops();
 				toggleFavStops(showFavorites);
 			}
 
