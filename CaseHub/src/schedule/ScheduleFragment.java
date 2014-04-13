@@ -301,9 +301,9 @@ public class ScheduleFragment extends Fragment {
 			current_last_hour = LAST_HOUR;
 		}
 		
-		// Show at least 9 hours (enough to fill the screen)
-		if ((current_last_hour - current_first_hour) < 9) {
-			current_last_hour = current_first_hour + 9;
+		// Show at least 8 hours (enough to fill most screens)
+		if ((current_last_hour - current_first_hour) < 8) {
+			current_last_hour = current_first_hour + 8;
 		}
 				
 		// Remove hours before current_first_hour
