@@ -26,8 +26,8 @@
     <string name="okay">OK</string>
     <string name="autosilent_title">AutoSilent Settings</string>
     <string-array name="autosilent_options">
-        <item>Set phone to silent during classes</item>
-        <item>Set phone to vibrate during classes</item>
+        <item>Set to silent during classes</item>
+        <item>Set to vibrate during classes</item>
         <item>Turn off AutoSilent</item>
     </string-array>
     
