@@ -3,7 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <TextView
+        android:id="@+id/start_date_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/pick_start_date"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <DatePicker
         android:id="@+id/dpStartDate"
         android:layout_width="wrap_content"
@@ -11,6 +19,15 @@
         android:layout_gravity="center"
         android:calendarViewShown="false" />
 
+    <TextView
+        android:id="@+id/end_date_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_vertical"
+        android:gravity="center_horizontal"
+        android:text="@string/pick_end_date"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
     <DatePicker
         android:id="@+id/dpEndDate"
         android:layout_width="wrap_content"

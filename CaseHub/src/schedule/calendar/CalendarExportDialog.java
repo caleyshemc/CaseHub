@@ -29,7 +29,7 @@ public class CalendarExportDialog extends DialogFragment {
         builder.setView(view);
         		
         builder.setTitle(R.string.calendar_export_title)
-				.setPositiveButton(R.string.okay,
+				.setPositiveButton(R.string.export,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
