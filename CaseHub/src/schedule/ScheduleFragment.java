@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.joda.time.LocalTime;
 
 import schedule.autosilent.AutoSilentDialog;
+import schedule.calendar.CalendarExportDialog;
 import schedule.login.LoginDialog;
 
 import android.app.DialogFragment;
@@ -49,8 +50,9 @@ public class ScheduleFragment extends Fragment {
 	/**
 	 * ActionBar item IDs
 	 */
-	public static final int REFRESH_ID = 1;
-	public static final int SILENT_ID = 2;
+	public static final int REFRESH_ID = 0;
+	public static final int SILENT_ID = 1;
+	public static final int CAL_ID = 2;
 	
 	/**
 	 * SharedPreferences fields and filenames
@@ -127,6 +129,11 @@ public class ScheduleFragment extends Fragment {
 	    } else {
 	    	silentButton.setIcon(R.drawable.ic_action_volume_muted).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	    }
+	    
+	    // Show calendar export button
+	    MenuItem calButton = menu.add(0, CAL_ID, 30, R.string.calendar_export);
+	    calButton.setIcon(R.drawable.ic_action_go_to_today).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
 	}
 	
 	/**
@@ -143,7 +150,12 @@ public class ScheduleFragment extends Fragment {
 	            
 	        case SILENT_ID:
 	        	DialogFragment silentDialog = new AutoSilentDialog();
-	        	silentDialog.show(getFragmentManager(), "login");
+	        	silentDialog.show(getFragmentManager(), "autosilent");
+	        	return true;
+	        	
+	        case CAL_ID:
+	        	DialogFragment calDialog = new CalendarExportDialog();
+	        	calDialog.show(getFragmentManager(), "cal_export");
 	        	return true;
 	        	
 	        default:
@@ -192,9 +204,12 @@ public class ScheduleFragment extends Fragment {
 	
 	/**
 	 * Deletes all schedule information from the event table
+	 * and layout
 	 */
 	public void clearSchedule() {
 		dbHelper.clearSchedule();
+		
+		// TODO remove events from layout!
 	}
 	
 	/**
