@@ -84,6 +84,9 @@ public class AutoSilentDialog extends DialogFragment {
 		            					.findFragmentByTag("schedule_fragment");
 		            		    schedFrag.setSilentButton(newSetting);
 		            		    
+		            		    // Dismiss dialog
+		            		    AutoSilentDialog.this.getDialog().dismiss();
+		            		    
 							}
 						})
 				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
