@@ -78,4 +78,5 @@
     	<item>Route B</item>
     	<item>UCRC Route</item>
     </string-array>
+    <string name="action_fav">Show/Hide Favorites</string>
 </resources>

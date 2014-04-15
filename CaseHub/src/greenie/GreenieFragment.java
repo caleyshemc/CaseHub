@@ -1,21 +1,14 @@
 package greenie;
 
-import greenie.Route.Direction;
 import greenie.Route.Path;
 import greenie.Route.Stop;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
+import casehub.CaseHubDbHelper;
 import casehub.MainActivity;
+import casehub.CaseHubContract.FavoriteStopEntry;
 
 import com.casehub.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,10 +31,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.content.res.AssetManager;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,7 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class GreenieFragment extends Fragment implements ConnectionCallbacks, OnConnectionFailedListener,LocationListener, OnMarkerClickListener, OnItemSelectedListener {
 
@@ -61,16 +58,13 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			.setFastestInterval(50)    // 16ms = 60fps
 			.setPriority(LocationRequest.PRIORITY_LOW_POWER);
 	Route currentRoute = new Route();
+	Stop currentStop = currentRoute.new Stop();
 	ArrayList<Route> routes = new ArrayList<Route>();
 	ArrayList<Stop> stops = new ArrayList<Stop>();
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		setUpMapIfNeeded();
-		setUpLocationClientIfNeeded();
-		mLocationClient.connect();
-	}
+	ArrayList<Stop> favStops = new ArrayList<Stop>();
+	boolean showFavorites = false;
+	Spinner sSpinner;
+	Spinner rSpinner;
 
 	private static View mView;
 	@Override
@@ -87,7 +81,9 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		} catch (InflateException e) {
 			/* map is already there, just return view as it is */
 		} finally {
-			Spinner rSpinner = (Spinner) mView.findViewById(R.id.routeSpinner);
+			setHasOptionsMenu(true);
+			rSpinner = (Spinner) mView.findViewById(R.id.routeSpinner);
+			sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
 			rSpinner.setOnItemSelectedListener(this);
 			// Create an ArrayAdapter using the string array and a default spinner layout
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(MainActivity.c,
@@ -96,8 +92,14 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			// Apply the adapter to the spinner
 			rSpinner.setAdapter(adapter);
-			Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
 			sSpinner.setOnItemSelectedListener(this);
+			ToggleButton fav = (ToggleButton) mView.findViewById(R.id.fav);
+			fav.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onFavButtonClick(v);
+				}
+			});
 			loadRoutes();
 			currentRoute = routes.get(0);
 		}
@@ -106,11 +108,47 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 	}
 
 	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.greenie, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.action_fav:
+			if(showFavorites){
+				showFavorites = false;
+				item.setIcon(R.drawable.starlight);
+				getFavoriteStops();
+				toggleFavStops(showFavorites);
+			}else{
+				showFavorites = true;
+				item.setIcon(R.drawable.staryellow);
+				getFavoriteStops();
+				toggleFavStops(showFavorites);
+			}
+
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void onPause() {
 		super.onPause();
 		if (mLocationClient != null) {
 			mLocationClient.disconnect();
 		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		setUpMapIfNeeded();
+		setUpLocationClientIfNeeded();
+		mLocationClient.connect();
 	}
 
 	private void setUpMapIfNeeded() {
@@ -128,11 +166,12 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 					@Override
 					public void onClick(View view) {
 						Location location = mLocationClient.getLastLocation();
-						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new    
-								LatLng(location.getLatitude(),     
-										location.getLongitude()), 15.5f));
+						Stop nearestStop = getNearestStop(location);
+						sSpinner.setSelection(stops.indexOf(nearestStop));
+						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(nearestStop.getLatlng(), 17));
 					}
 				});
+
 				setUpMap();
 			}
 		}
@@ -165,7 +204,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 				this);  // LocationListener
 		Location location = mLocationClient.getLastLocation();
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15.5f);
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
 		mMap.animateCamera(cameraUpdate);
 	}
 
@@ -187,8 +226,8 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	public void drawStops(Route route){
 		for(int i = 0; i < stops.size(); i++){
-				Marker stop = mMap.addMarker(new MarkerOptions().position(stops.get(i).getLatlng()));
-				stops.get(i).setMarker(stop);
+			Marker stop = mMap.addMarker(new MarkerOptions().position(stops.get(i).getLatlng()));
+			stops.get(i).setMarker(stop);
 		}
 	}
 
@@ -209,16 +248,15 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-			for(int i = 0; i < stops.size(); i++){
-				if(stops.get(i).getMarker().equals(marker)){
-					Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
-					sSpinner.setSelection(i);
-					TextView text = (TextView) mView.findViewById(R.id.predictions);
-					String pred = getPrediction(currentRoute.getTag(), stops.get(i).getDir(), stops.get(i).getTag());
-					text.setText(pred);
-					break;
-				}
+		for(int i = 0; i < stops.size(); i++){
+			if(stops.get(i).getMarker().equals(marker)){
+				sSpinner.setSelection(i);
+				TextView text = (TextView) mView.findViewById(R.id.predictions);
+				String pred = getPrediction(currentRoute.getTag(), stops.get(i).getDir(), stops.get(i).getTag());
+				text.setText(pred);
+				break;
 			}
+		}
 		return false;
 	}
 
@@ -236,7 +274,6 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 					drawStops(currentRoute);
 					String[] stops = currentRoute.listStops();
 					ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.c, android.R.layout.simple_spinner_dropdown_item, stops);
-					Spinner sSpinner = (Spinner) mView.findViewById(R.id.stopSpinner);
 					sSpinner.setAdapter(adapter);
 					break;
 				}
@@ -248,7 +285,11 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 				for(int j = 0; j < currentRoute.getDirections().get(i).numStops(); j++){
 					Stop tempStop = currentRoute.getDirections().get(i).getStop(j);
 					if(selectedItem.equals(tempStop.getTitle())){
-						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tempStop.getMarker().getPosition(), 17f));
+						currentStop = tempStop;
+						boolean favorite = isStopFavorite(currentStop);
+						ToggleButton fav = (ToggleButton) mView.findViewById(R.id.fav);
+						fav.setChecked(favorite);
+						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tempStop.getMarker().getPosition(), 17));
 						TextView text = (TextView) mView.findViewById(R.id.predictions);
 						String pred = getPrediction(currentRoute.getTag(), currentRoute.getDirections().get(i).getTag(), tempStop.getTag());
 						text.setText(pred);	
@@ -256,7 +297,6 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 					}
 				}
 			}
-			//Update prediction for that stop
 			break;
 		}
 	}
@@ -266,16 +306,14 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		//Do nothing
 
 	}
-	
+
 	public String getPrediction(String route, String direction, String stop){
 		String pred = "";
 		try {
 			pred = new PredictionTask().execute(route, direction, stop).get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return pred;
@@ -285,11 +323,92 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		try {
 			routes = new XmlParseTask().execute().get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public Stop getNearestStop(Location location){
+		Stop tempStop = currentRoute.new Stop();
+		NearestStopTask task = new NearestStopTask();
+		task.setLocation(location);
+		task.setStops(stops);
+		try {
+			tempStop = task.execute().get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return tempStop;
+	}
+
+	private boolean isStopFavorite(Stop stop) {
+		boolean favorite = false;
+		try {
+			favorite = new FavoriteStopTask().execute(stop).get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return favorite;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void getFavoriteStops () {
+		try {
+			favStops = new GetFavoritesTask().execute(stops).get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//display == true means hide all but favorites
+	//display == false means show all
+	public void toggleFavStops(boolean display){
+		for(Stop curStop : stops){
+			if(!favStops.contains(curStop)){ //If this stop is not a favorite
+				curStop.getMarker().setVisible(!display); //Hide it if display is true, show it if false
+			}
+		}
+		if(display){
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.c, android.R.layout.simple_spinner_dropdown_item, stopsToString(favStops));
+			sSpinner.setAdapter(adapter);
+		}else{
+			String[] stops = currentRoute.listStops();
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.c, android.R.layout.simple_spinner_dropdown_item, stops);
+			sSpinner.setAdapter(adapter);
+		}
+	}
+
+	public String[] stopsToString(ArrayList<Stop> stops){
+		String[] stopsString = new String[stops.size()];
+		for(int i = 0; i < stops.size(); i++){
+			stopsString[i] = stops.get(i).getTitle();
+		}
+		return stopsString;
+	}
+
+	public void onFavButtonClick(View v){
+		ToggleButton fav = (ToggleButton) mView.findViewById(R.id.fav);
+		CaseHubDbHelper dbHelper = new CaseHubDbHelper(MainActivity.c);
+
+		if(!fav.isChecked()){
+			fav.setChecked(false);
+			SQLiteDatabase db = dbHelper.getReadableDatabase();
+			String selection = FavoriteStopEntry.COLUMN_NAME_FAVORITE_STOP_TAG + " LIKE ?";
+			String[] selectionArgs = {currentStop.getTag()};
+			db.delete(FavoriteStopEntry.TABLE_NAME, selection, selectionArgs);
+		}else{
+			fav.setChecked(true);
+			SQLiteDatabase db = dbHelper.getWritableDatabase();
+			ContentValues values = new ContentValues();
+			values.put(FavoriteStopEntry.COLUMN_NAME_FAVORITE_STOP_TAG, currentStop.getTag());
+			db.insert(FavoriteStopEntry.TABLE_NAME, null, values);
 		}
 	}
 }
