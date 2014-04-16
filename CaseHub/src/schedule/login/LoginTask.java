@@ -23,6 +23,8 @@ import schedule.Day;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment.LoginCallback;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -33,6 +35,8 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 	
 	DefaultHttpClient client;
 	LoginCallback callback;
+	ProgressDialog dialog;
+	Context context;
 	
 	List<Exception> exceptions = new ArrayList<Exception>();
 		
@@ -43,8 +47,18 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 	private static final String EVENT_TIMES_SELECTOR = ".timespan";
 	private static final String EVENT_LOC_SELECTOR = ".location";
 	
-	public LoginTask(LoginCallback callback) {
+	public LoginTask(Context context, LoginCallback callback) {
+		this.context = context;
 		this.callback = callback;
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		
+		dialog = new ProgressDialog(context);
+		dialog.setMessage("Fetching schedule...");
+		dialog.show();
 	}
 	
 	@Override
@@ -77,11 +91,11 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
         
         callback.onTaskDone(events);
         
+        dialog.dismiss();
 	}
 	
-	/**
+	/*
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
-	 * @throws IOException
 	 */
 	private void login(String user, String password) throws IOException {
 				

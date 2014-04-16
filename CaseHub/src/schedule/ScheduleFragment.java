@@ -196,7 +196,7 @@ public class ScheduleFragment extends Fragment {
 		
 		Log.d("LOGIN", "login() reached successfully!");
 		
-		new LoginTask(new LoginCallback() {
+		new LoginTask(getActivity(), new LoginCallback() {
 			
 			@Override
 			public void onTaskDone(ArrayList<ScheduleEvent> events) {
