@@ -200,20 +200,24 @@ public class ScheduleFragment extends Fragment {
 			
 			@Override
 			public void onTaskDone(ArrayList<ScheduleEvent> events) {
-				Log.d("LOGIN", "onTaskDone() reached successfully!");
+				onLoginComplete(events);
 			}
-		}).execute(user, pass);
+		}).execute(user, pass);		
 		
-		// TODO make logintask, return to SchedFrag using SchedFrag callback
+	}
+	
+	private void onLoginComplete(ArrayList<ScheduleEvent> events) {
 		
-		/*
 		// If successful, set preference indicating user has logged in
-		   SharedPreferences settings = getActivity().getSharedPreferences(
-					ScheduleFragment.LOGGED_IN_PREF, 0);
-		   SharedPreferences.Editor editor = settings.edit();
-		   editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
-		   editor.commit();
-		   */
+		SharedPreferences settings = getActivity().getSharedPreferences(
+				ScheduleFragment.LOGGED_IN_PREF, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
+		editor.commit();
+		
+		clearSchedule();
+		addEvents(events);
+
 	}
 	
 	/**
