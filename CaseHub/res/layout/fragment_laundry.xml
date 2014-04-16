@@ -16,7 +16,7 @@
         android:orientation="horizontal" >
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/house_spinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
         
