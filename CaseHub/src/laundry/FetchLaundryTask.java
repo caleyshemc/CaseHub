@@ -1,6 +1,9 @@
 package laundry;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import laundry.LaundryFragment.LaundryCallback;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -10,16 +13,37 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import schedule.ScheduleEvent;
+
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Fetches laundry information from http://case-asi.esuds.net/
  */
 public class FetchLaundryTask extends AsyncTask<String, Void, String> {
 	
-	private static final String ESUDS_URL = "http://case-asi.esuds.net/RoomStatus/showRoomStatus.do";
-
+	Context context;
+	LaundryCallback callback;
 	DefaultHttpClient client;
+	ProgressDialog dialog;
+	
+	private static final String ESUDS_URL = "http://case-asi.esuds.net/RoomStatus/showRoomStatus.do";
+	
+	public FetchLaundryTask(Context context, LaundryCallback callback) {
+		this.context = context;
+		this.callback = callback;
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		
+		dialog = new ProgressDialog(context);
+		dialog.show();
+	}
 
 	@Override
 	protected String doInBackground(String... params) {
@@ -39,6 +63,13 @@ public class FetchLaundryTask extends AsyncTask<String, Void, String> {
 		
 		return result;
 		
+	}
+	
+	@Override
+	protected void onPostExecute(String result) {
+		super.onPostExecute(result);
+        callback.onTaskDone();        
+        dialog.dismiss();
 	}
 	
 	/*

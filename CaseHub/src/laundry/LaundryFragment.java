@@ -1,17 +1,22 @@
 package laundry;
 
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
 
-import com.casehub.R;
-
-import android.os.Bundle;
+import schedule.ScheduleEvent;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.casehub.R;
+
 public class LaundryFragment extends Fragment {
+	
+	public interface LaundryCallback {
+        public void onTaskDone();
+    }
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +36,15 @@ public class LaundryFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 	
+		new FetchLaundryTask(getActivity(), new LaundryCallback() {
+			
+			@Override
+			public void onTaskDone() {
+				// TODO Auto-generated method stub
+				Log.d("LAUNDRY", "It works!");
+			}
+		}).execute();
+		
 		/*
 		String esudsHTML = "";
 		
