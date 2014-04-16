@@ -1,37 +1,27 @@
 package schedule.login;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import schedule.ScheduleEvent;
-import schedule.ScheduleFragment;
-
-import com.casehub.R;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+
+import com.casehub.R;
 
 public class LoginDialog extends DialogFragment {
 	
-	private View view;
+	View view;
+	ProgressBar progressBar;
+	OnLoginListener callback;
 	
 	// Username and password fields
 	private EditText userText;
 	private EditText passText;
-	
-	ProgressBar progressBar;
-	
-	OnLoginListener callback;
 
 	/**
 	 * Define callback interface for communicating with MainActivity.

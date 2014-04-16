@@ -9,6 +9,7 @@ import org.joda.time.LocalTime;
 import schedule.autosilent.AutoSilentDialog;
 import schedule.calendar.CalendarExportDialog;
 import schedule.login.LoginDialog;
+import schedule.login.LoginTask;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -70,6 +71,11 @@ public class ScheduleFragment extends Fragment {
 	private View view;
 	private MenuItem silentButton;
 		
+
+	public interface LoginCallback {
+        public void onTaskDone(ArrayList<ScheduleEvent> events);
+    }
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -188,7 +194,15 @@ public class ScheduleFragment extends Fragment {
 	
 	public void login(String user, String pass) {
 		
-		Log.d("LOGIN", "Login() reached successfully!");
+		Log.d("LOGIN", "login() reached successfully!");
+		
+		new LoginTask(new LoginCallback() {
+			
+			@Override
+			public void onTaskDone(ArrayList<ScheduleEvent> events) {
+				Log.d("LOGIN", "onTaskDone() reached successfully!");
+			}
+		}).execute(user, pass);
 		
 		// TODO make logintask, return to SchedFrag using SchedFrag callback
 		
@@ -216,8 +230,6 @@ public class ScheduleFragment extends Fragment {
 		displayEvents(events);
 		
 	}
-	
-	
 	
 	/**
 	 * Deletes all schedule information from the event table

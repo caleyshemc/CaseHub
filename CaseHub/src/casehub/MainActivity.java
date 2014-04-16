@@ -1,12 +1,8 @@
 package casehub;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
 import greenie.GreenieFragment;
 import laundry.LaundryFragment;
 import map.CampusMapFragment;
-import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
 import schedule.login.LoginDialog;
 import android.app.Activity;
@@ -238,7 +234,7 @@ public class MainActivity extends Activity implements
 		ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
 				.findFragmentByTag("schedule_fragment");
 
-		// Clear old schedule
+		// Send username and password to ScheduleFragment
 		schedFrag.login(user, pass);
 		
 	}

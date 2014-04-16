@@ -21,6 +21,7 @@ import org.jsoup.select.Elements;
 
 import schedule.Day;
 import schedule.ScheduleEvent;
+import schedule.ScheduleFragment.LoginCallback;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -31,6 +32,7 @@ import android.util.Log;
 public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
 	
 	DefaultHttpClient client;
+	LoginCallback callback;
 	
 	List<Exception> exceptions = new ArrayList<Exception>();
 		
@@ -40,6 +42,10 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 	private static final String EVENT_NAME_SELECTOR = ".eventname";
 	private static final String EVENT_TIMES_SELECTOR = ".timespan";
 	private static final String EVENT_LOC_SELECTOR = ".location";
+	
+	public LoginTask(LoginCallback callback) {
+		this.callback = callback;
+	}
 	
 	@Override
 	protected ArrayList<ScheduleEvent> doInBackground(String... args) {
@@ -68,6 +74,8 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
         	// TODO inform login dialog that login failed
         	Log.e("CASEHUB", "exception", e);
         }
+        
+        callback.onTaskDone(events);
         
 	}
 	
