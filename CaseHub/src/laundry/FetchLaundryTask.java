@@ -53,6 +53,7 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	protected void onPreExecute() {
 		super.onPreExecute();
 		dialog = new ProgressDialog(context);
+		dialog.setMessage("Fetching residence halls...");
 		dialog.show();
 	}
 

@@ -146,9 +146,7 @@ public class ScheduleFragment extends Fragment {
 
 	
 	public void login(String user, String pass) {
-		
-		Log.d("LOGIN", "login() reached successfully!");
-		
+				
 		new LoginTask(getActivity(), new LoginCallback() {
 			
 			@Override

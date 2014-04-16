@@ -40,5 +40,12 @@ public class LaundryMachine {
 	enum Status {
 		AVAILABLE, IN_USE, CYCLE_COMPLETE, UNAVAILABLE
 	}
+
+	@Override
+	public String toString() {
+		return "LaundryMachine [machineNumber=" + machineNumber
+				+ ", minutesLeft=" + minutesLeft + ", type=" + type
+				+ ", status=" + status + "]";
+	}
 	
 }
