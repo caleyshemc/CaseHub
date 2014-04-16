@@ -2,26 +2,24 @@ package schedule;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
 
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
+import schedule.autosilent.AutoSilentDialog;
+import schedule.calendar.CalendarExportDialog;
+import schedule.login.LoginDialog;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -29,71 +27,144 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import casehub.CaseHubContract.ScheduleEventEntry;
-import casehub.MainActivity;
-
 import com.casehub.R;
 
 public class ScheduleFragment extends Fragment {
 	
 	/**
-	 * Sets first and last hours displayed in Schedule view; used to determine
-	 * placement of events.
+	 * Sets earliest/latest times displayed in Schedule view.
 	 * 
 	 * To change the first/last hours, both these constants and the layout must
 	 * be updated.
+	 * 
+	 * Uses 24-hour clock.
 	 */
 	public static final int FIRST_HOUR = 7;
 	public static final int LAST_HOUR = 21;
 	
-	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hhmma");
+	// Currently displayed first/last hours
+	// For setting event placement
+	private int current_first_hour = FIRST_HOUR;
+	private int current_last_hour = LAST_HOUR;
 	
 	/**
-	 * Preferences filename to track whether user has logged in
+	 * ActionBar item IDs
 	 */
-	public static final String LOGIN_PREF = "LoginPrefsFile";
+	public static final int REFRESH_ID = 0;
+	public static final int SILENT_ID = 1;
+	public static final int CAL_ID = 2;
+	
+	/**
+	 * SharedPreferences fields and filenames
+	 */
+	public static final String LOGGED_IN_PREF = "LoginPrefsFile";
 	public static final String LOGGED_IN = "hasLoggedIn";
-
+	public static final String SILENT_PREF = "AutoSilentPrefsFile";
+	public static final String SILENT = "autoSilentSetting";
+	public static final int SILENT_ON = 0;
+	public static final int SILENT_VIBRATE = 1;
+	public static final int SILENT_OFF = 2;
+	
+	private ScheduleDBHelper dbHelper;
+	private View view;
+	private MenuItem silentButton;
+		
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_schedule, container, false);
+		view = inflater.inflate(R.layout.fragment_schedule, container, false);
+		return view;
 	}
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
-		// Retrieve database
-		SQLiteDatabase db = MainActivity.mDbHelper.getReadableDatabase();
-		
-		// TODO query for events
-		
-		/* TODO removed for testing
+		dbHelper = new ScheduleDBHelper();
+				
 		// Check if user has logged in previously
-		SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_PREF, 0);
+		SharedPreferences settings = getActivity().getSharedPreferences(LOGGED_IN_PREF, 0);
 		boolean hasLoggedIn = settings.getBoolean(LOGGED_IN, false);
-		*/
-		// TEST
-		boolean hasLoggedIn = false;
 
 		if (!hasLoggedIn) {
+			
 			// Show login dialog
-			DialogFragment loginDialog = new LoginDialogFragment();
+			DialogFragment loginDialog = new LoginDialog();
 			loginDialog.show(getFragmentManager(), "login");
+			
+		} else {
+			
+			// Display schedule from database
+			ArrayList<ScheduleEvent> events = dbHelper.getSchedule();
+			displayEvents(events);
+			
 		}
 		
-		/* Place timeline */
 		placeTimeLine();
 		
 		super.onViewCreated(view, savedInstanceState);
 		
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// Show refresh button
+	    MenuItem refreshButton = menu.add(0, REFRESH_ID, 10, R.string.schedule_refresh);
+	    refreshButton.setIcon(R.drawable.ic_action_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    
+	    // Get autosilent setting
+	    SharedPreferences settings = getActivity().getSharedPreferences(SILENT_PREF, 0);
+		int autoSilentSetting = settings.getInt(SILENT, SILENT_OFF);
+		
+		// Show autosilent button
+	    silentButton = menu.add(0, SILENT_ID, 20, R.string.schedule_silent);
+	    
+	    if (autoSilentSetting == SILENT_OFF) {
+	    	silentButton.setIcon(R.drawable.ic_action_volume_on).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    } else {
+	    	silentButton.setIcon(R.drawable.ic_action_volume_muted).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	    }
+	    
+	    // Show calendar export button
+	    MenuItem calButton = menu.add(0, CAL_ID, 30, R.string.calendar_export);
+	    calButton.setIcon(R.drawable.ic_action_go_to_today).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+	}
+	
+	/**
+	 * Called when ActionBar button is selected.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+	    switch (item.getItemId()) {
+	        case REFRESH_ID:
+				DialogFragment loginDialog = new LoginDialog();
+				loginDialog.show(getFragmentManager(), "login");
+	            return true;
+	            
+	        case SILENT_ID:
+	        	DialogFragment silentDialog = new AutoSilentDialog();
+	        	silentDialog.show(getFragmentManager(), "autosilent");
+	        	return true;
+	        	
+	        case CAL_ID:
+	        	DialogFragment calDialog = new CalendarExportDialog();
+	        	calDialog.show(getFragmentManager(), "cal_export");
+	        	return true;
+	        	
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+
 	/**
 	 * Places the line indicating the current time.
-	 * TODO: Call whenever fragment is opened.
 	 */
 	public void placeTimeLine() {
 		LocalTime now = LocalTime.now();
@@ -101,11 +172,11 @@ public class ScheduleFragment extends Fragment {
 		LinearLayout timeLine = (LinearLayout) getActivity().findViewById(R.id.current_time);
 		
 		// If current time within schedule hours
-		if (FIRST_HOUR*60 < minutes && minutes < LAST_HOUR*60) {
+		if (current_first_hour*60 < minutes && minutes < current_last_hour*60) {
 			
 			// Set timeline margin
 			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) timeLine.getLayoutParams();
-			params.topMargin = dpToPixels(minutes - (FIRST_HOUR*60));
+			params.topMargin = dpToPixels(minutes - (current_first_hour*60));
 			
 		} else {
 			// Hide timeline
@@ -115,91 +186,90 @@ public class ScheduleFragment extends Fragment {
 	}
 	
 	/**
-	 * Parses schedule from HTML and creates appropriate ScheduleEvents
-	 * @param response
+	 * Add events to the database and display in schedule.
 	 */
-	public ArrayList<ScheduleEvent> parseSchedule(String html) {
-		
-		Log.d("TEST", html);
-		
-		ArrayList<ScheduleEvent> scheduleEvents = new ArrayList<ScheduleEvent>();
-		Document doc = Jsoup.parse(html);
-
-		// For each day of the week
-		for (Day day : Day.values()) {
-			
-			// Select each event in this day
-			Element div = doc.getElementById(day.toString());
-			Elements events = div.select(".event");
-			
-			// Create ScheduleEvents
-			for (Element event : events) {
+	public void addEvents(ArrayList<ScheduleEvent> events) {
 				
-				// Get raw event info
-				String name = event.select(".eventname").first().text();
-				String times = event.select(".timespan").first().text();
-				String location = event.select(".location").first().text();
-				
-				// Get event ID by extracting digits from 'onclick' attribute
-				String idString = event.attr("onclick");
-				idString = idString.replaceAll("\\D+","");
-				int id = Integer.parseInt(idString);
-				
-				// Extract start/end times
-				String[] split = times.split("-");
-				String startString = split[0] + "m";
-				String endString = split[1] + "m";
-								
-				LocalTime start = LocalTime.parse(startString, DATE_FORMAT);
-				LocalTime end = LocalTime.parse(endString, DATE_FORMAT);
-				
-				ScheduleEvent newEvent =  new ScheduleEvent(id, name, location, start, end, day);
-				
-				scheduleEvents.add(newEvent);
-				
-			}
-			
+		// Add events to database
+		for (ScheduleEvent event : events) {
+			dbHelper.addEvent(event);
 		}
 		
+		// Display events
+		displayEvents(events);
 		
-		return scheduleEvents;
+	}
+	
+	
+	
+	/**
+	 * Deletes all schedule information from the event table
+	 * and layout
+	 */
+	public void clearSchedule() {
+		dbHelper.clearSchedule();
 		
+		// TODO remove events from layout!
 	}
 	
 	/**
-	 * Add an event to the schedule.
+	 * Changes autosilent button icon.
 	 */
-	public void addEvent(ScheduleEvent event) {
-
-		// TODO validate values!
-		// Values should be validated when ScheduleEvent is created
+	public void setSilentButton(int setting) {
 		
-		// Create map of event values
-		ContentValues values = new ContentValues();
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_ID, event.getId());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_NAME, event.getName());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_LOCATION, event.getLocation());
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_START, event.getStart().toString(DATE_FORMAT));
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_END, event.getEnd().toString(DATE_FORMAT));
-		values.put(ScheduleEventEntry.COLUMN_NAME_EVENT_DAY, event.getDay().toString());
-		
-		// Insert values into database
-		SQLiteDatabase db = MainActivity.mDbHelper.getWritableDatabase();
-		long newRowId = db.insert(ScheduleEventEntry.TABLE_NAME, null, values);
-		
-		// return success/failure?
+		if (setting == SILENT_OFF) {
+			silentButton.setIcon(R.drawable.ic_action_volume_on);
+		} else {
+			silentButton.setIcon(R.drawable.ic_action_volume_muted);
+		}
 		
 	}
 	
-	// TODO maybe just display with values right from DB!
-	// yeah, and if the name is the same, give them the same color!
-	// displaySchedule()
 	/*
-	private void displaySchedule() {
-		
-		int height = event.getDuration();
-		int topMargin = event.getStartMinutes() - (FIRST_HOUR * 60);
+	 * Displays events in the schedule.
+	 */
+	private void displayEvents(ArrayList<ScheduleEvent> events) {
 
+		HashMap<Integer, Integer> colorMap = new HashMap<Integer, Integer>();
+		
+		int[] colorArray = {
+			getResources().getColor(R.color.event1),
+			getResources().getColor(R.color.event2),
+			getResources().getColor(R.color.event3),
+			getResources().getColor(R.color.event4),
+			getResources().getColor(R.color.event5),
+			getResources().getColor(R.color.event6)
+		};
+		
+		setVisibleHours();
+
+		int eventId;
+		int colorIndex = 0;
+		
+		// Set event color and display
+		for (ScheduleEvent event : events) {
+			
+			eventId = event.getId();
+			
+			if (!colorMap.containsKey(eventId)) {
+				colorMap.put(eventId, colorArray[colorIndex]);
+				colorIndex = (colorIndex + 1) % colorArray.length;
+			}
+			
+			displayEvent(event, colorMap.get(eventId));
+			
+		}
+		
+	}
+	
+	/*
+	 * Displays a schedule event.
+	 */
+	private void displayEvent(ScheduleEvent event, int color) {
+				
+		int height = event.getDuration();
+		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
+		
 		if (height < 1) {
 			throw new InvalidParameterException("Error: Event duration must be at least 1 minute.");
 		}
@@ -216,22 +286,19 @@ public class ScheduleFragment extends Fragment {
 		LinearLayout layout = (LinearLayout) inflater.inflate(
 				R.layout.template_event_layout, null);
 
-		// Set event layout template dimensions
+		// Set layout dimensions
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		params.height = dpToPixels(height - 1);
 		params.setMargins(0, dpToPixels(topMargin), 0, 0);
 		layout.setLayoutParams(params);
 
-		// For each day of the week this event occurs, add to layout
-		int layoutId;
-		LinearLayout eventLayout;
-
-		RelativeLayout parentLayout;
-
 		// Clone layout by inflating template
-		eventLayout = (LinearLayout) inflater.inflate(R.layout.template_event_layout, null);
+		LinearLayout eventLayout = (LinearLayout) inflater.inflate(R.layout.template_event_layout, null);
 		eventLayout.setLayoutParams(params);
+		
+		// Set color
+		eventLayout.setBackgroundColor(color);
 
 		// Set event text values
 		TextView name = (TextView) eventLayout.findViewWithTag("name");
@@ -244,15 +311,53 @@ public class ScheduleFragment extends Fragment {
 
 		// Get parent layout
 		String day = event.getDay().getString();
-		layoutId = getResources().getIdentifier(day, "id", this.getActivity().getPackageName());
-		parentLayout = (RelativeLayout) getView().findViewById(layoutId);
+		int layoutId = getResources().getIdentifier(day, "id", this.getActivity().getPackageName());
+		RelativeLayout parentLayout = (RelativeLayout) getView().findViewById(layoutId);
 
 		// Add new event layout to parent layout
 		parentLayout.addView(eventLayout);
-
 	}
-	*/
 
+	
+	/*
+	 * Hides hours more than one hour before/after the first/last event in the
+	 * schedule.
+	 */
+	private void setVisibleHours() {
+		
+		current_first_hour = dbHelper.getEarliestHour() - 1;
+		current_last_hour = dbHelper.getLatestHour() + 1;
+				
+		// Restrict to available hours
+		if (current_first_hour < FIRST_HOUR) {
+			current_first_hour = FIRST_HOUR;
+		}
+		if (current_last_hour > LAST_HOUR) {
+			current_last_hour = LAST_HOUR;
+		}
+		
+		// Show at least 8 hours (enough to fill most screens)
+		if ((current_last_hour - current_first_hour) < 8) {
+			current_last_hour = current_first_hour + 8;
+		}
+				
+		// Remove hours before current_first_hour
+		for (int i = FIRST_HOUR; i < current_first_hour; i++) {
+
+			TextView textView = (TextView) view.findViewWithTag("time" + i);
+			textView.setVisibility(View.GONE);
+			
+		}
+		
+		// Set height of schedule layout
+		int height = 60 * (current_last_hour - current_first_hour + 1);
+		height = dpToPixels(height);
+		
+		LinearLayout scheduleLayout = (LinearLayout) view.findViewById(R.id.schedule_main);
+		scheduleLayout.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, height));
+		
+	}
+	
 	/*
 	 * Converts dp to pixels, as dp cannot be set directly at runtime.
 	 * Used for setting layout parameters.
@@ -266,6 +371,5 @@ public class ScheduleFragment extends Fragment {
 		return pixels;
 
 	}
-	
 }
 

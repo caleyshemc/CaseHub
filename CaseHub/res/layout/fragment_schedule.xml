@@ -97,7 +97,7 @@
             android:padding="0dp" >
 
             <LinearLayout
-                android:id="@+id/scheduleSplitterRelativeLayout"
+                android:id="@+id/schedule_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
@@ -115,91 +115,106 @@
                     <TextView
                         android:id="@+id/time7am"
                         style="@style/TimeTextView"
-                        android:text="@string/time7am" />
+                        android:text="@string/time7am"
+                        android:tag="time7" />
 
                     <TextView
                         android:id="@+id/time8am"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time7am"
-                        android:text="@string/time8am" />
+                        android:text="@string/time8am"
+                        android:tag="time8" />
 
                     <TextView
                         android:id="@+id/time9am"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time8am"
-                        android:text="@string/time9am" />
+                        android:text="@string/time9am"
+                        android:tag="time9" />
 
                     <TextView
                         android:id="@+id/time10am"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time9am"
-                        android:text="@string/time10am" />
+                        android:text="@string/time10am"
+                        android:tag="time10" />
 
                     <TextView
                         android:id="@+id/time11am"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time10am"
-                        android:text="@string/time11am" />
+                        android:text="@string/time11am"
+                        android:tag="time11" />
 
                     <TextView
                         android:id="@+id/time12pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time11am"
-                        android:text="@string/time12pm" />
+                        android:text="@string/time12pm"
+                        android:tag="time12" />
 
                     <TextView
                         android:id="@+id/time1pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time12pm"
-                        android:text="@string/time1pm" />
+                        android:text="@string/time1pm"
+                        android:tag="time13" />
 
                     <TextView
                         android:id="@+id/time2pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time1pm"
-                        android:text="@string/time2pm" />
+                        android:text="@string/time2pm"
+                        android:tag="time14" />
 
                     <TextView
                         android:id="@+id/time3pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time2pm"
-                        android:text="@string/time3pm" />
+                        android:text="@string/time3pm"
+                        android:tag="time15" />
 
                     <TextView
                         android:id="@+id/time4pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time3pm"
-                        android:text="@string/time4pm" />
+                        android:text="@string/time4pm"
+                        android:tag="time16" />
 
                     <TextView
                         android:id="@+id/time5pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time4pm"
-                        android:text="@string/time5pm" />
+                        android:text="@string/time5pm"
+                        android:tag="time17" />
 
                     <TextView
                         android:id="@+id/time6pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time5pm"
-                        android:text="@string/time6pm" />
+                        android:text="@string/time6pm"
+                        android:tag="time18" />
 
                     <TextView
                         android:id="@+id/time7pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time6pm"
-                        android:text="@string/time7pm" />
+                        android:text="@string/time7pm"
+                        android:tag="time19" />
 
                     <TextView
                         android:id="@+id/time8pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time7pm"
-                        android:text="@string/time8pm" />
+                        android:text="@string/time8pm"
+                        android:tag="time20" />
 
                     <TextView
                         android:id="@+id/time9pm"
                         style="@style/TimeTextView"
                         android:layout_below="@+id/time8pm"
-                        android:text="@string/time9pm" />
+                        android:text="@string/time9pm"
+                        android:tag="time21" />
                 </RelativeLayout>
 
                 <View

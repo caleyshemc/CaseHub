@@ -1,13 +1,15 @@
 package casehub;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import greenie.GreenieFragment;
 import laundry.LaundryFragment;
 import map.CampusMapFragment;
+import schedule.ParseScheduleTask;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
-import schedule.LoginDialogFragment;
+import schedule.login.LoginDialog;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -33,7 +35,7 @@ import dining.DiningFragment;
  * MainActivity functions as app Controller, defines navigation drawer.
  */
 public class MainActivity extends Activity implements
-		LoginDialogFragment.OnLoginListener {
+		LoginDialog.OnLoginListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -47,13 +49,13 @@ public class MainActivity extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		c = this;
 		mDbHelper = new CaseHubDbHelper(c);
-		
+
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerTitles = getResources().getStringArray(R.array.titles_array);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -153,16 +155,17 @@ public class MainActivity extends Activity implements
 	 * Update the main content by replacing fragments
 	 */
 	private void selectItem(int position) {
-		
+
 		FragmentManager fragmentManager = getFragmentManager();
 		Fragment fragment = null;
 		String tag = "";
-		
+
 		switch (position) {
 		case 0:
-			fragment = new GreenieFragment();
-			tag = "greenie_fragment";
-			break;
+			/*
+			 * fragment = new GreenieFragment(); tag = "greenie_fragment";
+			 * break;
+			 */
 		case 1:
 			fragment = new LaundryFragment();
 			tag = "laundry_fragment";
@@ -185,7 +188,7 @@ public class MainActivity extends Activity implements
 		}
 
 		if (fragment != null) {
-			
+
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, fragment, tag).commit();
 
@@ -232,18 +235,28 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onScheduleLogin(String html) {
 
-		// Find ScheduleFragment to send HTML to		
-		ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
-				.findFragmentByTag("schedule_fragment");
-		
-		// Send HTML
-		ArrayList<ScheduleEvent> events = schedFrag.parseSchedule(html);
-		
-		// Create schedule
-		for (ScheduleEvent event : events) {
-			schedFrag.addEvent(event);
+		// Parse HTML
+		ArrayList<ScheduleEvent> events = new ArrayList<ScheduleEvent>();
+		try {
+			events = new ParseScheduleTask().execute(html).get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
+		// Find ScheduleFragment to send results to
+		ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
+				.findFragmentByTag("schedule_fragment");
+
+		// Clear old schedule
+		schedFrag.clearSchedule();
+		
+		// Save and display each event
+		schedFrag.addEvents(events);
+		
 	}
 
 }

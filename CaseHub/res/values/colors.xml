@@ -10,6 +10,11 @@
     <color name="border">#626262</color>
     <color name="highlight">#135a90</color>
     
-    <color name="event1">#ff4444</color>
+    <color name="event1">#FF4444</color>
+    <color name="event2">#2D9FC9</color>
+    <color name="event3">#FFBB33</color>
+    <color name="event4">#AA66BB</color>
+    <color name="event5">#99CC00</color>
+    <color name="event6">#FFCE0D</color>
 
 </resources>

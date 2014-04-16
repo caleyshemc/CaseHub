@@ -1,4 +1,4 @@
-package schedule;
+package schedule.login;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -19,98 +18,117 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import schedule.Day;
+
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
- * Singleton class.
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
- * TODO: Determine best I/O types for AsyncTask
  */
-public class CaseSSOConnector extends AsyncTask<String, Void, String> {
-
-	private static boolean loggedIn = false;
-	private static DefaultHttpClient client = new DefaultHttpClient();	
+public class LoginTask extends AsyncTask<String, Void, String> {
 	
+	DefaultHttpClient client;
+	
+	List<Exception> exceptions = new ArrayList<Exception>();
+		
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
+	
+	@Override
+	protected String doInBackground(String... args) {
+		
+		client = new DefaultHttpClient();
+		
+		String result = "";
+		
+		// TODO check args!
+		
+		try {
+			login(args[0], args[1]);
+			result = getSchedule();
+		} catch (IOException e) {
+			exceptions.add(e);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	protected void onPostExecute(String result) {
+		super.onPostExecute(result);
+        
+        for (Exception e : exceptions) {
+        	// TODO inform login dialog that login failed
+        	Log.e("CASEHUB", "exception", e);
+        }
+        
+	}
 	
 	/**
 	 * Logs in to Case's Single Sign-On and then loads the page specified in url
 	 * @throws IOException
 	 */
-	private String login(String user, String password) throws IOException {
+	private void login(String user, String password) throws IOException {
 				
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
 
 	    // GET login form
-		HttpGet httpGet = new HttpGet(SSO_URL);
-		HttpResponse result = client.execute(httpGet);
-		HttpEntity entity = result.getEntity();
+		HttpGet loginGet = new HttpGet(SSO_URL);
+		HttpResponse loginGetResult = client.execute(loginGet);
+		HttpEntity entity = loginGetResult.getEntity();
 		
 		// Parse HTML to find login ticket
 		String responseString = EntityUtils.toString(entity, "UTF-8");
 		Document doc = Jsoup.parse(responseString);
 		Elements input = doc.getElementsByAttributeValue("name", "lt");
 		String login_ticket = input.attr("value");
+		loginGetResult.getEntity().consumeContent();
 
 		// Prepare POST to log in to SSO
-		HttpPost httpPost = new HttpPost(SSO_URL);
+		HttpPost loginPost = new HttpPost(SSO_URL);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("lt", login_ticket));
 		nameValuePairs.add(new BasicNameValuePair("username", user));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
-		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		loginPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 		// Execute login POST
-		result = client.execute(httpPost);
+		HttpResponse postResult = client.execute(loginPost);
+		postResult.getEntity().consumeContent();
 		
-		return "der"; // TODO return boolean
+		// TODO return boolean to indicate successful login!
 	}
 
-	private String getSchedule() throws ClientProtocolException, IOException {
+	private String getSchedule() throws IOException {
 		
 		String resultString = "";
 		
-		
 		// GET Scheduler to set appropriate cookies
-		HttpGet httpGet = new HttpGet(SCHEDULE_URL);
-		HttpResponse result = client.execute(httpGet);
-		HttpEntity entity = result.getEntity();
+		HttpGet schedGet = new HttpGet(SCHEDULE_URL);
+		HttpResponse getSchedResult = client.execute(schedGet);
+		getSchedResult.getEntity().consumeContent();	
 		
 		for (Day day : Day.values()) {
 			
 			String url = SCHEDULE_URL + "/day.php?day=" + day.getCode();
 			
 			// GET schedule events for each day of the week
-			httpGet = new HttpGet(url);
-			result = client.execute(httpGet);
-			entity = result.getEntity();
-			
+			HttpGet dayGet = new HttpGet(url);
+			HttpResponse getDayResult = client.execute(dayGet);
+			HttpEntity dayEntity = getDayResult.getEntity();
+						
 			// Wrap each day in a div for easy parsing
 			resultString += "<div id='" + day.toString() + "'>";
-			resultString += EntityUtils.toString(entity, "UTF-8");
+			resultString += EntityUtils.toString(dayEntity, "UTF-8");
 			resultString += "</div>";
+			
+			getDayResult.getEntity().consumeContent();
 		}
 		
 		return resultString;
 		
-	}
-	
-	@Override
-	protected String doInBackground(String... args) {
-		String loginResult = "Login failed in doInBackground().";
-		try {
-			if (!loggedIn) {
-				loginResult = login(args[0], args[1]);
-				loggedIn = true; // TODO check HTTP response!
-			}
-			loginResult = getSchedule();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return loginResult;
 	}
 	
 }

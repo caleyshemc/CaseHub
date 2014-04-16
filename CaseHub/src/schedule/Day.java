@@ -9,6 +9,8 @@ import java.util.Locale;
  * weekends in the future.
  */
 public enum Day {
+	// Note: these values effect interaction with Calendar events in CalendarHelper.
+	// Change with caution.
 	MON, TUES, WED, THURS, FRI;
 
 	/**

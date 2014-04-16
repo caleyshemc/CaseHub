@@ -1,11 +1,15 @@
 package schedule;
 
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * This class represents a schedule event (i.e. a class or custom weekly event). 
  */
 public class ScheduleEvent {
+	
+	public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hhmma");
 
 	private int id;
 	private String name;
@@ -14,13 +18,14 @@ public class ScheduleEvent {
 	private LocalTime end;
 	private Day day;
 
-	public ScheduleEvent(int id, String name, String location, LocalTime start,
-			LocalTime end, Day day) {
+	// TODO Values should be validated when ScheduleEvent is created
+	public ScheduleEvent(int id, String name, String location, String start,
+			String end, Day day) {
 		this.id = id;
 		this.name = name;
 		this.location = location;
-		this.start = start;
-		this.end = end;
+		this.start = LocalTime.parse(start, DATE_FORMAT);
+		this.end = LocalTime.parse(end, DATE_FORMAT);
 		this.day = day;
 	}
 

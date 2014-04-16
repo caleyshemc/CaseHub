@@ -23,6 +23,24 @@
     <string name="password">Password</string>
     <string name="login_button">Log In</string>
     <string name="cancel">Cancel</string>
+    <string name="okay">OK</string>
+    
+    
+    <string name="calendar_export_title">Export to Google Calender</string>
+    <string name="calendar_export">Export to Calendar</string>
+    <string name="export">Export</string>
+    <string name="pick_start_date">Start Date</string>
+    <string name="pick_end_date">End Date</string>
+    
+    <string name="autosilent_title">AutoSilent Settings</string>
+    <string-array name="autosilent_options">
+        <item>Set to silent during classes</item>
+        <item>Set to vibrate during classes</item>
+        <item>Turn off AutoSilent</item>
+    </string-array>
+    
+    <string name="schedule_refresh">Refresh</string>
+    <string name="schedule_silent">AutoSilent Settings</string>
     
     <string name="sunday">SUN</string>
     <string name="monday">MON</string>
