@@ -16,9 +16,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import schedule.Day;
+import schedule.ScheduleEvent;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -26,7 +28,7 @@ import android.util.Log;
 /**
  * Handles connection, login, and scraping of the Case Single Sign-On sites.
  */
-public class LoginTask extends AsyncTask<String, Void, String> {
+public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
 	
 	DefaultHttpClient client;
 	
@@ -34,28 +36,33 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 		
 	private static final String SSO_URL = "https://login.case.edu/cas/login";
 	private static final String SCHEDULE_URL = "http://scheduler.case.edu";
+	private static final String EVENT_SELECTOR = ".event";
+	private static final String EVENT_NAME_SELECTOR = ".eventname";
+	private static final String EVENT_TIMES_SELECTOR = ".timespan";
+	private static final String EVENT_LOC_SELECTOR = ".location";
 	
 	@Override
-	protected String doInBackground(String... args) {
+	protected ArrayList<ScheduleEvent> doInBackground(String... args) {
 		
 		client = new DefaultHttpClient();
-		String result = "";
+		ArrayList<ScheduleEvent> events = new ArrayList<ScheduleEvent>();
 		
 		// TODO check args!
 		
 		try {
 			login(args[0], args[1]);
-			result = getSchedule();
+			String html = getSchedule();
+			events = parseSchedule(html);
 		} catch (IOException e) {
 			exceptions.add(e);
 		}
 		
-		return result;
+		return events;
 	}
 	
 	@Override
-	protected void onPostExecute(String result) {
-		super.onPostExecute(result);
+	protected void onPostExecute(ArrayList<ScheduleEvent> events) {
+		super.onPostExecute(events);
         
         for (Exception e : exceptions) {
         	// TODO inform login dialog that login failed
@@ -128,6 +135,46 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 		
 		return resultString;
 		
+	}
+	
+	private ArrayList<ScheduleEvent> parseSchedule(String html) {
+		ArrayList<ScheduleEvent> scheduleEvents = new ArrayList<ScheduleEvent>();
+		Document doc = Jsoup.parse(html);
+
+		// For each day of the week
+		for (Day day : Day.values()) {
+			
+			// Select each event in this day
+			Element div = doc.getElementById(day.toString());
+			Elements events = div.select(EVENT_SELECTOR);
+			
+			// Create ScheduleEvents
+			for (Element event : events) {
+				
+				// Get raw event info
+				String name = event.select(EVENT_NAME_SELECTOR).first().text();
+				String times = event.select(EVENT_TIMES_SELECTOR).first().text();
+				String location = event.select(EVENT_LOC_SELECTOR).first().text();
+				
+				// Get event ID by extracting digits from 'onclick' attribute
+				String idString = event.attr("onclick");
+				idString = idString.replaceAll("\\D+","");
+				int id = Integer.parseInt(idString);
+				
+				// Extract start/end times
+				String[] split = times.split("-");
+				String start = split[0] + "m";
+				String end = split[1] + "m";
+								
+				ScheduleEvent newEvent =  new ScheduleEvent(id, name, location, start, end, day);
+				
+				scheduleEvents.add(newEvent);
+				
+			}
+			
+		}
+		
+		return scheduleEvents;
 	}
 	
 }

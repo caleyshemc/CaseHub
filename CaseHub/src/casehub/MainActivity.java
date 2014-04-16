@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutionException;
 import greenie.GreenieFragment;
 import laundry.LaundryFragment;
 import map.CampusMapFragment;
-import schedule.ParseScheduleTask;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
 import schedule.login.LoginDialog;
@@ -233,29 +232,14 @@ public class MainActivity extends Activity implements
 	 * When user logs into Scheduler, pass data to ScheduleFragment.
 	 */
 	@Override
-	public void onScheduleLogin(String html) {
-
-		// Parse HTML
-		ArrayList<ScheduleEvent> events = new ArrayList<ScheduleEvent>();
-		try {
-			events = new ParseScheduleTask().execute(html).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void onScheduleLogin(String user, String pass) {
 
 		// Find ScheduleFragment to send results to
 		ScheduleFragment schedFrag = (ScheduleFragment) getFragmentManager()
 				.findFragmentByTag("schedule_fragment");
 
 		// Clear old schedule
-		schedFrag.clearSchedule();
-		
-		// Save and display each event
-		schedFrag.addEvents(events);
+		schedFrag.login(user, pass);
 		
 	}
 

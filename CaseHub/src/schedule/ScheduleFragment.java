@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -183,6 +184,22 @@ public class ScheduleFragment extends Fragment {
 			timeLine.setVisibility(LinearLayout.GONE);
 		}
 		
+	}
+	
+	public void login(String user, String pass) {
+		
+		Log.d("LOGIN", "Login() reached successfully!");
+		
+		// TODO make logintask, return to SchedFrag using SchedFrag callback
+		
+		/*
+		// If successful, set preference indicating user has logged in
+		   SharedPreferences settings = getActivity().getSharedPreferences(
+					ScheduleFragment.LOGGED_IN_PREF, 0);
+		   SharedPreferences.Editor editor = settings.edit();
+		   editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
+		   editor.commit();
+		   */
 	}
 	
 	/**

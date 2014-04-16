@@ -1,7 +1,9 @@
 package schedule.login;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import schedule.ScheduleEvent;
 import schedule.ScheduleFragment;
 
 import com.casehub.R;
@@ -36,7 +38,7 @@ public class LoginDialog extends DialogFragment {
 	 * Container Activity must implement this interface.
 	 */
     public interface OnLoginListener {
-        public void onScheduleLogin(String html);
+        public void onScheduleLogin(String user, String pass);
     }
     
     /**
@@ -84,27 +86,8 @@ public class LoginDialog extends DialogFragment {
             		   passText.setVisibility(View.GONE);
             		   progressBar.setVisibility(View.VISIBLE);
             		   
-            		   /* Log in using Case Single-Sign On*/
-            			String html = "";
-            			try {
-            				html = new LoginTask().execute(user, pass).get();
-            			} catch (InterruptedException e) {
-            				// TODO handle
-            				Log.e("CASEHUB", "exception", e);
-            			} catch (ExecutionException e) {
-            				Log.e("CASEHUB", "exception", e);
-            			}
-            			
-            			// If successful, set preference indicating user has logged in
-            			SharedPreferences settings = getActivity().getSharedPreferences(
-            					ScheduleFragment.LOGGED_IN_PREF, 0);
-            		    SharedPreferences.Editor editor = settings.edit();
-            		    editor.putBoolean(ScheduleFragment.LOGGED_IN, true);
-            		    editor.commit();
-
-            			// Pass HTML to MainActivity and dismiss dialog
-            			callback.onScheduleLogin(html);
-            			LoginDialog.this.getDialog().dismiss();
+            		   // Send fields to MainActivity through callback
+            		   callback.onScheduleLogin(user, pass);
 
                    }
                })
