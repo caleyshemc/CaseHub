@@ -39,7 +39,6 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... args) {
 		
 		client = new DefaultHttpClient();
-		
 		String result = "";
 		
 		// TODO check args!

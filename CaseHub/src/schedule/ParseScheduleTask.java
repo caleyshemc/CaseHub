@@ -11,6 +11,11 @@ import android.os.AsyncTask;
 
 public class ParseScheduleTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>> {
 	
+	private static final String EVENT_SELECTOR = ".event";
+	private static final String EVENT_NAME_SELECTOR = ".eventname";
+	private static final String EVENT_TIMES_SELECTOR = ".timespan";
+	private static final String EVENT_LOC_SELECTOR = ".location";
+	
 	@Override
     protected ArrayList<ScheduleEvent> doInBackground(String... args) {
         return parseSchedule(args[0]);
@@ -25,15 +30,15 @@ public class ParseScheduleTask extends AsyncTask<String, Void, ArrayList<Schedul
 			
 			// Select each event in this day
 			Element div = doc.getElementById(day.toString());
-			Elements events = div.select(".event");
+			Elements events = div.select(EVENT_SELECTOR);
 			
 			// Create ScheduleEvents
 			for (Element event : events) {
 				
 				// Get raw event info
-				String name = event.select(".eventname").first().text();
-				String times = event.select(".timespan").first().text();
-				String location = event.select(".location").first().text();
+				String name = event.select(EVENT_NAME_SELECTOR).first().text();
+				String times = event.select(EVENT_TIMES_SELECTOR).first().text();
+				String location = event.select(EVENT_LOC_SELECTOR).first().text();
 				
 				// Get event ID by extracting digits from 'onclick' attribute
 				String idString = event.attr("onclick");

@@ -164,8 +164,8 @@ public class MainActivity extends Activity implements
 		case 0:
 			/*
 			 * fragment = new GreenieFragment(); tag = "greenie_fragment";
-			 * break;
 			 */
+			 break;
 		case 1:
 			fragment = new LaundryFragment();
 			tag = "laundry_fragment";
