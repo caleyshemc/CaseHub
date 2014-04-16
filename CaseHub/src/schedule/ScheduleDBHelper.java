@@ -127,7 +127,7 @@ public class ScheduleDBHelper {
 		ArrayList<LocalTime> times = getStartTimes();
 				
 		if (times.isEmpty()) {
-			return ScheduleFragment.FIRST_HOUR;
+			return ScheduleUIHelper.FIRST_HOUR;
 		}
 		
 		// Find earliest time
@@ -150,7 +150,7 @@ public class ScheduleDBHelper {
 		ArrayList<LocalTime> times = getEndTimes();
 				
 		if (times.isEmpty()) {
-			return ScheduleFragment.LAST_HOUR;
+			return ScheduleUIHelper.LAST_HOUR;
 		}
 				
 		// Find latest time
