@@ -81,9 +81,11 @@
     <string name="action_fav">Show/Hide Favorites</string>
     
     <!-- DINING -->
-    <string name="leutner">Leutner</string>
-    <string name="fribley">Fribley</string>
-    <string name="tomlinson">Tomlinson</string>
-    <string name="brb_cafe">BRB Cafe</string>
-    <string name="wrb_cafe">WRB Cafe</string>
+    <string-array name="dining_array">
+        <item>Leutner</item>
+        <item>Fribley</item>
+        <item>Tomlinson</item>
+        <item>BRB Cafe</item>
+    	<item>WRB Cafe</item>
+    </string-array>
 </resources>
