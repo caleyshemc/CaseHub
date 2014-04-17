@@ -20,6 +20,7 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Fetches laundry information from Case eSuds
@@ -36,8 +37,8 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	
 	private int houseId;
 	
-	private static final String ESUDS_HOUSE_URL = "http://case-asi.esuds.net/RoomStatus/showRoomStatus.i?locationId=";
-	private static final String STATUS_TABLE_SELECTOR = "#room_status";
+	private static final String ESUDS_STATUS_URL = "http://case-asi.esuds.net/RoomStatus/machineStatus.i?bottomLocationId=";
+	private static final String STATUS_ROW_SELECTOR = ".room_status tr";
 	private static final int MACHINE_NUM_INDEX = 1;
 	private static final int MACHINE_TYPE_INDEX = 2;
 	private static final int MACHINE_STATUS_INDEX = 3;
@@ -53,7 +54,7 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	protected void onPreExecute() {
 		super.onPreExecute();
 		dialog = new ProgressDialog(context);
-		dialog.setMessage("Fetching residence halls...");
+		dialog.setMessage("Fetching washer/dryer times...");
 		dialog.show();
 	}
 
@@ -94,7 +95,7 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	    client.setCookieStore(cookieStore);
 
 	    // GET page
-		HttpGet get = new HttpGet(ESUDS_HOUSE_URL + houseId);
+		HttpGet get = new HttpGet(ESUDS_STATUS_URL + houseId);
 		HttpResponse loginGetResult = client.execute(get);
 		HttpEntity entity = loginGetResult.getEntity();
 		
@@ -105,11 +106,10 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 		
 		ArrayList<LaundryMachine> machines = new ArrayList<LaundryMachine>();
 		Document doc = Jsoup.parse(html);
-		
+				
 		// Get table
-		Element statusTable = doc.select(STATUS_TABLE_SELECTOR).first();
-		Elements statusTableRows = statusTable.select("tr");
-		
+		Elements statusTableRows = doc.select(STATUS_ROW_SELECTOR);
+				
 		// Extract useful rows
 		int machineNumber;
 		int minutesLeft;
@@ -123,13 +123,20 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 			}
 			
 			machineNumber = Integer.parseInt(columns.get(MACHINE_NUM_INDEX).text());
-			minutesLeft = Integer.parseInt(columns.get(MACHINE_MIN_INDEX).text());
 			type = columns.get(MACHINE_TYPE_INDEX).text();
 			status = columns.get(MACHINE_STATUS_INDEX).text();
 			
+			String minuteString = columns.get(MACHINE_MIN_INDEX).text();
+			minuteString = minuteString.replaceAll("\u00A0", ""); // get rid of pesky &nbsp
+
+			if (minuteString != null && minuteString.trim().length() > 0) {
+				minutesLeft = Integer.parseInt(minuteString);
+			} else {
+				minutesLeft = -1;
+			}
+				
 			LaundryMachine machine = new LaundryMachine(machineNumber, minutesLeft, type, status);
 			machines.add(machine);
-			
 		}
 		
 		return machines;

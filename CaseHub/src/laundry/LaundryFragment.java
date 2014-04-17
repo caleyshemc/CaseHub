@@ -105,13 +105,15 @@ public class LaundryFragment extends Fragment {
 		
 		int selectedHouseId = houses.get(houseName);
 		
+		Log.d("LAUNDRY", "OnHouseSelected()");
+		
 		new FetchLaundryTask(getActivity(), new LaundryCallback() {
 			
 			@Override
 			public void onTaskDone(ArrayList<LaundryMachine> machines) {
 				showLaundryTimes(machines);
 			}
-		}, selectedHouseId);
+		}, selectedHouseId).execute();
 		
 	}
 	
