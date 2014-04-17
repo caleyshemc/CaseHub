@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.casehub.R;
@@ -104,9 +105,7 @@ public class LaundryFragment extends Fragment {
 	private void onHouseSelected(String houseName) {
 		
 		int selectedHouseId = houses.get(houseName);
-		
-		Log.d("LAUNDRY", "OnHouseSelected()");
-		
+				
 		new FetchLaundryTask(getActivity(), new LaundryCallback() {
 			
 			@Override
@@ -119,9 +118,9 @@ public class LaundryFragment extends Fragment {
 	
 	private void showLaundryTimes(ArrayList<LaundryMachine> machines) {
 		
+		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		
-		Log.d("LAUNDRY", "Laundry times: " + machines.toString());
-		
+		// TODO populate layout with machines!
 
 		
 	}
