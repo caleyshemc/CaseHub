@@ -17,11 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -141,9 +144,20 @@ public class LaundryFragment extends Fragment {
 	private void showLaundryTimes(ArrayList<LaundryMachine> machines) {
 		
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
+		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		
-		// TODO populate layout with machines!
+		// Remove current children of layout
+		//laundryLayout.removeAllViews();
 		
+		// Populate with laundry info
+		for (LaundryMachine machine : machines) {
+			
+            Button myButton = new Button(getActivity());
+            myButton.setText(machine.toString());
+            
+            laundryLayout.addView(myButton, layoutParams);
+			
+		}
 		
 	}
     
