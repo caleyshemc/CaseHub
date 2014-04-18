@@ -20,6 +20,7 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
 	
@@ -29,7 +30,7 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 	ProgressDialog dialog;
 
 	private static final String ESUDS_URL = "http://case-asi.esuds.net/RoomStatus/showRoomStatus.do";
-	private static final String HOUSE_SELECTOR = "span a";
+	private static final String HOUSE_SELECTOR = "span.dormlinks a";
 	private static final String HOUSE_LIST_SELECTOR = "#menu";
 	private static final String HOUSE_ID_ATTR = "href";
 	
@@ -106,6 +107,8 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 			
 			houses.put(houseName, houseId);
 		}
+		
+		Log.d("LAUNDRY", "Houses: " + houses.toString());
 		
 		return houses;
 	}

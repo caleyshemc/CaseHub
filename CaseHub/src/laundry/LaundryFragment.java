@@ -143,11 +143,14 @@ public class LaundryFragment extends Fragment {
 	
 	private void showLaundryTimes(ArrayList<LaundryMachine> machines) {
 		
+		// TODO null check, empty check
+		
+		// TODO make this layout a class variable?
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		
 		// Remove current children of layout
-		//laundryLayout.removeAllViews();
+		laundryLayout.removeAllViews();
 		
 		// Populate with laundry info
 		for (LaundryMachine machine : machines) {

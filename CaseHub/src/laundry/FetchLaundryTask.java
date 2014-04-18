@@ -46,7 +46,12 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	public FetchLaundryTask(Context context, LaundryCallback callback, int houseId) {
 		this.context = context;
 		this.callback = callback;
-		this.houseId = houseId;
+		
+		/*
+		 * The house IDs used in the eSuds Ajax calls are exactly one greater
+		 * than the IDs used in ShowRoomStatus.i, for some reason.
+		 */
+		this.houseId = houseId + 1;
 	}
 	
 	@Override
@@ -93,7 +98,7 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 		BasicCookieStore cookieStore = new BasicCookieStore();
 	    client.setCookieStore(cookieStore);
 
-	    // GET page
+	    // GET page	    
 		HttpGet get = new HttpGet(ESUDS_STATUS_URL + houseId);
 		HttpResponse loginGetResult = client.execute(get);
 		HttpEntity entity = loginGetResult.getEntity();
@@ -102,6 +107,8 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	}
 	
 	private ArrayList<LaundryMachine> parseLaundryTimes(String html) {
+		
+		//Log.d("LAUNDRY", "Machine HTML: " + html);
 		
 		ArrayList<LaundryMachine> machines = new ArrayList<LaundryMachine>();
 		Document doc = Jsoup.parse(html);
