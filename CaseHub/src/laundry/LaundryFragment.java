@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +37,15 @@ public class LaundryFragment extends Fragment {
 	public interface LaundryHousesCallback {
 		public void onTaskDone(HashMap<String, Integer> houses);
 	}
+	public LaundryFragment() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,8 +64,6 @@ public class LaundryFragment extends Fragment {
     
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-	
-		spinner = (Spinner) view.findViewById(R.id.house_spinner);
 		
 		new FetchHousesTask(getActivity(), new LaundryHousesCallback() {
 			
@@ -62,7 +75,18 @@ public class LaundryFragment extends Fragment {
 		
 	}
 	
-	private void populateHouseSpinner(HashMap<String, Integer> houses) {
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		
+		getActivity().getMenuInflater().inflate(R.menu.laundry, menu);
+		
+		// Grab spinner from ActionBar (for adding houses)
+		MenuItem item = menu.findItem(R.id.laundry_spinner);
+	    spinner = (Spinner) MenuItemCompat.getActionView(item);
+	    
+	}
+	
+	private ArrayAdapter<String> populateHouseSpinner(HashMap<String, Integer> houses) {
 		
 		if (houses.isEmpty()) {
 			throw new InvalidParameterException(
@@ -79,10 +103,8 @@ public class LaundryFragment extends Fragment {
 		// Populate spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_spinner_item, houseArray);
-		spinner.setAdapter(adapter);
-		
-		// Set listener
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+	    spinner.setAdapter(adapter);
+	    spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, 
@@ -91,15 +113,15 @@ public class LaundryFragment extends Fragment {
 				Log.d("LAUNDRY", "Item selected!");
 				String selectedHouse = (String) parent.getItemAtPosition(pos);
 				onHouseSelected(selectedHouse);
-				
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// Do nothing.
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// Do nothing
 			}
-            });
-		
+		});
+	    
+		return adapter;
 	}
 	
 	private void onHouseSelected(String houseName) {
@@ -121,7 +143,7 @@ public class LaundryFragment extends Fragment {
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		
 		// TODO populate layout with machines!
-
+		
 		
 	}
     

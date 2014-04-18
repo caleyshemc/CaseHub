@@ -31,13 +31,25 @@
         android:fadingEdge="none"
         android:overScrollMode="never"
         android:padding="0dp"
-        android:scrollbars="none" >
-
-        <LinearLayout
+        android:scrollbars="none" ><LinearLayout
             android:id="@+id/laundry_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/test_item"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/thursday_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/thursday" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
