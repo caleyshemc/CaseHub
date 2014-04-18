@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -24,7 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -39,9 +36,6 @@ public class LaundryFragment extends Fragment {
 	
 	public interface LaundryHousesCallback {
 		public void onTaskDone(HashMap<String, Integer> houses);
-	}
-	public LaundryFragment() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -59,10 +53,8 @@ public class LaundryFragment extends Fragment {
     
     /*
 	 * TODO 
-	 * -- Query for list of houses when first opened 
 	 * -- Open to last-viewed house 
-	 * -- Query for specific house only when refresh button hit or new
-	 * house selected in drop-down
+	 * -- Query for houses only on first open or when "Refresh House List" menu button clicked
 	 */
     
 	@Override
