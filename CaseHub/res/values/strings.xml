@@ -85,4 +85,12 @@
     <string name="laundry_alarm_title">Set alarm for this machine?</string>
     <string name="set_alarm">Set Alarm</string>
     
+    <!-- DINING -->
+    <string-array name="dining_array">
+        <item>Leutner</item>
+        <item>Fribley</item>
+        <item>Tomlinson</item>
+        <item>BRB Cafe</item>
+    	<item>WRB Cafe</item>
+    </string-array>
 </resources>
