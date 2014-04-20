@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,11 +22,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.casehub.R;
 
 public class LaundryFragment extends Fragment {
 	
+	LaundryDbHelper dbHelper;
 	Spinner spinner;
 	HashMap<String, Integer> houses;
 	
@@ -55,15 +57,19 @@ public class LaundryFragment extends Fragment {
 	 * TODO 
 	 * -- Open to last-viewed house 
 	 * -- Query for houses only on first open or when "Refresh House List" menu button clicked
+	 * 	  -- save houses in db!
 	 */
     
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		
+		dbHelper = new LaundryDbHelper();
+		
 		new FetchHousesTask(getActivity(), new LaundryHousesCallback() {
 			
 			@Override
 			public void onTaskDone(HashMap<String, Integer> houses) {
+				dbHelper.addHouses(houses);
 				populateHouseSpinner(houses);
 			}
 		}).execute();
@@ -98,6 +104,7 @@ public class LaundryFragment extends Fragment {
 		// Populate spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_spinner_item, houseArray);
+		adapter.setDropDownViewResource(R.layout.spinner_item_laundry);
 	    spinner.setAdapter(adapter);
 	    spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -105,7 +112,7 @@ public class LaundryFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, 
 		            int pos, long id) {
 
-				Log.d("LAUNDRY", "Item selected!");
+				((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
 				String selectedHouse = (String) parent.getItemAtPosition(pos);
 				onHouseSelected(selectedHouse);
 			}
@@ -137,7 +144,6 @@ public class LaundryFragment extends Fragment {
 		
 		// TODO null check, empty check
 		
-		// TODO make this layout a class variable?
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		

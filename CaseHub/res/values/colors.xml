@@ -16,5 +16,7 @@
     <color name="event4">#AA66BB</color>
     <color name="event5">#99CC00</color>
     <color name="event6">#FFCE0D</color>
+    
+    <color name="spinner_laundry_text">#FFFFFF</color>
 
 </resources>

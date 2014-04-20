@@ -66,8 +66,6 @@ public class ScheduleDBHelper {
 				null // The sort order
 				);
 
-		/* Display each event */
-
 		ArrayList<ScheduleEvent> events = new ArrayList<ScheduleEvent>();
 
 		int id;
@@ -87,9 +85,11 @@ public class ScheduleDBHelper {
 
 		// If no entries found
 		if (!c.moveToFirst()) {
+			// TODO throw error
 			return events;
 		}
 
+		// Create new ScheduleEvent for each entry
 		do {
 
 			id = c.getInt(id_index);
@@ -98,8 +98,6 @@ public class ScheduleDBHelper {
 			start = c.getString(start_index);
 			end = c.getString(end_index);
 			day = c.getString(day_index);
-
-			// TODO set colors here?
 
 			ScheduleEvent event = new ScheduleEvent(id, name, location, start,
 					end, Day.valueOf(day));
