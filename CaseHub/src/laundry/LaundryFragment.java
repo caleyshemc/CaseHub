@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import schedule.login.LoginDialog;
+
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -238,10 +241,17 @@ public class LaundryFragment extends Fragment {
 		// Populate with laundry info
 		for (LaundryMachine machine : machines) {
 			
-            Button myButton = new Button(getActivity());
-            myButton.setText(machine.toString());
+            Button button = new Button(getActivity());
+            button.setText(machine.toString());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                	DialogFragment alarmDialog = new LaundryAlarmDialog();
+                	alarmDialog.show(getFragmentManager(), "laundry_alarm");
+                }
+            });
             
-            laundryLayout.addView(myButton, layoutParams);
+            laundryLayout.addView(button, layoutParams);
 			
 		}
 		
