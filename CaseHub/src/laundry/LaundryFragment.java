@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,10 +34,22 @@ public class LaundryFragment extends Fragment {
 	Spinner spinner;
 	HashMap<String, Integer> houses;
 	
+	/**
+	 * SharedPreferences fields and filenames
+	 */
+	public static final String LAUNDRY_PREFS = "LaundryPrefsFile";
+	public static final String HOUSES_LOADED = "housesLoaded";
+	
+	/**
+	 * For returning FetchLaundryTask
+	 */
 	public interface LaundryCallback {
         public void onTaskDone(ArrayList<LaundryMachine> machines);
     }
 	
+	/**
+	 * For returning FetchHousesTask
+	 */
 	public interface LaundryHousesCallback {
 		public void onTaskDone(HashMap<String, Integer> houses);
 	}
@@ -65,26 +79,84 @@ public class LaundryFragment extends Fragment {
 		
 		dbHelper = new LaundryDbHelper();
 		
-		new FetchHousesTask(getActivity(), new LaundryHousesCallback() {
-			
-			@Override
-			public void onTaskDone(HashMap<String, Integer> houses) {
-				dbHelper.addHouses(houses);
-				populateHouseSpinner(houses);
-			}
-		}).execute();
-		
 	}
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		
+				
 		getActivity().getMenuInflater().inflate(R.menu.laundry, menu);
 		
 		// Grab spinner from ActionBar (for adding houses)
 		MenuItem item = menu.findItem(R.id.laundry_spinner);
 	    spinner = (Spinner) MenuItemCompat.getActionView(item);
 	    
+		// Check if houses have been loaded previously
+		SharedPreferences settings = getActivity().getSharedPreferences(
+				LAUNDRY_PREFS, 0);
+		boolean housesLoaded = settings.getBoolean(HOUSES_LOADED, false);
+
+		if (housesLoaded) {
+
+			// Show houses in database
+			HashMap<String, Integer> houses = dbHelper.getHouses();
+			Log.d("LAUNDRY", "Houses found in DB: " + houses.toString());
+			populateHouseSpinner(houses);
+
+			// TODO go to last-opened house
+
+		} else {
+
+			// Fetch houses from eSuds
+			new FetchHousesTask(getActivity(), new LaundryHousesCallback() {
+
+				@Override
+				public void onTaskDone(HashMap<String, Integer> houses) {
+					onHousesFetched(houses);
+				}
+			}).execute();
+
+		}
+	    
+	}
+	
+	/**
+	 * Called when ActionBar button is selected.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case R.id.refresh_houses:
+			dbHelper.clearHouses();
+			new FetchHousesTask(getActivity(), new LaundryHousesCallback() {
+				
+				@Override
+				public void onTaskDone(HashMap<String, Integer> houses) {
+					onHousesFetched(houses);
+				}
+			}).execute();
+			return true;
+			
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	/*
+	 * Called when houses are successfully fetched from eSuds.
+	 */
+	private void onHousesFetched(HashMap<String, Integer> houses) {
+		
+		// Set preference indicating houses have been fetched
+		SharedPreferences settings = getActivity().getSharedPreferences(
+				LAUNDRY_PREFS, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean(HOUSES_LOADED, true);
+		editor.commit();
+		
+		dbHelper.addHouses(houses);
+		populateHouseSpinner(houses);
+		
 	}
 	
 	private ArrayAdapter<String> populateHouseSpinner(HashMap<String, Integer> houses) {
@@ -103,7 +175,7 @@ public class LaundryFragment extends Fragment {
 		
 		// Populate spinner
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, houseArray);
+				R.layout.spinner_item_laundry, houseArray);
 		adapter.setDropDownViewResource(R.layout.spinner_item_laundry);
 	    spinner.setAdapter(adapter);
 	    spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -112,7 +184,6 @@ public class LaundryFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, 
 		            int pos, long id) {
 
-				((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
 				String selectedHouse = (String) parent.getItemAtPosition(pos);
 				onHouseSelected(selectedHouse);
 			}

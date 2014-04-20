@@ -20,7 +20,6 @@ import org.jsoup.select.Elements;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
 	
@@ -107,8 +106,6 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 			
 			houses.put(houseName, houseId);
 		}
-		
-		Log.d("LAUNDRY", "Houses: " + houses.toString());
 		
 		return houses;
 	}

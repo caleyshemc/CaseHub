@@ -49,9 +49,15 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 		
 		/*
 		 * The house IDs used in the eSuds Ajax calls are exactly one greater
-		 * than the IDs used in ShowRoomStatus.i, for some reason.
+		 * than the IDs used in ShowRoomStatus.i
+		 * 
+		 * EXCEPT for 1401 (Hitchcock), which has a call to ID 1403 for some reason.
 		 */
-		this.houseId = houseId + 1;
+		if (houseId == 1401)
+			this.houseId = houseId + 2;
+		else {
+			this.houseId = houseId + 1;
+		}
 	}
 	
 	@Override

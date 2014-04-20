@@ -44,6 +44,9 @@ public class ScheduleFragment extends Fragment {
 	public static final int SILENT_VIBRATE = 1;
 	public static final int SILENT_OFF = 2;
 		
+	/**
+	 * For returning LoginTask
+	 */
 	public interface LoginCallback {
         public void onTaskDone(ArrayList<ScheduleEvent> events);
     }
