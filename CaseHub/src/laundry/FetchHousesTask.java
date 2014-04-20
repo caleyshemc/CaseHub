@@ -21,6 +21,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+/**
+ * Fetches residence hall list from Case eSuds.
+ */
 public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
 	
 	Context context;

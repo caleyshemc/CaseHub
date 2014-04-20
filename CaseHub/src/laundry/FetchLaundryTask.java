@@ -22,10 +22,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 /**
- * Fetches laundry information from Case eSuds
- * 
- * Call execute() with no third argument for house list,
- * with third argument (int houseId) for laundry times for that house.
+ * Fetches laundry information from Case eSuds.
  */
 public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryMachine>> {
 	
@@ -113,9 +110,7 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	}
 	
 	private ArrayList<LaundryMachine> parseLaundryTimes(String html) {
-		
-		//Log.d("LAUNDRY", "Machine HTML: " + html);
-		
+				
 		ArrayList<LaundryMachine> machines = new ArrayList<LaundryMachine>();
 		Document doc = Jsoup.parse(html);
 				
