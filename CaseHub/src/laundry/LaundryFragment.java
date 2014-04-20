@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import android.app.Fragment;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
@@ -24,7 +23,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -37,8 +35,10 @@ public class LaundryFragment extends Fragment {
 	/**
 	 * SharedPreferences fields and filenames
 	 */
-	public static final String LAUNDRY_PREFS = "LaundryPrefsFile";
+	public static final String HOUSES_LOADED_PREFS = "housesLoadedPrefsFile";
 	public static final String HOUSES_LOADED = "housesLoaded";
+	public static final String CURRENT_HOUSE_PREFS = "currentHousePrefsFile";
+	public static final String CURRENT_HOUSE = "currentHouse";
 	
 	/**
 	 * For returning FetchLaundryTask
@@ -70,8 +70,6 @@ public class LaundryFragment extends Fragment {
     /*
 	 * TODO 
 	 * -- Open to last-viewed house 
-	 * -- Query for houses only on first open or when "Refresh House List" menu button clicked
-	 * 	  -- save houses in db!
 	 */
     
 	@Override
@@ -92,17 +90,14 @@ public class LaundryFragment extends Fragment {
 	    
 		// Check if houses have been loaded previously
 		SharedPreferences settings = getActivity().getSharedPreferences(
-				LAUNDRY_PREFS, 0);
+				HOUSES_LOADED_PREFS, 0);
 		boolean housesLoaded = settings.getBoolean(HOUSES_LOADED, false);
 
 		if (housesLoaded) {
 
 			// Show houses in database
 			HashMap<String, Integer> houses = dbHelper.getHouses();
-			Log.d("LAUNDRY", "Houses found in DB: " + houses.toString());
 			populateHouseSpinner(houses);
-
-			// TODO go to last-opened house
 
 		} else {
 
@@ -149,7 +144,7 @@ public class LaundryFragment extends Fragment {
 		
 		// Set preference indicating houses have been fetched
 		SharedPreferences settings = getActivity().getSharedPreferences(
-				LAUNDRY_PREFS, 0);
+				HOUSES_LOADED_PREFS, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean(HOUSES_LOADED, true);
 		editor.commit();
@@ -173,11 +168,25 @@ public class LaundryFragment extends Fragment {
 		Collections.sort(houseList, String.CASE_INSENSITIVE_ORDER);
 		String[] houseArray = houseList.toArray(new String[houseList.size()]);
 		
-		// Populate spinner
+		// Populate spinner adapter
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 				R.layout.spinner_item_laundry, houseArray);
 		adapter.setDropDownViewResource(R.layout.spinner_item_laundry);
 	    spinner.setAdapter(adapter);
+	    
+		// Get last-opened house
+		SharedPreferences houseSetting = getActivity().getSharedPreferences(
+				CURRENT_HOUSE_PREFS, 0);
+		String currentHouse = houseSetting.getString(CURRENT_HOUSE, "");
+
+		Log.d("LAUDNRY", "Current house: " + currentHouse);
+
+		// Set spinner to last-opened house
+		if (currentHouse.length() > 0) {
+			int spinnerPosition = adapter.getPosition(currentHouse);
+			spinner.setSelection(spinnerPosition);
+		}
+	    
 	    spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -208,6 +217,15 @@ public class LaundryFragment extends Fragment {
 				showLaundryTimes(machines);
 			}
 		}, selectedHouseId).execute();
+		
+		Log.d("LAUDNRY", "Setting current house: " + houseName);
+		
+		// Set preference indicating last house shown
+		SharedPreferences settings = getActivity().getSharedPreferences(
+				CURRENT_HOUSE_PREFS, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString(CURRENT_HOUSE, houseName);
+		editor.commit();
 		
 	}
 	
