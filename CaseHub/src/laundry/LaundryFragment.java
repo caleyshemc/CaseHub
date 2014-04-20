@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,11 +65,6 @@ public class LaundryFragment extends Fragment {
         // Inflate the layout for this fragment
     	return inflater.inflate(R.layout.fragment_laundry, container, false);
     }
-    
-    /*
-	 * TODO 
-	 * -- Open to last-viewed house 
-	 */
     
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -179,8 +173,6 @@ public class LaundryFragment extends Fragment {
 				CURRENT_HOUSE_PREFS, 0);
 		String currentHouse = houseSetting.getString(CURRENT_HOUSE, "");
 
-		Log.d("LAUDNRY", "Current house: " + currentHouse);
-
 		// Set spinner to last-opened house
 		if (currentHouse.length() > 0) {
 			int spinnerPosition = adapter.getPosition(currentHouse);
@@ -217,9 +209,7 @@ public class LaundryFragment extends Fragment {
 				showLaundryTimes(machines);
 			}
 		}, selectedHouseId).execute();
-		
-		Log.d("LAUDNRY", "Setting current house: " + houseName);
-		
+				
 		// Set preference indicating last house shown
 		SharedPreferences settings = getActivity().getSharedPreferences(
 				CURRENT_HOUSE_PREFS, 0);
