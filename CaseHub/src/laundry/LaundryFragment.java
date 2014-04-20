@@ -148,6 +148,9 @@ public class LaundryFragment extends Fragment {
 		
 	}
 	
+	/*
+	 * Populates spinner (select box in ActionBar) with given houses.
+	 */
 	private ArrayAdapter<String> populateHouseSpinner(HashMap<String, Integer> houses) {
 		
 		if (houses.isEmpty()) {
@@ -198,6 +201,9 @@ public class LaundryFragment extends Fragment {
 		return adapter;
 	}
 	
+	/*
+	 * Called when a house is selected in the spinner.
+	 */
 	private void onHouseSelected(String houseName) {
 		
 		int selectedHouseId = houses.get(houseName);
