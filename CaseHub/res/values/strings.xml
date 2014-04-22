@@ -82,7 +82,7 @@
     
     <!-- LAUNDRY -->
     <string name="refresh_houses">Refresh list of houses</string>
-    <string name="laundry_alarm_title">Set alarm for this machine?</string>
+    <string name="laundry_alarm_title">Set laundry alarm</string>
     <string name="set_alarm">Set Alarm</string>
     
     <!-- DINING -->

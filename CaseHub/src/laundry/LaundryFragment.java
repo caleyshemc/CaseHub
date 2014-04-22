@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import schedule.login.LoginDialog;
-
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.SharedPreferences;
@@ -241,12 +239,26 @@ public class LaundryFragment extends Fragment {
 		// Populate with laundry info
 		for (LaundryMachine machine : machines) {
 			
+			final int machineNumber = machine.getMachineNumber();
+			final int minutesLeft = machine.getMinutesLeft();
+			
             Button button = new Button(getActivity());
             button.setText(machine.toString());
             button.setOnClickListener(new View.OnClickListener() {
+            	
                 @Override
                 public void onClick(View v) {
+                	
+                	// TODO check status here (or just minutes left!)
+                	
+                	// Create bundle of arguments to send to dialog
+                	Bundle args = new Bundle();
+                	args.putInt("machineNumber", machineNumber);
+                	args.putInt("minutesLeft", minutesLeft);
+                	
+                	// Show dialog
                 	DialogFragment alarmDialog = new LaundryAlarmDialog();
+                	alarmDialog.setArguments(args);
                 	alarmDialog.show(getFragmentManager(), "laundry_alarm");
                 }
             });

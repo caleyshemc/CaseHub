@@ -19,35 +19,22 @@ public class LaundryAlarmDialog extends DialogFragment {
 
         // Inflate view
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_autosilent, null);
+        View view = inflater.inflate(R.layout.dialog_laundry_alarm, null);
+        
+        // TODO check if available! if not, can't set alarm
+        
         builder.setView(view);
-		
         builder.setTitle(R.string.laundry_alarm_title)
-        		/*
-				.setSingleChoiceItems(R.array.autosilent_options, autoSilentSetting, 
-		                new DialogInterface.OnClickListener() {
-		             
-		            @Override
-		            public void onClick(DialogInterface dialog, int which) {
-		            	// Set new setting to selected option
-		            	newSetting = which;
-		            }
-		            
-		        })
-		        */
+        		.setMessage("Set alarm for this machine?") // TODO add type, number, house
         		.setPositiveButton(R.string.set_alarm,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 		            		    
 								/* TODO
-								 * Perhaps alert user of ANY change, 
-								 * with a dialog allowing them to stop alerts?
 								 * 
-								 * Either that, or multiselect asking them which change to alert.
-								 * 
-								 * Don't need to use eSuds ID... just use House + machine number! :)
-								 * 
+								 * Just grab time and set an alarm for that!
+								
 		            		    // Create or cancel alarms for silent/unsilent events		            		    
 		            		    if (newSetting == ScheduleFragment.SILENT_OFF) {
 									silenceReceiver.cancel(getActivity());
