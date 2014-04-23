@@ -273,7 +273,16 @@ public class LaundryFragment extends Fragment {
                 }
             });
             
+            // Add button to layout
             laundryLayout.addView(button, layoutParams);
+            
+            // Add spacer between buttons
+            View spacer = new View(getActivity());
+            LayoutParams spacerParams = new LayoutParams(LayoutParams.MATCH_PARENT, 2);
+            int color = getActivity().getResources().getColor(R.color.main_bg);
+            spacer.setBackgroundColor(color);
+            
+            laundryLayout.addView(spacer, spacerParams);
 			
 		}
 		
@@ -324,7 +333,7 @@ public class LaundryFragment extends Fragment {
 		}
 
 		machineStatus.setTextColor(color);
-		
+				
 		return button;
 	}
     
