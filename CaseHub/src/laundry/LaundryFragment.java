@@ -76,6 +76,11 @@ public class LaundryFragment extends Fragment {
 		
 	}
 	
+	/**
+	 * TODO:
+	 * -- Fetches laundry times when drawer opened! :O
+	 */
+	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 				
@@ -244,6 +249,7 @@ public class LaundryFragment extends Fragment {
 			final String type = machine.getType();
 			final int machineNumber = machine.getMachineNumber();
 			final int minutesLeft = machine.getMinutesLeft();
+			String status = machine.getStatus().getString();
 			
 			// Set washer/dryer icon
 			Drawable icon;
@@ -255,7 +261,7 @@ public class LaundryFragment extends Fragment {
 			
             Button button = new Button(getActivity());
             button.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-            button.setText(type + " " + machineNumber);
+            button.setText(type + " " + machineNumber + " - " + status);
             button.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
             
             button.setOnClickListener(new View.OnClickListener() {

@@ -40,6 +40,19 @@ public class LaundryMachine {
 	enum Status {
 		AVAILABLE, IN_USE, CYCLE_COMPLETE, UNAVAILABLE;
 		
+		public String getString() {
+			switch (this) {
+			case AVAILABLE:
+				return "Available";
+			case IN_USE:
+				return "In Use";
+			case CYCLE_COMPLETE:
+				return "Cycle Complete";
+			default:
+				return "Unavailable";
+			}
+		}
+		
 		public static Status lookup(String status) {
 			if (status.toLowerCase(Locale.getDefault()).contains("available")) {
 				return Status.AVAILABLE;
