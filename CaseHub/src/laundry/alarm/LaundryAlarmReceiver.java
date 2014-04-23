@@ -1,12 +1,11 @@
 package laundry.alarm;
 
-import java.util.HashMap;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.SparseArray;
 
 public class LaundryAlarmReceiver extends BroadcastReceiver {
 
@@ -15,7 +14,7 @@ public class LaundryAlarmReceiver extends BroadcastReceiver {
     // The pending intent that is triggered when the alarm fires.
     private PendingIntent alarmIntent;
     
-    public static HashMap<Integer, PendingIntent> intentMap;
+    public static SparseArray<PendingIntent> intentMap;
     
     public static Integer key_count = 1;
     public Integer intentKey;
@@ -27,7 +26,7 @@ public class LaundryAlarmReceiver extends BroadcastReceiver {
     public LaundryAlarmReceiver() {
     	
     	if (intentMap == null) {
-        	intentMap = new HashMap<Integer, PendingIntent>();
+        	intentMap = new SparseArray<PendingIntent>();
         }
     	
         intentKey = key_count++;

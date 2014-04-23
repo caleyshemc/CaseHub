@@ -96,7 +96,7 @@ public class LaundryAlarmService extends IntentService {
 		
 		// Display notification
 		NotificationManager mNM = (NotificationManager) context
-				.getSystemService(context.NOTIFICATION_SERVICE);
+				.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNM.notify(0, notification);
 		
 		// Play alarm sound
