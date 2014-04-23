@@ -48,7 +48,6 @@ public class SilenceReceiver extends BroadcastReceiver {
     		break;
     	}
     	
-    	
     }
     
 	/**
@@ -61,7 +60,7 @@ public class SilenceReceiver extends BroadcastReceiver {
     	    	
     	alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, SilenceReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         
         /* Schedule broadcasts */

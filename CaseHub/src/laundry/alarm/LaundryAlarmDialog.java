@@ -41,7 +41,7 @@ public class LaundryAlarmDialog extends DialogFragment {
 		            		    
 								// Set alarm for change in machine status
 								new LaundryAlarmReceiver().setAlarm(getActivity(),
-										houseId, machineNumber, status);
+										houseId, machineNumber, status, type);
 
 							}
 						})

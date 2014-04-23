@@ -31,6 +31,8 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	DefaultHttpClient client;
 	ProgressDialog dialog;
 	
+	boolean hasDialog;
+	
 	private int houseId;
 	
 	private static final String ESUDS_STATUS_URL = "http://case-asi.esuds.net/RoomStatus/machineStatus.i?bottomLocationId=";
@@ -40,9 +42,17 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	private static final int MACHINE_STATUS_INDEX = 3;
 	private static final int MACHINE_MIN_INDEX = 4;
 	
+	/**
+	 * Task has progress dialog by default, but it can be removed to run in background.
+	 */
 	public FetchLaundryTask(Context context, LaundryCallback callback, int houseId) {
+		this(context, callback, houseId, true);
+	}
+	
+	public FetchLaundryTask(Context context, LaundryCallback callback, int houseId, boolean hasDialog) {
 		this.context = context;
 		this.callback = callback;
+		this.hasDialog = hasDialog;
 		
 		/*
 		 * The house IDs used in the eSuds Ajax calls are exactly one greater
@@ -60,9 +70,12 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		dialog = new ProgressDialog(context);
-		dialog.setMessage("Fetching washer/dryer times...");
-		dialog.show();
+		
+		if (hasDialog) {
+			dialog = new ProgressDialog(context);
+			dialog.setMessage("Fetching washer/dryer times...");
+			dialog.show();
+		}
 	}
 
 	@Override
@@ -89,8 +102,11 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	@Override
 	protected void onPostExecute(ArrayList<LaundryMachine> machines) {
 		super.onPostExecute(machines);
-        callback.onTaskDone(machines);        
-        dialog.dismiss();
+        callback.onTaskDone(machines);   
+        
+        if (hasDialog) {
+        	dialog.dismiss();
+        }
 	}
 		
 	/*

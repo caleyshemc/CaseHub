@@ -38,6 +38,9 @@
         
         <receiver android:name="schedule.autosilent.SilenceReceiver"></receiver>
         <receiver android:name="schedule.autosilent.UnsilenceReceiver"></receiver>
+        <receiver android:name="laundry.alarm.LaundryAlarmReceiver"></receiver>
+        
+        <service android:name="laundry.alarm.LaundryAlarmService" />
         
         <receiver
             	android:name="schedule.autosilent.BootReceiver"
