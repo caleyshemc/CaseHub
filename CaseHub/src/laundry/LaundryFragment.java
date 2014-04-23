@@ -9,6 +9,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -274,7 +275,19 @@ public class LaundryFragment extends Fragment {
 			TextView machineName = (TextView) button.findViewById(R.id.laundry_machine_name);
 			machineName.setText(type + " " + machineNumber);
 			TextView machineStatus = (TextView) button.findViewById(R.id.laundry_machine_status);
-			machineStatus.setText(status);
+			
+			if (minutesLeft > 0) {
+				machineStatus.setText(status + " (" + minutesLeft + " min left)");
+			} else {
+				machineStatus.setText(status);
+			}
+			
+			// Set status color
+			if (machine.getStatus() == LaundryMachine.Status.AVAILABLE) {
+				machineStatus.setTextColor(Color.GREEN);
+			} else {
+				machineStatus.setTextColor(Color.RED);
+			}
 						
 			/*
             Button button = new Button(getActivity());
