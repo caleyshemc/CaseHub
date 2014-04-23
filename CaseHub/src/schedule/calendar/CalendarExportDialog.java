@@ -5,9 +5,7 @@ import java.util.Calendar;
 
 import schedule.ScheduleDBHelper;
 import schedule.ScheduleEvent;
-
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
