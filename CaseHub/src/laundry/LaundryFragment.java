@@ -283,11 +283,14 @@ public class LaundryFragment extends Fragment {
 			}
 			
 			// Set status color
+			int color;
 			if (machine.getStatus() == LaundryMachine.Status.AVAILABLE) {
-				machineStatus.setTextColor(Color.GREEN);
+				color = getActivity().getResources().getColor(R.color.laundry_available);
 			} else {
-				machineStatus.setTextColor(Color.RED);
+				color = getActivity().getResources().getColor(R.color.laundry_unavailable);
 			}
+			
+			machineStatus.setTextColor(color);
 						
 			/*
             Button button = new Button(getActivity());
