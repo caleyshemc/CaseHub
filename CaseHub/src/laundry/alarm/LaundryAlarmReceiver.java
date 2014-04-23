@@ -1,5 +1,7 @@
 package laundry.alarm;
 
+import java.util.HashMap;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -13,9 +15,23 @@ public class LaundryAlarmReceiver extends BroadcastReceiver {
     // The pending intent that is triggered when the alarm fires.
     private PendingIntent alarmIntent;
     
-    public static long INTERVAL_SECONDS = 60;
+    public static HashMap<Integer, PendingIntent> intentMap;
+    
+    public static Integer key_count = 1;
+    public Integer intentKey;
+    
+    public static final long INTERVAL_SECONDS = 60;
     
     Context context;
+
+    public LaundryAlarmReceiver() {
+    	
+    	if (intentMap == null) {
+        	intentMap = new HashMap<Integer, PendingIntent>();
+        }
+    	
+        intentKey = key_count++;
+	}
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -30,8 +46,6 @@ public class LaundryAlarmReceiver extends BroadcastReceiver {
 		
 	}
 	
-	
-	
 	/**
 	 * Set alarm alerting user to change in machine status.
 	 */
@@ -43,18 +57,15 @@ public class LaundryAlarmReceiver extends BroadcastReceiver {
         intent.putExtra(LaundryAlarmService.MACHINE_NUM, machineNum);
         intent.putExtra(LaundryAlarmService.STATUS, status);
         intent.putExtra(LaundryAlarmService.TYPE, type);
+        intent.putExtra(LaundryAlarmService.INTENT_KEY, intentKey);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        // Store key to keep track of alarm intent
+        intentMap.put(intentKey, alarmIntent);
         
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 
         		INTERVAL_SECONDS * 1000, alarmIntent);
 		
-	}
-	
-	public void cancel(Context context) {
-		// TODO
-		if (alarmMgr!= null) {
-            alarmMgr.cancel(alarmIntent);
-        }
 	}
 	
 }

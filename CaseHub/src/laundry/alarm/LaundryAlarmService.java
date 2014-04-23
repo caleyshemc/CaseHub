@@ -2,14 +2,14 @@ package laundry.alarm;
 
 import java.util.ArrayList;
 
-import com.casehub.R;
-
 import laundry.FetchLaundryTask;
-import laundry.LaundryMachine;
 import laundry.LaundryFragment.LaundryCallback;
+import laundry.LaundryMachine;
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
@@ -17,7 +17,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+
+import com.casehub.R;
 
 public class LaundryAlarmService extends IntentService {
 	
@@ -26,8 +27,12 @@ public class LaundryAlarmService extends IntentService {
     public static String STATUS = "status";
     public static String TYPE = "type";
     
+    public static String INTENT_KEY = "intentKey";
+    
     Context context;
     Bundle args;
+    
+    int intentKey;
     
 	public LaundryAlarmService() {
 		super("LaundryAlarmService");
@@ -38,8 +43,7 @@ public class LaundryAlarmService extends IntentService {
 		
 		context = getApplicationContext();
 		args = intent.getExtras();
-
-		Log.d("LAUNDRY", "Extras: " + args.toString());
+		intentKey = args.getInt(INTENT_KEY);
 		
 		// Check machine for status change
 		new FetchLaundryTask(context, new LaundryCallback() {
@@ -86,7 +90,8 @@ public class LaundryAlarmService extends IntentService {
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle(
 						"CaseHub: Laundry machine status changed")
-				.setContentText(type + " " + num + ": " + status);
+				.setContentText(type + " " + num + ": " + status)
+				.setAutoCancel(true);
 		Notification notification = mBuilder.build();
 		
 		// Display notification
@@ -102,7 +107,12 @@ public class LaundryAlarmService extends IntentService {
 	}
 	
 	private void cancelAlarm() {
-		// TODO
+		
+		PendingIntent intent = LaundryAlarmReceiver.intentMap.get(intentKey);
+		
+		AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		alarmMgr.cancel(intent);
+		
 	}
 
 }
