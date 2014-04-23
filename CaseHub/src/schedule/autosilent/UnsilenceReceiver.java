@@ -57,7 +57,7 @@ public class UnsilenceReceiver extends BroadcastReceiver {
         	// Set daily trigger for this time
             calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay());
             calendar.set(Calendar.MINUTE, time.getMinuteOfHour());
-    		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+    		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
     				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
     				alarmIntent);
         }

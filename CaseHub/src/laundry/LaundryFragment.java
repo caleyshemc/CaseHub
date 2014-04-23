@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import laundry.alarm.LaundryAlarmDialog;
+
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
@@ -43,6 +45,8 @@ public class LaundryFragment extends Fragment {
 	public static final String HOUSES_LOADED = "housesLoaded";
 	public static final String CURRENT_HOUSE_PREFS = "currentHousePrefsFile";
 	public static final String CURRENT_HOUSE = "currentHouse";
+	
+	String selectedHouse = "";
 	
 	/**
 	 * For returning FetchLaundryTask
@@ -216,6 +220,12 @@ public class LaundryFragment extends Fragment {
 	 */
 	private void onHouseSelected(String houseName) {
 		
+		// If same house selected, do nothing
+		if (houseName.equals(selectedHouse)) {
+			return;
+		}
+		
+		selectedHouse = houseName;
 		int selectedHouseId = houses.get(houseName);
 				
 		new FetchLaundryTask(getActivity(), new LaundryCallback() {
@@ -249,22 +259,21 @@ public class LaundryFragment extends Fragment {
 		for (LaundryMachine machine : machines) {
 			
 			final String type = machine.getType();
+			final String status = machine.getStatus().getString();
 			final int machineNumber = machine.getMachineNumber();
-			final int minutesLeft = machine.getMinutesLeft();
 			
 			RelativeLayout button = createMachineButton(machine);
             button.setOnClickListener(new View.OnClickListener() {
             	
                 @Override
                 public void onClick(View v) {
-                	
-                	// TODO check status here (or just minutes left!)
-                	
+                	                	
                 	// Create bundle of arguments to send to dialog
                 	Bundle args = new Bundle();
+                	args.putInt("houseId", houses.get(selectedHouse));
                 	args.putString("type", type);
+                	args.putString("status", status);
                 	args.putInt("machineNumber", machineNumber);
-                	args.putInt("minutesLeft", minutesLeft);
                 	
                 	// Show dialog
                 	DialogFragment alarmDialog = new LaundryAlarmDialog();

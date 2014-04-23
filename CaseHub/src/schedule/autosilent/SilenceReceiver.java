@@ -59,7 +59,7 @@ public class SilenceReceiver extends BroadcastReceiver {
 	 */
     public void schedule(Context context) {
     	    	
-    	alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    	alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, SilenceReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
@@ -81,7 +81,7 @@ public class SilenceReceiver extends BroadcastReceiver {
         	// Set daily trigger for this time
             calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay());
             calendar.set(Calendar.MINUTE, time.getMinuteOfHour());
-    		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+    		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
     				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
     				alarmIntent);
         }

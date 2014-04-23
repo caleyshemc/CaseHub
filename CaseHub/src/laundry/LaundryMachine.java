@@ -37,7 +37,7 @@ public class LaundryMachine {
 		return status;
 	}
 
-	enum Status {
+	public enum Status {
 		AVAILABLE, IN_USE, CYCLE_COMPLETE, UNAVAILABLE;
 		
 		public String getString() {
