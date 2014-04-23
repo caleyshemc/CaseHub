@@ -254,50 +254,8 @@ public class LaundryFragment extends Fragment {
 			final String type = machine.getType();
 			final int machineNumber = machine.getMachineNumber();
 			final int minutesLeft = machine.getMinutesLeft();
-			String status = machine.getStatus().getString();
 			
-			// Set washer/dryer icon
-			Drawable icon;
-			if (type.equals(LaundryMachine.TYPE_WASHER)) {
-				icon = getActivity().getResources().getDrawable(R.drawable.washer_icon_small);
-			} else {
-				icon = getActivity().getResources().getDrawable(R.drawable.dryer_icon_small);
-			}
-			
-			// Inflate button template
-			LayoutInflater inflater = (LayoutInflater) getActivity()
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			RelativeLayout button = (RelativeLayout) inflater.inflate(
-					R.layout.template_laundry_button, null);
-			
-			ImageView image = (ImageView) button.findViewById(R.id.laundry_icon);
-			image.setImageDrawable(icon);
-			TextView machineName = (TextView) button.findViewById(R.id.laundry_machine_name);
-			machineName.setText(type + " " + machineNumber);
-			TextView machineStatus = (TextView) button.findViewById(R.id.laundry_machine_status);
-			
-			if (minutesLeft > 0) {
-				machineStatus.setText(status + " (" + minutesLeft + " min left)");
-			} else {
-				machineStatus.setText(status);
-			}
-			
-			// Set status color
-			int color;
-			if (machine.getStatus() == LaundryMachine.Status.AVAILABLE) {
-				color = getActivity().getResources().getColor(R.color.laundry_available);
-			} else {
-				color = getActivity().getResources().getColor(R.color.laundry_unavailable);
-			}
-			
-			machineStatus.setTextColor(color);
-						
-			/*
-            Button button = new Button(getActivity());
-            button.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-            button.setText(type + " " + machineNumber + " - " + status);
-            button.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
-            
+			RelativeLayout button = createMachineButton(machine);
             button.setOnClickListener(new View.OnClickListener() {
             	
                 @Override
@@ -317,12 +275,60 @@ public class LaundryFragment extends Fragment {
                 	alarmDialog.show(getFragmentManager(), "laundry_alarm");
                 }
             });
-            */
+            
             laundryLayout.addView(button, layoutParams);
 			
 		}
 		
 		
+	}
+	
+	private RelativeLayout createMachineButton(LaundryMachine machine) {
+		
+		String status = machine.getStatus().getString();
+		String type = machine.getType();
+		int minutesLeft = machine.getMinutesLeft();
+
+		// Inflate button template
+		LayoutInflater inflater = (LayoutInflater) getActivity()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		RelativeLayout button = (RelativeLayout) inflater.inflate(
+				R.layout.template_laundry_button, null);
+		
+		// Set washer/dryer icon
+		Drawable icon;
+		if (machine.getType().equals(LaundryMachine.TYPE_WASHER)) {
+			icon = getActivity().getResources().getDrawable(R.drawable.washer_icon_small);
+		} else {
+			icon = getActivity().getResources().getDrawable(R.drawable.dryer_icon_small);
+		}
+
+		
+		ImageView image = (ImageView) button.findViewById(R.id.laundry_icon);
+		image.setImageDrawable(icon);
+		
+		// Set text
+		TextView machineName = (TextView) button.findViewById(R.id.laundry_machine_name);
+		machineName.setText(type + " " + machine.getMachineNumber());
+		TextView machineStatus = (TextView) button.findViewById(R.id.laundry_machine_status);
+
+		if (minutesLeft > 0) {
+			machineStatus.setText(status + " (" + minutesLeft + " min left)");
+		} else {
+			machineStatus.setText(status);
+		}
+
+		// Set status color
+		int color;
+		if (machine.getStatus() == LaundryMachine.Status.AVAILABLE) {
+			color = getActivity().getResources().getColor(R.color.laundry_available);
+		} else {
+			color = getActivity().getResources().getColor(R.color.laundry_unavailable);
+		}
+
+		machineStatus.setTextColor(color);
+		
+		return button;
 	}
     
 }
