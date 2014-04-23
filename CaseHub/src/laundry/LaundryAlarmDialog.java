@@ -22,10 +22,14 @@ public class LaundryAlarmDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_laundry_alarm, null);
         
         // TODO check if available! if not, can't set alarm
+        Bundle mArgs = getArguments();
+        String type = mArgs.getString("type");
+        int machineNumber = mArgs.getInt("machineNumber");
+        int minutesLeft = mArgs.getInt("minutesLeft");
         
         builder.setView(view);
         builder.setTitle(R.string.laundry_alarm_title)
-        		.setMessage("Set alarm for this machine?") // TODO add type, number, house
+        		.setMessage("Set alarm for " + type + " " + machineNumber + "?")
         		.setPositiveButton(R.string.set_alarm,
 						new DialogInterface.OnClickListener() {
 							@Override

@@ -6,6 +6,9 @@ import java.util.Locale;
  * Represents a washer or dryer.
  */
 public class LaundryMachine {
+	
+	public static final String TYPE_WASHER = "Washer";
+	public static final String TYPE_DRYER = "Dryer";
 
 	private int machineNumber;
 	private int minutesLeft;

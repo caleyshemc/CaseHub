@@ -8,8 +8,10 @@ import java.util.HashMap;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -239,11 +241,23 @@ public class LaundryFragment extends Fragment {
 		// Populate with laundry info
 		for (LaundryMachine machine : machines) {
 			
+			final String type = machine.getType();
 			final int machineNumber = machine.getMachineNumber();
 			final int minutesLeft = machine.getMinutesLeft();
 			
+			// Set washer/dryer icon
+			Drawable icon;
+			if (type.equals(LaundryMachine.TYPE_WASHER)) {
+				icon = getActivity().getResources().getDrawable(R.drawable.washer_icon_small);
+			} else {
+				icon = getActivity().getResources().getDrawable(R.drawable.dryer_icon_small);
+			}
+			
             Button button = new Button(getActivity());
-            button.setText(machine.toString());
+            button.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            button.setText(type + " " + machineNumber);
+            button.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+            
             button.setOnClickListener(new View.OnClickListener() {
             	
                 @Override
@@ -253,6 +267,7 @@ public class LaundryFragment extends Fragment {
                 	
                 	// Create bundle of arguments to send to dialog
                 	Bundle args = new Bundle();
+                	args.putString("type", type);
                 	args.putInt("machineNumber", machineNumber);
                 	args.putInt("minutesLeft", minutesLeft);
                 	
