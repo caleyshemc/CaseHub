@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,8 +24,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -259,6 +263,20 @@ public class LaundryFragment extends Fragment {
 				icon = getActivity().getResources().getDrawable(R.drawable.dryer_icon_small);
 			}
 			
+			// Inflate button template
+			LayoutInflater inflater = (LayoutInflater) getActivity()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			RelativeLayout button = (RelativeLayout) inflater.inflate(
+					R.layout.template_laundry_button, null);
+			
+			ImageView image = (ImageView) button.findViewById(R.id.laundry_icon);
+			image.setImageDrawable(icon);
+			TextView machineName = (TextView) button.findViewById(R.id.laundry_machine_name);
+			machineName.setText(type + " " + machineNumber);
+			TextView machineStatus = (TextView) button.findViewById(R.id.laundry_machine_status);
+			machineStatus.setText(status);
+						
+			/*
             Button button = new Button(getActivity());
             button.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
             button.setText(type + " " + machineNumber + " - " + status);
@@ -283,10 +301,11 @@ public class LaundryFragment extends Fragment {
                 	alarmDialog.show(getFragmentManager(), "laundry_alarm");
                 }
             });
-            
+            */
             laundryLayout.addView(button, layoutParams);
 			
 		}
+		
 		
 	}
     
