@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -27,10 +28,11 @@ public class LaundryAlarmDialog extends DialogFragment {
         int machineNumber = mArgs.getInt("machineNumber");
         int minutesLeft = mArgs.getInt("minutesLeft");
         
+        TextView text = (TextView) view.findViewById(R.id.laundry_dialog_text);
+        text.setText("Set alarm for " + type + " " + machineNumber + "?");
+        
         builder.setView(view);
-        builder.setTitle(R.string.laundry_alarm_title)
-        		.setMessage("Set alarm for " + type + " " + machineNumber + "?")
-        		.setPositiveButton(R.string.set_alarm,
+        builder.setPositiveButton(R.string.set_alarm,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
