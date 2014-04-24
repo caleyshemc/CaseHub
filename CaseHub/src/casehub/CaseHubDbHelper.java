@@ -12,7 +12,7 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
     /**
      * If you change the database schema, you must increment the database version.
      */
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "CaseHub.db";
 
     public CaseHubDbHelper(Context context) {

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import map.CaseMap.MapType;
 import map.CaseMap.Point;
 import map.CaseMap.Subgroup;
 
@@ -58,13 +59,24 @@ public class ParseMapJSONTask extends AsyncTask<Void, Void, CaseMap> {
 			Subgroup tempSub = cMap.new Subgroup();
 			JSONObject subgroup = subgroups.getJSONObject(i);
 			
-			tempSub.setId(subgroup.optInt("sugroup_id"));
+			tempSub.setId(subgroup.optInt("subgroup_id"));
 			tempSub.setName(subgroup.optString("subgroup_name"));
 			tempSub.setCoord(new LatLng(subgroup.optDouble("lat"),subgroup.optDouble("lon")));
+			tempSub.setTypeId(subgroup.optInt("type_id"));
 			
-			
+			cMap.addSubgroup(tempSub);
 		}
 		
+		for(int i = 0; i < mapTypes.length(); i++){
+			MapType tempMapType = cMap.new MapType();
+			JSONObject mapType = mapTypes.getJSONObject(i);
+			
+			tempMapType.setName(mapType.optString("name"));
+			tempMapType.setTypeId(mapType.optInt("type_id"));
+			tempMapType.setColor(mapType.optString("color"));
+			
+			cMap.addMapType(tempMapType);
+		}
 
 		for(int i = 0; i < points.length(); i++){
 			Point tempPoint = cMap.new Point();
@@ -78,20 +90,27 @@ public class ParseMapJSONTask extends AsyncTask<Void, Void, CaseMap> {
 			JSONArray extra_namesA =  point.optJSONArray("extra_names");
 			if(extra_namesA != null){
 				String extra_names = extra_namesA.join(",").replace("\"", "");
-				tempPoint.setExtra_names(new ArrayList<String>(Arrays.asList(extra_names.split(","))));
+				tempPoint.setExtraNames(new ArrayList<String>(Arrays.asList(extra_names.split(","))));
 			}
 			JSONArray entitiesA = point.optJSONArray("entities");
 			if(entitiesA != null){
-				String entities = entitiesA.join(",").replace("\"", "");
-				tempPoint.setEntities(new ArrayList<String>(Arrays.asList(entities.split(","))));
+				ArrayList<String> entities = new ArrayList<String>();
+				for(int j = 0; j < entitiesA.length(); j++){
+					entities.add(entitiesA.getJSONObject(j).optString("entity_name"));			
+				}
+				tempPoint.setEntities(entities);
 			}
 
 			JSONObject address = point.getJSONObject("address");
 			StringBuilder addressBuilder = new StringBuilder();
-			addressBuilder.append(address.optString("street") + ",");
-			addressBuilder.append(address.optString("city") + ",");
-			addressBuilder.append(address.optString("state") + ",");
-			addressBuilder.append(address.optString("zip"));
+			if(address.optString("street") != null)
+				addressBuilder.append(address.optString("street") + ",");
+			if(address.optString("city") != null)
+				addressBuilder.append(address.optString("city") + ",");
+			if(address.optString("state") != null)
+				addressBuilder.append(address.optString("state") + ",");
+			if(address.optString("zip") != null)
+				addressBuilder.append(address.optString("zip"));
 			tempPoint.setAddress(addressBuilder.toString());
 
 			tempPoint.setNum(point.getString("num"));
@@ -100,9 +119,8 @@ public class ParseMapJSONTask extends AsyncTask<Void, Void, CaseMap> {
 			tempPoint.setSis(point.optString("sis"));
 			tempPoint.setUrl(point.optString("url"));
 			tempPoint.setImage(point.optString("image"));
-			tempPoint.setType_id(point.optInt("type_id"));
+			tempPoint.setTypeId(point.optInt("type_id"));
 			tempPoint.setZone(point.optInt("zone"));
-			Log.d("wat", tempPoint.getName());
 			cMap.addPoint(point.getString("name"), tempPoint);			
 		}
 	}
@@ -114,7 +132,7 @@ public class ParseMapJSONTask extends AsyncTask<Void, Void, CaseMap> {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return cMap;
 	}
 
 }

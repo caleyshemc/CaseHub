@@ -73,6 +73,7 @@ public final class CaseHubContract {
     private static final String INT_TYPE = " INT";
     private static final String REAL_TYPE = " REAL";
     private static final String STRING_TYPE = " STRING";
+    private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     
     /*
@@ -104,7 +105,7 @@ public final class CaseHubContract {
     protected static final String SQL_CREATE_MAP_POINTS =
 			"CREATE TABLE " + CampusMapPoint.TABLE_NAME + " (" +
 					CampusMapPoint._ID + " INTEGER PRIMARY KEY," +
-					CampusMapPoint.COL_NUM + STRING_TYPE + COMMA_SEP +		
+					CampusMapPoint.COL_NUM + TEXT_TYPE + COMMA_SEP +		
 					CampusMapPoint.COL_NAME + STRING_TYPE + COMMA_SEP +
 					CampusMapPoint.COL_ADDRESS + STRING_TYPE + COMMA_SEP +
 					CampusMapPoint.COL_LAT + REAL_TYPE + COMMA_SEP +

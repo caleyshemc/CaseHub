@@ -33,7 +33,35 @@ public class CaseMap {
 		return this.points.size();
 	}
 	
+	public HashMap<String, Point> getPoints() {
+		return points;
+	}
 	
+	public Point getPoint(String key){
+		return points.get(key);
+	}
+
+	public void setPoints(HashMap<String, Point> points) {
+		this.points = points;
+	}
+
+	public ArrayList<Subgroup> getSubgroups() {
+		return subgroups;
+	}
+
+	public void setSubgroups(ArrayList<Subgroup> subgroups) {
+		this.subgroups = subgroups;
+	}
+
+	public ArrayList<MapType> getMapTypes() {
+		return mapTypes;
+	}
+
+	public void setMapTypes(ArrayList<MapType> mapTypes) {
+		this.mapTypes = mapTypes;
+	}
+
+
 	public class Point{
 		private Marker marker;
 		private String num;
@@ -43,10 +71,10 @@ public class CaseMap {
 		private String sis;
 		private String image;
 		private String url;
-		private int type_id;
+		private int typeId;
 		private int zone;
 		private ArrayList<String> ldap;
-		private ArrayList<String> extra_names;
+		private ArrayList<String> extraNames;
 		private ArrayList<String> entities;
 		
 		public Point(){
@@ -54,8 +82,8 @@ public class CaseMap {
 		}
 		
 		public Point(String num, String name, String address, LatLng coord,
-				String sis, String image, String url, int type_id, int zone,
-				ArrayList<String> ldap, ArrayList<String> extra_names,
+				String sis, String image, String url, int typeId, int zone,
+				ArrayList<String> ldap, ArrayList<String> extraNames,
 				ArrayList<String> entities) {
 			this.num = num;
 			this.name = name;
@@ -64,14 +92,20 @@ public class CaseMap {
 			this.sis = sis;
 			this.image = image;
 			this.url = url;
-			this.type_id = type_id;
+			this.typeId = typeId;
 			this.zone = zone;
 			this.ldap = ldap;
-			this.extra_names = extra_names;
+			this.extraNames = extraNames;
 			this.entities = entities;
 		}
 
+		public Marker getMarker() {
+			return marker;
+		}
 
+		public void setMarker(Marker marker) {
+			this.marker = marker;
+		}
 
 		public String getNum() {
 			return num;
@@ -115,11 +149,11 @@ public class CaseMap {
 		public void setUrl(String url) {
 			this.url = url;
 		}
-		public int getType_id() {
-			return type_id;
+		public int getTypeId() {
+			return typeId;
 		}
-		public void setType_id(int type_id) {
-			this.type_id = type_id;
+		public void setTypeId(int typeId) {
+			this.typeId = typeId;
 		}
 		public int getZone() {
 			return zone;
@@ -133,11 +167,11 @@ public class CaseMap {
 		public void setLdap(ArrayList<String> ldap) {
 			this.ldap = ldap;
 		}
-		public ArrayList<String> getExtra_names() {
-			return extra_names;
+		public ArrayList<String> getExtraNames() {
+			return extraNames;
 		}
-		public void setExtra_names(ArrayList<String> extra_names) {
-			this.extra_names = extra_names;
+		public void setExtraNames(ArrayList<String> extraNames) {
+			this.extraNames = extraNames;
 		}
 		public ArrayList<String> getEntities() {
 			return entities;
@@ -151,17 +185,17 @@ public class CaseMap {
 	public class Subgroup{
 		private int id;
 		private String name;
-		private int type_id;
+		private int typeId;
 		private LatLng coord;
 		
 		public Subgroup(){
 			
 		}
 
-		public Subgroup(int id, String name, int type_id, LatLng coord) {
+		public Subgroup(int id, String name, int typeId, LatLng coord) {
 			this.id = id;
 			this.name = name;
-			this.type_id = type_id;
+			this.typeId = typeId;
 			this.coord = coord;
 		}
 
@@ -181,12 +215,12 @@ public class CaseMap {
 			this.name = name;
 		}
 
-		public int getType_id() {
-			return type_id;
+		public int getTypeId() {
+			return typeId;
 		}
 
-		public void setType_id(int type_id) {
-			this.type_id = type_id;
+		public void setTypeId(int typeId) {
+			this.typeId = typeId;
 		}
 
 		public LatLng getCoord() {
@@ -199,8 +233,36 @@ public class CaseMap {
 	}
 
 	public class MapType{
-		private int type_id;
+		private int typeId;
 		private String name;
-		private float color;
+		private String color;
+		
+		public MapType(){
+			
+		}
+		
+		public MapType(int typeId, String name, String color) {
+			this.typeId = typeId;
+			this.name = name;
+			this.color = color;
+		}
+		public int getTypeId() {
+			return typeId;
+		}
+		public void setTypeId(int typeId) {
+			this.typeId = typeId;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getColor() {
+			return color;
+		}
+		public void setColor(String color) {
+			this.color = color;
+		}
 	}
 }
