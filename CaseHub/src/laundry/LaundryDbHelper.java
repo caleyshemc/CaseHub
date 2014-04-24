@@ -6,6 +6,7 @@ import java.util.Map;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import casehub.CaseHubContract.LaundryHouseEntry;
 import casehub.MainActivity;
 
@@ -66,7 +67,7 @@ public class LaundryDbHelper {
 
 		// If no entries found
 		if (!c.moveToFirst()) {
-			// TODO throw error
+			Log.w("CASEHUB", "No houses found in database.");
 			return houses;
 		}
 

@@ -224,6 +224,7 @@
 
                 <RelativeLayout
                     android:id="@+id/monday"
+                    android:tag="monday"
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />
@@ -236,6 +237,7 @@
 
                 <RelativeLayout
                     android:id="@+id/tuesday"
+                    android:tag="tuesday"
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />
@@ -248,6 +250,7 @@
 
                 <RelativeLayout
                     android:id="@+id/wednesday"
+                    android:tag="wednesday"
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />
@@ -260,6 +263,7 @@
 
                 <RelativeLayout
                     android:id="@+id/thursday"
+                    android:tag="thursday"
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />
@@ -272,6 +276,7 @@
 
                 <RelativeLayout
                     android:id="@+id/friday"
+                    android:tag="friday"
                     style="@style/day" >
 
                     <include layout="@layout/schedule_stripes" />

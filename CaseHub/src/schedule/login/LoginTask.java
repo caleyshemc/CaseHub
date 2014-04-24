@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -19,12 +20,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.casehub.R;
+
 import schedule.Day;
 import schedule.ScheduleEvent;
 import schedule.ScheduleFragment.LoginCallback;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -67,8 +72,6 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 		client = new DefaultHttpClient();
 		ArrayList<ScheduleEvent> events = new ArrayList<ScheduleEvent>();
 		
-		// TODO check args!
-		
 		try {
 			login(args[0], args[1]);
 			String html = getSchedule();
@@ -83,15 +86,26 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 	@Override
 	protected void onPostExecute(ArrayList<ScheduleEvent> events) {
 		super.onPostExecute(events);
+        callback.onTaskDone(events);
+        dialog.dismiss();
         
         for (Exception e : exceptions) {
-        	// TODO inform login dialog that login failed
         	Log.e("CASEHUB", "exception", e);
         }
         
-        callback.onTaskDone(events);
-        
-        dialog.dismiss();
+        if (!exceptions.isEmpty()) {
+        	Log.d("EXCEPT", "Exception not empty!");
+        	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        	builder.setTitle("Error")
+            	.setMessage("Login failed. Check your login credentials and your internet connection.")
+            	.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			               // User clicked OK button
+			           }
+			       });;
+        	AlertDialog dialog = builder.create();
+        	dialog.show();
+        }
 	}
 	
 	/*
@@ -124,9 +138,12 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 
 		// Execute login POST
 		HttpResponse postResult = client.execute(loginPost);
+		int status = postResult.getStatusLine().getStatusCode();
 		postResult.getEntity().consumeContent();
 		
-		// TODO return boolean to indicate successful login!
+		if (status != HttpStatus.SC_OK) {
+			exceptions.add(new Exception("Error logging in to eSuds."));
+		}
 	}
 
 	private String getSchedule() throws IOException {

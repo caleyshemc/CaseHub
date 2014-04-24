@@ -53,7 +53,6 @@ public class CalendarHelper {
 		Day day = event.getDay();
 				
 		// Set begin/end times for first occurrence
-		// TODO calculate first day of proper weekday from start_day
 		Calendar beginTime = Calendar.getInstance();
 		beginTime.set(start_year, start_month, start_day, start.getHourOfDay(), start.getMinuteOfHour());
 		Calendar endTime = Calendar.getInstance();

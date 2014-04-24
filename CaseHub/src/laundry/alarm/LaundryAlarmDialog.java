@@ -23,7 +23,6 @@ public class LaundryAlarmDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_laundry_alarm, null);
         
-        // TODO check if available! if not, can't set alarm
         Bundle args = getArguments();
         final int houseId = args.getInt("houseId");
         final String type = args.getString("type");

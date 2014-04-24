@@ -2,6 +2,7 @@ package laundry;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import laundry.LaundryFragment.LaundryCallback;
 
@@ -17,9 +18,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.casehub.R;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Fetches laundry information from Case eSuds.
@@ -30,6 +36,8 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	LaundryCallback callback;
 	DefaultHttpClient client;
 	ProgressDialog dialog;
+	
+	List<Exception> exceptions = new ArrayList<Exception>();
 	
 	boolean hasDialog;
 	
@@ -88,11 +96,9 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 			String html = getLaundryTimes();
 			machines = parseLaundryTimes(html);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		}
 				
 		return machines;
@@ -106,6 +112,23 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
         
         if (hasDialog) {
         	dialog.dismiss();
+        }
+        
+        for (Exception e : exceptions) {
+        	Log.e("CASEHUB", "exception", e);
+        }
+        
+        if (!exceptions.isEmpty()) {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        	builder.setTitle("Error")
+            	.setMessage("Failed to fetch laundry times. Check your internet connection.")
+            	.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			               // User clicked OK button
+			           }
+			       });
+        	AlertDialog dialog = builder.create();
+        	dialog.show();
         }
 	}
 		

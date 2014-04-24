@@ -7,6 +7,7 @@ import org.joda.time.LocalTime;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import casehub.CaseHubContract.ScheduleEventEntry;
 import casehub.MainActivity;
 
@@ -40,9 +41,6 @@ public class ScheduleDBHelper {
 	/**
 	 * Returns list of schedule events as they exist in the database.
 	 */
-	// TODO deal with duplicates!
-	// Database should not allow copies (same event id, same start/end time,
-	// same day)
 	public ArrayList<ScheduleEvent> getSchedule() {
 
 		// Retrieve database
@@ -85,7 +83,7 @@ public class ScheduleDBHelper {
 
 		// If no entries found
 		if (!c.moveToFirst()) {
-			// TODO throw error
+			Log.w("CASEHUB", "No schedule entries found in database.");
 			return events;
 		}
 

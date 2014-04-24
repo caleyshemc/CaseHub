@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,11 +82,6 @@ public class LaundryFragment extends Fragment {
 		dbHelper = new LaundryDbHelper();
 		
 	}
-	
-	/**
-	 * TODO:
-	 * -- Fetches laundry times when drawer opened! :O
-	 */
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -247,7 +243,10 @@ public class LaundryFragment extends Fragment {
 	
 	private void showLaundryTimes(ArrayList<LaundryMachine> machines) {
 		
-		// TODO null check, empty check
+		if (machines == null || machines.isEmpty()) {
+			Log.w("CASEHUB", "No laundry machines found.");
+			return;
+		}
 		
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
