@@ -12,7 +12,7 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
     /**
      * If you change the database schema, you must increment the database version.
      */
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "CaseHub.db";
 
     public CaseHubDbHelper(Context context) {
@@ -23,6 +23,9 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
         db.execSQL(CaseHubContract.SQL_CREATE_SCHEDULE_ENTRIES);
         db.execSQL(CaseHubContract.SQL_CREATE_LAUNDRY_ENTRIES);
         db.execSQL(CaseHubContract.SQL_CREATE_GREENIE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_CREATE_MAP_POINTS);
+        db.execSQL(CaseHubContract.SQL_CREATE_MAP_SUBGROUPS);
+        db.execSQL(CaseHubContract.SQL_CREATE_MAP_TYPES);
     }
     
     /**
@@ -36,6 +39,9 @@ public class CaseHubDbHelper extends SQLiteOpenHelper {
         db.execSQL(CaseHubContract.SQL_DELETE_SCHEDULE_ENTRIES);
         db.execSQL(CaseHubContract.SQL_DELETE_LAUNDRY_ENTRIES);
         db.execSQL(CaseHubContract.SQL_DELETE_GREENIE_ENTRIES);
+        db.execSQL(CaseHubContract.SQL_DELETE_MAP_POINTS);
+        db.execSQL(CaseHubContract.SQL_DELETE_MAP_SUBGROUPS);
+        db.execSQL(CaseHubContract.SQL_DELETE_MAP_TYPES);
         onCreate(db);
     }
     
