@@ -1,12 +1,10 @@
 package laundry;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 import laundry.alarm.LaundryAlarmDialog;
-
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
@@ -162,10 +160,14 @@ public class LaundryFragment extends Fragment {
 	 * Populates spinner (select box in ActionBar) with given houses.
 	 */
 	private ArrayAdapter<String> populateHouseSpinner(HashMap<String, Integer> houses) {
-		
+
 		if (houses.isEmpty()) {
-			throw new InvalidParameterException(
-					"List of houses in LaundryFragment cannot be empty.");
+			// Set preference indicating houses must be fetched again
+			SharedPreferences settings = getActivity().getSharedPreferences(
+					HOUSES_LOADED_PREFS, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean(HOUSES_LOADED, false);
+			editor.commit();
 		}
 		
 		this.houses = houses;

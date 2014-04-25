@@ -16,7 +16,6 @@ import com.casehub.R;
 public class LoginDialog extends DialogFragment {
 	
 	View view;
-	ProgressBar progressBar;
 	OnLoginListener callback;
 	
 	// Username and password fields
@@ -60,7 +59,6 @@ public class LoginDialog extends DialogFragment {
         // Find layout elements
         userText = (EditText) view.findViewById(R.id.username);
 		passText = (EditText) view.findViewById(R.id.password);
-		progressBar = (ProgressBar) view.findViewById(R.id.login_progress);
         
         builder.setTitle(R.string.login_prompt)
                .setPositiveButton(R.string.login_button, new DialogInterface.OnClickListener() {
@@ -70,12 +68,7 @@ public class LoginDialog extends DialogFragment {
                 	   // Grab username and password
             		   String user = userText.getText().toString();
             		   String pass = passText.getText().toString();
-            		   
-            		   // Hide fields, show progress bar
-            		   userText.setVisibility(View.GONE);
-            		   passText.setVisibility(View.GONE);
-            		   progressBar.setVisibility(View.VISIBLE);
-            		   
+            		               		   
             		   // Send fields to MainActivity through callback
             		   callback.onScheduleLogin(user, pass);
 

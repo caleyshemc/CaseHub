@@ -82,12 +82,12 @@ public final class CaseHubContract {
     protected static final String SQL_CREATE_SCHEDULE_ENTRIES =
         "CREATE TABLE " + ScheduleEventEntry.TABLE_NAME + " (" +
         ScheduleEventEntry._ID + " INTEGER PRIMARY KEY," +
-        ScheduleEventEntry.COL_EVENT_ID + INT_TYPE + COMMA_SEP + "NOT NULL" +
-        ScheduleEventEntry.COL_EVENT_NAME + STRING_TYPE + COMMA_SEP + "NOT NULL" +
-        ScheduleEventEntry.COL_EVENT_LOCATION + STRING_TYPE + COMMA_SEP + "NOT NULL" +
-        ScheduleEventEntry.COL_EVENT_START + STRING_TYPE + COMMA_SEP + "NOT NULL" +
-        ScheduleEventEntry.COL_EVENT_END + STRING_TYPE + COMMA_SEP + "NOT NULL" +
-        ScheduleEventEntry.COL_EVENT_DAY + STRING_TYPE + "NOT NULL" +
+        ScheduleEventEntry.COL_EVENT_ID + INT_TYPE + " NOT NULL " + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_NAME + STRING_TYPE + " NOT NULL " + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_LOCATION + STRING_TYPE + " NOT NULL " + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_START + STRING_TYPE + " NOT NULL " + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_END + STRING_TYPE + " NOT NULL " + COMMA_SEP +
+        ScheduleEventEntry.COL_EVENT_DAY + STRING_TYPE + " NOT NULL " +
         " );";
     
     protected static final String SQL_CREATE_LAUNDRY_ENTRIES =

@@ -94,7 +94,6 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
         }
         
         if (!exceptions.isEmpty()) {
-        	Log.d("EXCEPT", "Exception not empty!");
         	AlertDialog.Builder builder = new AlertDialog.Builder(context);
         	builder.setTitle("Error")
             	.setMessage("Login failed. Check your login credentials and your internet connection.")
@@ -212,7 +211,7 @@ public class LoginTask extends AsyncTask<String, Void, ArrayList<ScheduleEvent>>
 			}
 			
 		}
-		
+				
 		return scheduleEvents;
 	}
 	
