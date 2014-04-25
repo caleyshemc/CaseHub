@@ -37,7 +37,7 @@ public class UnsilenceReceiver extends BroadcastReceiver {
     	
     	alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, UnsilenceReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		/* Schedule broadcasts */
         ScheduleDBHelper dbHelper = new ScheduleDBHelper();
@@ -57,7 +57,7 @@ public class UnsilenceReceiver extends BroadcastReceiver {
         	// Set daily trigger for this time
             calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay());
             calendar.set(Calendar.MINUTE, time.getMinuteOfHour());
-    		alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+    		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
     				calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
     				alarmIntent);
         }

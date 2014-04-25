@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -37,6 +38,9 @@
         
         <receiver android:name="schedule.autosilent.SilenceReceiver"></receiver>
         <receiver android:name="schedule.autosilent.UnsilenceReceiver"></receiver>
+        <receiver android:name="laundry.alarm.LaundryAlarmReceiver"></receiver>
+        
+        <service android:name="laundry.alarm.LaundryAlarmService" />
         
         <receiver
             	android:name="schedule.autosilent.BootReceiver"

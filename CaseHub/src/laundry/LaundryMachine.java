@@ -6,6 +6,9 @@ import java.util.Locale;
  * Represents a washer or dryer.
  */
 public class LaundryMachine {
+	
+	public static final String TYPE_WASHER = "Washer";
+	public static final String TYPE_DRYER = "Dryer";
 
 	private int machineNumber;
 	private int minutesLeft;
@@ -34,8 +37,21 @@ public class LaundryMachine {
 		return status;
 	}
 
-	enum Status {
+	public enum Status {
 		AVAILABLE, IN_USE, CYCLE_COMPLETE, UNAVAILABLE;
+		
+		public String getString() {
+			switch (this) {
+			case AVAILABLE:
+				return "Available";
+			case IN_USE:
+				return "In Use";
+			case CYCLE_COMPLETE:
+				return "Cycle Complete";
+			default:
+				return "Unavailable";
+			}
+		}
 		
 		public static Status lookup(String status) {
 			if (status.toLowerCase(Locale.getDefault()).contains("available")) {

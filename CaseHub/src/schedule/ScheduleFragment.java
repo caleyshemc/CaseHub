@@ -10,12 +10,14 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.casehub.R;
 
@@ -195,7 +197,13 @@ public class ScheduleFragment extends Fragment {
 	public void clearSchedule() {
 		dbHelper.clearSchedule();
 		
-		// TODO remove events from layout!
+		// Remove events from layout
+		RelativeLayout layout;
+		
+		for (Day day : Day.values()) {
+			layout = (RelativeLayout) view.findViewWithTag(day.getString());
+			layout.removeViewsInLayout(1, layout.getChildCount() - 1);
+		}
 	}
 	
 	/**

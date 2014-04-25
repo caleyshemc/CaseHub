@@ -2,18 +2,15 @@ package schedule.calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.joda.time.LocalTime;
 
 import schedule.Day;
 import schedule.ScheduleEvent;
-
 import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.util.Log;
 
 public class CalendarHelper {
 	
@@ -56,7 +53,6 @@ public class CalendarHelper {
 		Day day = event.getDay();
 				
 		// Set begin/end times for first occurrence
-		// TODO calculate first day of proper weekday from start_day
 		Calendar beginTime = Calendar.getInstance();
 		beginTime.set(start_year, start_month, start_day, start.getHourOfDay(), start.getMinuteOfHour());
 		Calendar endTime = Calendar.getInstance();

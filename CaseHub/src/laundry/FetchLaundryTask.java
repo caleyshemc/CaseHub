@@ -2,6 +2,7 @@ package laundry;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import laundry.LaundryFragment.LaundryCallback;
 
@@ -17,9 +18,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.casehub.R;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Fetches laundry information from Case eSuds.
@@ -31,6 +37,10 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	DefaultHttpClient client;
 	ProgressDialog dialog;
 	
+	List<Exception> exceptions = new ArrayList<Exception>();
+	
+	boolean hasDialog;
+	
 	private int houseId;
 	
 	private static final String ESUDS_STATUS_URL = "http://case-asi.esuds.net/RoomStatus/machineStatus.i?bottomLocationId=";
@@ -40,9 +50,17 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	private static final int MACHINE_STATUS_INDEX = 3;
 	private static final int MACHINE_MIN_INDEX = 4;
 	
+	/**
+	 * Task has progress dialog by default, but it can be removed to run in background.
+	 */
 	public FetchLaundryTask(Context context, LaundryCallback callback, int houseId) {
+		this(context, callback, houseId, true);
+	}
+	
+	public FetchLaundryTask(Context context, LaundryCallback callback, int houseId, boolean hasDialog) {
 		this.context = context;
 		this.callback = callback;
+		this.hasDialog = hasDialog;
 		
 		/*
 		 * The house IDs used in the eSuds Ajax calls are exactly one greater
@@ -60,9 +78,12 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		dialog = new ProgressDialog(context);
-		dialog.setMessage("Fetching washer/dryer times...");
-		dialog.show();
+		
+		if (hasDialog) {
+			dialog = new ProgressDialog(context);
+			dialog.setMessage("Fetching washer/dryer times...");
+			dialog.show();
+		}
 	}
 
 	@Override
@@ -75,11 +96,9 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 			String html = getLaundryTimes();
 			machines = parseLaundryTimes(html);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		}
 				
 		return machines;
@@ -89,8 +108,28 @@ public class FetchLaundryTask extends AsyncTask<String, Void, ArrayList<LaundryM
 	@Override
 	protected void onPostExecute(ArrayList<LaundryMachine> machines) {
 		super.onPostExecute(machines);
-        callback.onTaskDone(machines);        
-        dialog.dismiss();
+        callback.onTaskDone(machines);   
+        
+        if (hasDialog) {
+        	dialog.dismiss();
+        }
+        
+        for (Exception e : exceptions) {
+        	Log.e("CASEHUB", "exception", e);
+        }
+        
+        if (!exceptions.isEmpty()) {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        	builder.setTitle("Error")
+            	.setMessage("Failed to fetch laundry times. Check your internet connection.")
+            	.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			               // User clicked OK button
+			           }
+			       });
+        	AlertDialog dialog = builder.create();
+        	dialog.show();
+        }
 	}
 		
 	/*

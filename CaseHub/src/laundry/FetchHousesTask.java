@@ -1,7 +1,9 @@
 package laundry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import laundry.LaundryFragment.LaundryHousesCallback;
 
@@ -17,9 +19,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.casehub.R;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Fetches residence hall list from Case eSuds.
@@ -30,6 +37,8 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 	LaundryHousesCallback callback;
 	DefaultHttpClient client;
 	ProgressDialog dialog;
+	
+	List<Exception> exceptions = new ArrayList<Exception>();
 
 	private static final String ESUDS_URL = "http://case-asi.esuds.net/RoomStatus/showRoomStatus.do";
 	private static final String HOUSE_SELECTOR = "span.dormlinks a";
@@ -59,11 +68,9 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 			String html = getResidenceHalls();
 			houses = parseResidenceHalls(html);
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exceptions.add(e);
 		}
 		
 		return houses;
@@ -72,8 +79,26 @@ public class FetchHousesTask extends AsyncTask<String, Void, HashMap<String, Int
 	@Override
 	protected void onPostExecute(HashMap<String, Integer> houses) {
 		super.onPostExecute(houses);
+		
+		for (Exception e : exceptions) {
+        	Log.e("CASEHUB", "exception", e);
+        }
+		
         callback.onTaskDone(houses);        
         dialog.dismiss();
+        
+        if (!exceptions.isEmpty()) {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        	builder.setTitle("Error")
+            	.setMessage("Failed to fetch residence halls. Check your internet connection.")
+            	.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			               // User clicked OK button
+			           }
+			       });
+        	AlertDialog dialog = builder.create();
+        	dialog.show();
+        }
 	}
 	
 	/*

@@ -1,15 +1,18 @@
 package laundry;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import laundry.alarm.LaundryAlarmDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +23,11 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.casehub.R;
 
@@ -39,6 +44,8 @@ public class LaundryFragment extends Fragment {
 	public static final String HOUSES_LOADED = "housesLoaded";
 	public static final String CURRENT_HOUSE_PREFS = "currentHousePrefsFile";
 	public static final String CURRENT_HOUSE = "currentHouse";
+	
+	String selectedHouse = "";
 	
 	/**
 	 * For returning FetchLaundryTask
@@ -153,10 +160,14 @@ public class LaundryFragment extends Fragment {
 	 * Populates spinner (select box in ActionBar) with given houses.
 	 */
 	private ArrayAdapter<String> populateHouseSpinner(HashMap<String, Integer> houses) {
-		
+
 		if (houses.isEmpty()) {
-			throw new InvalidParameterException(
-					"List of houses in LaundryFragment cannot be empty.");
+			// Set preference indicating houses must be fetched again
+			SharedPreferences settings = getActivity().getSharedPreferences(
+					HOUSES_LOADED_PREFS, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean(HOUSES_LOADED, false);
+			editor.commit();
 		}
 		
 		this.houses = houses;
@@ -207,6 +218,12 @@ public class LaundryFragment extends Fragment {
 	 */
 	private void onHouseSelected(String houseName) {
 		
+		// If same house selected, do nothing
+		if (houseName.equals(selectedHouse)) {
+			return;
+		}
+		
+		selectedHouse = houseName;
 		int selectedHouseId = houses.get(houseName);
 				
 		new FetchLaundryTask(getActivity(), new LaundryCallback() {
@@ -228,7 +245,10 @@ public class LaundryFragment extends Fragment {
 	
 	private void showLaundryTimes(ArrayList<LaundryMachine> machines) {
 		
-		// TODO null check, empty check
+		if (machines == null || machines.isEmpty()) {
+			Log.w("CASEHUB", "No laundry machines found.");
+			return;
+		}
 		
 		LinearLayout laundryLayout = (LinearLayout) getActivity().findViewById(R.id.laundry_main);
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -239,22 +259,22 @@ public class LaundryFragment extends Fragment {
 		// Populate with laundry info
 		for (LaundryMachine machine : machines) {
 			
+			final String type = machine.getType();
+			final String status = machine.getStatus().getString();
 			final int machineNumber = machine.getMachineNumber();
-			final int minutesLeft = machine.getMinutesLeft();
 			
-            Button button = new Button(getActivity());
-            button.setText(machine.toString());
+			RelativeLayout button = createMachineButton(machine);
             button.setOnClickListener(new View.OnClickListener() {
             	
                 @Override
                 public void onClick(View v) {
-                	
-                	// TODO check status here (or just minutes left!)
-                	
+                	                	
                 	// Create bundle of arguments to send to dialog
                 	Bundle args = new Bundle();
+                	args.putInt("houseId", houses.get(selectedHouse));
+                	args.putString("type", type);
+                	args.putString("status", status);
                 	args.putInt("machineNumber", machineNumber);
-                	args.putInt("minutesLeft", minutesLeft);
                 	
                 	// Show dialog
                 	DialogFragment alarmDialog = new LaundryAlarmDialog();
@@ -263,10 +283,68 @@ public class LaundryFragment extends Fragment {
                 }
             });
             
+            // Add button to layout
             laundryLayout.addView(button, layoutParams);
+            
+            // Add spacer between buttons
+            View spacer = new View(getActivity());
+            LayoutParams spacerParams = new LayoutParams(LayoutParams.MATCH_PARENT, 2);
+            int color = getActivity().getResources().getColor(R.color.main_bg);
+            spacer.setBackgroundColor(color);
+            
+            laundryLayout.addView(spacer, spacerParams);
 			
 		}
 		
+		
+	}
+	
+	private RelativeLayout createMachineButton(LaundryMachine machine) {
+		
+		String status = machine.getStatus().getString();
+		String type = machine.getType();
+		int minutesLeft = machine.getMinutesLeft();
+
+		// Inflate button template
+		LayoutInflater inflater = (LayoutInflater) getActivity()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		RelativeLayout button = (RelativeLayout) inflater.inflate(
+				R.layout.template_laundry_button, null);
+		
+		// Set washer/dryer icon
+		Drawable icon;
+		if (machine.getType().equals(LaundryMachine.TYPE_WASHER)) {
+			icon = getActivity().getResources().getDrawable(R.drawable.washer_icon_small);
+		} else {
+			icon = getActivity().getResources().getDrawable(R.drawable.dryer_icon_small);
+		}
+
+		
+		ImageView image = (ImageView) button.findViewById(R.id.laundry_icon);
+		image.setImageDrawable(icon);
+		
+		// Set text
+		TextView machineName = (TextView) button.findViewById(R.id.laundry_machine_name);
+		machineName.setText(type + " " + machine.getMachineNumber());
+		TextView machineStatus = (TextView) button.findViewById(R.id.laundry_machine_status);
+
+		if (minutesLeft > 0) {
+			machineStatus.setText(status + " (" + minutesLeft + " min left)");
+		} else {
+			machineStatus.setText(status);
+		}
+
+		// Set status color
+		int color;
+		if (machine.getStatus() == LaundryMachine.Status.AVAILABLE) {
+			color = getActivity().getResources().getColor(R.color.laundry_available);
+		} else {
+			color = getActivity().getResources().getColor(R.color.laundry_unavailable);
+		}
+
+		machineStatus.setTextColor(color);
+				
+		return button;
 	}
     
 }
