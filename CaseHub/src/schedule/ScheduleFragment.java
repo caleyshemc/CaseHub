@@ -28,6 +28,20 @@ public class ScheduleFragment extends Fragment {
 	MenuItem silentButton;
 	
 	/**
+	 * Activate Scheduler test.
+	 * 
+	 * true = Scheduler test (inserts hard-coded values into database) 
+	 * false = Original functioning (logs in to Case Single Sign-On and gets 
+	 * 		   schedule from Scheduler).
+	 * 
+	 * This was added for testing/demo purposes after we found out, two days
+	 * before the final code was due, that Scheduler has been retired. More info
+	 * in final project report.
+	 * 
+	 */
+	public static final boolean SCHEDULER_TEST = true;
+	
+	/**
 	 * ActionBar item IDs
 	 */
 	public static final int REFRESH_ID = 0;
@@ -154,7 +168,33 @@ public class ScheduleFragment extends Fragment {
 			
 			@Override
 			public void onTaskDone(ArrayList<ScheduleEvent> events) {
-				onLoginComplete(events);
+				
+				/* Added for Scheduler test */
+				if (SCHEDULER_TEST) {
+					
+					// Create hard-coded list of events
+					ArrayList<ScheduleEvent> test_events = new ArrayList<ScheduleEvent>();
+					
+					test_events.add(new ScheduleEvent(1, "COGS 101", "Nord 400", "1230pm", "0145pm", Day.TUES));
+					test_events.add(new ScheduleEvent(1, "COGS 101", "Nord 400", "1230pm", "0145pm", Day.THURS));
+					
+					test_events.add(new ScheduleEvent(2, "ENGR 131", "Yost 101", "1000am", "1115am", Day.MON));
+					test_events.add(new ScheduleEvent(2, "ENGR 131", "Yost 101", "1000am", "1115am", Day.WED));
+					test_events.add(new ScheduleEvent(2, "ENGR 131", "Yost 101", "1000am", "1115am", Day.FRI));
+					
+					test_events.add(new ScheduleEvent(3, "MATH 402", "Crawford 600", "0230pm", "0345pm", Day.TUES));
+					test_events.add(new ScheduleEvent(3, "MATH 402", "Crawford 600", "0230pm", "0345pm", Day.THURS));
+					
+					test_events.add(new ScheduleEvent(4, "ARTS 300", "Sears 100", "1130am", "1220pm", Day.MON));
+					test_events.add(new ScheduleEvent(4, "ARTS 300", "Sears 100", "1130am", "1220pm", Day.WED));
+					test_events.add(new ScheduleEvent(4, "ARTS 300", "Sears 100", "1130am", "1220pm", Day.FRI));
+					
+					onLoginComplete(test_events);
+					
+				} else {
+					onLoginComplete(events);
+				}
+				
 			}
 		}).execute(user, pass);		
 		
