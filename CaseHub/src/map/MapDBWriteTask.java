@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+//AsyncTask to write populated DataBean to database
 public class MapDBWriteTask extends AsyncTask<CaseMap, Void, Void> {
 
 	private void writeBeanToDB(CaseMap cMap){

@@ -28,13 +28,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class SearchMapFragment extends Fragment implements OnClickListener, OnItemClickListener {
 
 	private static View mView;
-	
+
 	public SearchMapFragment(){
-		
+
 	}
 
 	@Override
@@ -96,30 +97,32 @@ public class SearchMapFragment extends Fragment implements OnClickListener, OnIt
 				}
 			}
 			Cursor c = db.query(CampusMapPoint.TABLE_NAME, pProjection, queryString.toString(), null, null, null, CampusMapPoint.COL_NAME);
-			
+
 			if(!c.moveToFirst()){
-				//cursor is empty
+				//no results
+				Toast.makeText(MainActivity.c, "No results found", Toast.LENGTH_LONG).show();
+			}else{
+
+				int name_index = c.getColumnIndexOrThrow(CampusMapPoint.COL_NAME);
+				int addr_index = c.getColumnIndexOrThrow(CampusMapPoint.COL_ADDRESS);
+
+				List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+				do{
+					Map<String, String> point = new HashMap<String, String>(2);
+					point.put("name", c.getString(name_index));
+					point.put("address", c.getString(addr_index));
+					data.add(point);
+				}while(c.moveToNext());
+
+				SimpleAdapter adapter = new SimpleAdapter(MainActivity.c, data,
+						android.R.layout.simple_list_item_2,
+						new String[] {"name", "address"},
+						new int[] {android.R.id.text1,
+						android.R.id.text2});
+				ListView resultsList = (ListView) mView.findViewById(R.id.searchResults);
+				resultsList.setOnItemClickListener(this);
+				resultsList.setAdapter(adapter);
 			}
-			
-			int name_index = c.getColumnIndexOrThrow(CampusMapPoint.COL_NAME);
-			int addr_index = c.getColumnIndexOrThrow(CampusMapPoint.COL_ADDRESS);
-			
-			List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-			do{
-				Map<String, String> point = new HashMap<String, String>(2);
-				point.put("name", c.getString(name_index));
-				point.put("address", c.getString(addr_index));
-				data.add(point);
-			}while(c.moveToNext());
-			
-			SimpleAdapter adapter = new SimpleAdapter(MainActivity.c, data,
-                    android.R.layout.simple_list_item_2,
-                    new String[] {"name", "address"},
-                    new int[] {android.R.id.text1,
-                               android.R.id.text2});
-			ListView resultsList = (ListView) mView.findViewById(R.id.searchResults);
-			resultsList.setOnItemClickListener(this);
-			resultsList.setAdapter(adapter);
 		}
 	}
 
@@ -130,7 +133,10 @@ public class SearchMapFragment extends Fragment implements OnClickListener, OnIt
 			Map<String, String> selectedItem = (Map<String, String>) parent.getItemAtPosition(position);
 			String selected = selectedItem.get("name");
 			FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
-			CampusMapFragment cmFragment = (CampusMapFragment) getActivity().getFragmentManager().findFragmentByTag("campus_map_fragment");
+			CampusMapFragment cmFragment = (CampusMapFragment) getFragmentManager().findFragmentByTag("campus_map_fragment");
+			if(cmFragment == null){
+				cmFragment = new CampusMapFragment();
+			}
 			cmFragment.setIncoming(selected);
 			ft.replace(R.id.content_frame, cmFragment);
 			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -139,7 +145,7 @@ public class SearchMapFragment extends Fragment implements OnClickListener, OnIt
 			inputManager.hideSoftInputFromWindow(mView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			ft.commit();
 		}
-		
+
 	}
 
 }

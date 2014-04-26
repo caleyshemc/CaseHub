@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+//DataBean to store all details of a given Route
 public class Route {
 	
 	private String tag;

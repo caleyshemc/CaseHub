@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+//DataBean to store points, subgroups, and maptypes from http://www.case.edu/maps/
 public class CaseMap {
 	
 	private HashMap<String, Point> points = new HashMap<String, Point>();

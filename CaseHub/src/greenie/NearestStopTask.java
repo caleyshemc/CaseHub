@@ -6,6 +6,7 @@ import greenie.Route.Stop;
 import android.location.Location;
 import android.os.AsyncTask;
 
+//AsyncTask to find which stop is nearest to the passed location
 public class NearestStopTask extends AsyncTask<Void, Void, Stop> {
 	private Location location = new Location("");
 	private ArrayList<Stop> stops = new ArrayList<Stop>();

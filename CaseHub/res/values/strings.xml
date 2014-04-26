@@ -118,4 +118,8 @@
     <string name="searchbox">Search for a location</string>
   	<string name="searchaction">Search</string>
   	<string name="displayaction">Show/Hide Categories</string>
+  	<string name="othernames">Other Names:</string>
+  	<string name="entities">What\'s Here:</string>
+  	<string name="category">Category:</string>
+  	<string name="getdirs">Get Directions To</string>
 </resources>

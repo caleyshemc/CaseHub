@@ -23,6 +23,7 @@ import casehub.MainActivity;
 
 import com.google.android.gms.maps.model.LatLng;
 
+//AsyncTask which builds a list of Routes with associated stops, directions, and other details from stored XML files
 public class XmlParseTask extends AsyncTask<Void, Void, ArrayList<Route>>{
 	
 	ArrayList<Route> routes = new ArrayList<Route>();

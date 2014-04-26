@@ -11,6 +11,7 @@ import com.casehub.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -41,7 +42,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class CampusMapFragment extends Fragment implements OnMarkerClickListener, OnEditorActionListener {
+public class CampusMapFragment extends Fragment implements OnMarkerClickListener, OnEditorActionListener, OnInfoWindowClickListener {
 
 	private GoogleMap mMap;
 	private CaseMap cMap = new CaseMap();
@@ -51,10 +52,6 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 			.zoom(17)
 			.build();
 	private EditText editText;
-	public static final String DB_STATE_PREF = "DatabaseStateFile";
-	public static final String DB_STATE = "DatabaseState=";
-	public static final int DB_FULL = 1;
-	public static final int DB_EMPTY = 0;
 	private boolean[] states = {true, true, true, true, true, true, true, true, true};
 	private String incoming = null;
 	SparseArray<ArrayList<Point>> types = new SparseArray<ArrayList<Point>>();
@@ -78,16 +75,8 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 			/* map is already there, just return view as it is */
 		} finally {
 			setHasOptionsMenu(true);
-			SharedPreferences settings = getActivity().getSharedPreferences(DB_STATE_PREF, 0);
-			//If the database is empty, fill it and the databean and mark it filled, otherwise fill the databean from the database
-			if(settings.getInt(DB_STATE, 0) == 0){
-				parseJSON();
-				writeDataBean();
-				settings.edit().putInt(DB_STATE, DB_FULL).commit();
-			}else if(cMap.numPoints() == 0){
-				buildDataBean();
-			}
-			setUpMapIfNeeded();
+			setUpGMapIfNeeded();
+			setUpCMapIfNeeded();
 			if(incoming != null){
 				Marker point = cMap.getPoint(incoming).getMarker();
 				onMarkerClick(point);
@@ -97,9 +86,15 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 		return mView;
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
+	//Sets up databean if necessary
+	private void setUpCMapIfNeeded() {
+		//If the database is empty, fill it and the databean and mark it filled, otherwise fill the databean from the database
+		buildDataBean();
+		if(cMap == null){
+			parseJSON();
+			writeDataBean();
+		}
+		addMarkers();
 	}
 
 	@Override
@@ -124,7 +119,6 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		String title = (String) item.getTitle();
 		if(item.getItemId() == R.id.action_types){
 			final String[] items = getResources().getStringArray(R.array.maptypearray);
 			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.c);
@@ -156,19 +150,22 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 		return false;
 	}
 
+	//Hide each point in passed ArrayList
 	protected void hideMarkers(ArrayList<Point> arrayList) {
 		for(Point curPoint : arrayList){
 			curPoint.getMarker().setVisible(false);
 		}
 	}
 
+	//Show each point in passed ArrayList
 	protected void showMarkers(ArrayList<Point> arrayList) {
 		for(Point curPoint : arrayList){
 			curPoint.getMarker().setVisible(true);
 		}
 	}
 
-	private void setUpMapIfNeeded() {
+	//Sets up Google Map if necessary and associated properties
+	private void setUpGMapIfNeeded() {
 		// Do a null check to confirm that we have not already instantiated the map.
 		if (mMap == null) {
 			// Try to obtain the map from the SupportMapFragment.
@@ -177,12 +174,13 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 			if (mMap != null) {
 				mMap.setMyLocationEnabled(true);
 				mMap.setOnMarkerClickListener(this);
+				mMap.setOnInfoWindowClickListener(this);
 				mMap.animateCamera(CameraUpdateFactory.newCameraPosition(CASE));
-				addMarkers();
 			}
 		}
 	}
 
+	//Call to AsyncTask to populate DataBean from JSON
 	public void parseJSON(){
 		try {
 			cMap = new ParseMapJSONTask().execute().get();
@@ -193,11 +191,13 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 		}
 	}
 
+	//Call to AsyncTask to populate database from DataBean
 	public void writeDataBean(){
 		AsyncTask<CaseMap, Void, Void> task = new MapDBWriteTask();
 		task.execute(cMap);
 	}
 
+	//Call to AsyncTask to populate DataBean from database
 	public void buildDataBean(){
 		try {
 			cMap = new MapDBReadTask().execute().get();
@@ -208,6 +208,7 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 		}
 	}
 
+	//Adds and categorizes all points
 	public void addMarkers(){
 		ArrayList<Point> academic = new ArrayList<Point>();
 		ArrayList<Point> administrative = new ArrayList<Point>();
@@ -277,7 +278,7 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17);
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18);
 		mMap.animateCamera(cameraUpdate);
 		marker.showInfoWindow();
 		return false;
@@ -297,6 +298,17 @@ public class CampusMapFragment extends Fragment implements OnMarkerClickListener
 			ft.commit();
 		}
 		return false;
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+		DetailViewFragment fragment = new DetailViewFragment();
+		fragment.setPoint(cMap.getPoint(marker.getTitle()));
+		ft.replace(R.id.content_frame, fragment);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 }
 

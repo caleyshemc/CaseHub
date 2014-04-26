@@ -14,7 +14,7 @@ import android.widget.ListView;
 import casehub.MainActivity;
 
 import com.casehub.R;
-
+//Displays list of dining locations
 public class DiningFragment extends Fragment implements OnItemClickListener {
 
 	private static View mView;

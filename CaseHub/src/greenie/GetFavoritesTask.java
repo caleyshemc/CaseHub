@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+//AsyncTask to get list of favorite stops
 public class GetFavoritesTask extends AsyncTask<ArrayList<Stop>, Void, ArrayList<Stop>> {
 
 	private ArrayList<Stop> findFavorites(ArrayList<Stop> stops){

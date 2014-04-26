@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 
+//AsyncTask to fetch predictions for a given stop.
+//Returns formatted string of "Next bus: Xm, Xm, Xm"
 public class PredictionTask extends AsyncTask<String, Void, String> {
 
 	private final String predURL = "http://www.nextbus.com/predictor/fancyNewPredictionLayer.jsp?a=case-western&r=%s&d=%s&s=%s";

@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-
+//Displays weekly menu for selected dining hall
 public class DiningPageFragment extends Fragment {
 	private static View mView;
 	ExpandableListAdapter listAdapter;

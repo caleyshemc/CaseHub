@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+//AsyncTask to populate DataBean from the database
 public class MapDBReadTask extends AsyncTask<Void, Void, CaseMap> {
 
 	private CaseMap readDBToBean(){

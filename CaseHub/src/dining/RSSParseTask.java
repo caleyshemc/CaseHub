@@ -14,7 +14,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.os.AsyncTask;
 import android.text.Html;
-
+//AsyncTask to parse RSS feed from http://legacy.cafebonappetit.com/rss/menu/#id
 public class RSSParseTask extends AsyncTask<String, Void, LinkedHashMap<String, List<String>>> {
 
 	private XmlPullParserFactory xmlFactoryObject;

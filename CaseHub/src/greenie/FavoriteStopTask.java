@@ -8,8 +8,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+//AsyncTask to determine if passed Stop is a favorite stop.
+//Returns true if stop is a favorite, false if not.
 public class FavoriteStopTask extends AsyncTask<Stop, Void, Boolean> {
-
 	private boolean isFavoriteStop(Stop stop){
 		CaseHubDbHelper dbHelper = new CaseHubDbHelper(MainActivity.c);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();

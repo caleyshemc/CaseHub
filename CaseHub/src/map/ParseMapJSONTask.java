@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import android.os.AsyncTask;
 import android.util.Log;
 
+//AsyncTask to parse JSON from http://www.case.edu/maps/
+//Returns a populated DataBean
 public class ParseMapJSONTask extends AsyncTask<Void, Void, CaseMap> {
 
 	JSONObject obj;

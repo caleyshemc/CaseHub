@@ -158,9 +158,8 @@ public class MainActivity extends Activity implements
 
 		switch (position) {
 		case 0:
-			/*
-			 * fragment = new GreenieFragment(); tag = "greenie_fragment";
-			 */
+			 fragment = new GreenieFragment(); 
+			 tag = "greenie_fragment";
 			 break;
 		case 1:
 			fragment = new LaundryFragment();

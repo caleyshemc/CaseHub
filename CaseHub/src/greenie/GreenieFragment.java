@@ -47,6 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class GreenieFragment extends Fragment implements ConnectionCallbacks, OnConnectionFailedListener,LocationListener, OnMarkerClickListener, OnItemSelectedListener {
@@ -151,12 +152,13 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		mLocationClient.connect();
 	}
 
+	//Instantiates the Google Map if it isn't already as well as sets other properties of the map
 	private void setUpMapIfNeeded() {
-		// Do a null check to confirm that we have not already instantiated the map.
+		//Null check to ensure the map has not yet been instantiated
 		if (mMap == null) {
-			// Try to obtain the map from the SupportMapFragment.
+			// Try to obtain the map
 			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-			// Check if we were successful in obtaining the map.
+			// Check if success
 			if (mMap != null) {
 				mMap.setMyLocationEnabled(true);
 				mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -171,19 +173,14 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(nearestStop.getLatlng(), 17));
 					}
 				});
-
-				setUpMap();
+				mMap.setPadding(0, 130, 0, 85);
+				drawRoute(currentRoute);
+				drawStops(currentRoute);
 			}
 		}
 	}
 
-	private void setUpMap() {
-		mMap.setPadding(0, 130, 0, 85);
-		drawRoute(currentRoute);
-		drawStops(currentRoute);
-	}
-
-
+	//Sets up location client to get user's location
 	private void setUpLocationClientIfNeeded() {
 		if (mLocationClient == null) {
 			mLocationClient = new LocationClient(
@@ -208,6 +205,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		mMap.animateCamera(cameraUpdate);
 	}
 
+	//Draws a polyline route from the passed route's paths
 	public void drawRoute(Route route){
 		ArrayList<Path> paths = route.getPaths();
 		String sColor = "#" + currentRoute.getColor();
@@ -224,6 +222,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		}
 	}
 
+	//Places markers for each stop of passed route
 	public void drawStops(Route route){
 		for(int i = 0; i < stops.size(); i++){
 			Marker stop = mMap.addMarker(new MarkerOptions().position(stops.get(i).getLatlng()));
@@ -238,7 +237,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
-		//Do nothing
+		Toast.makeText(MainActivity.c, "Location connection failed", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -265,6 +264,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			long id) {
 		switch(parent.getId()){
 		case R.id.routeSpinner:
+			//if route is changed, update current route as well as stop spinner
 			for(int i = 0; i < routes.size(); i++){
 				if(parent.getItemAtPosition(position).toString().equals(routes.get(i).getTitle())){
 					currentRoute = routes.get(i);
@@ -280,6 +280,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			}
 			break;
 		case R.id.stopSpinner:
+			//if stop is changed, update current stop, animate to its location, update predictions
 			String selectedItem = parent.getItemAtPosition(position).toString();
 			for(int i = 0; i < currentRoute.getDirections().size(); i++){
 				for(int j = 0; j < currentRoute.getDirections().get(i).numStops(); j++){
@@ -307,6 +308,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 
 	}
 
+	//Call to AsyncTask to get prediction
 	public String getPrediction(String route, String direction, String stop){
 		String pred = "";
 		try {
@@ -319,6 +321,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		return pred;
 	}
 
+	//Call to AsyncTask to populate DataBean from stored XML
 	public void loadRoutes(){
 		try {
 			routes = new XmlParseTask().execute().get();
@@ -328,7 +331,8 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 			e.printStackTrace();
 		}
 	}
-
+	
+	//Call to AsyncTask to get nearest stop to location
 	public Stop getNearestStop(Location location){
 		Stop tempStop = currentRoute.new Stop();
 		NearestStopTask task = new NearestStopTask();
@@ -344,6 +348,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		return tempStop;
 	}
 
+	//Call to AsyncTask to check if stop is a favorite
 	private boolean isStopFavorite(Stop stop) {
 		boolean favorite = false;
 		try {
@@ -356,6 +361,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		return favorite;
 	}
 
+	//Call to AsyncTask to get list of favorite stops
 	@SuppressWarnings("unchecked")
 	private void getFavoriteStops () {
 		try {
@@ -367,6 +373,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		}
 	}
 
+	//Display only favorite stops or show all
 	//display == true means hide all but favorites
 	//display == false means show all
 	public void toggleFavStops(boolean display){
@@ -385,6 +392,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		}
 	}
 
+	//Get list of stops to update spinner
 	public String[] stopsToString(ArrayList<Stop> stops){
 		String[] stopsString = new String[stops.size()];
 		for(int i = 0; i < stops.size(); i++){
@@ -393,6 +401,7 @@ public class GreenieFragment extends Fragment implements ConnectionCallbacks, On
 		return stopsString;
 	}
 
+	//Handle adding or removing a stop to favorites
 	public void onFavButtonClick(View v){
 		ToggleButton fav = (ToggleButton) mView.findViewById(R.id.fav);
 		CaseHubDbHelper dbHelper = new CaseHubDbHelper(MainActivity.c);
