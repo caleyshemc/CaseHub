@@ -99,7 +99,7 @@ public class ScheduleFragment extends Fragment {
 			
 			// Display schedule from database
 			ArrayList<ScheduleEvent> events = dbHelper.getSchedule();
-			uiHelper.displayEvents(events, dbHelper);
+			uiHelper.displayEvents(events, dbHelper, getFragmentManager());
 			
 		}
 		
@@ -225,7 +225,7 @@ public class ScheduleFragment extends Fragment {
 		}
 		
 		// Display events
-		uiHelper.displayEvents(events, dbHelper);
+		uiHelper.displayEvents(events, dbHelper, getFragmentManager());
 		
 	}
 	

@@ -4,11 +4,18 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import map.SearchMapFragment;
+
 import org.joda.time.LocalTime;
+
+import casehub.MainActivity;
 
 import com.casehub.R;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +78,8 @@ public class ScheduleUIHelper {
 	/**
 	 * Displays events in the schedule.
 	 */
-	public void displayEvents(ArrayList<ScheduleEvent> events, ScheduleDBHelper dbHelper) {
+	public void displayEvents(ArrayList<ScheduleEvent> events,
+			ScheduleDBHelper dbHelper, FragmentManager fragManager) {
 
 		HashMap<Integer, Integer> colorMap = new HashMap<Integer, Integer>();
 		
@@ -101,7 +109,7 @@ public class ScheduleUIHelper {
 				colorIndex = (colorIndex + 1) % colorArray.length;
 			}
 			
-			displayEvent(event, colorMap.get(eventId));
+			displayEvent(event, colorMap.get(eventId), fragManager);
 			
 		}
 		
@@ -110,7 +118,7 @@ public class ScheduleUIHelper {
 	/*
 	 * Displays a schedule event.
 	 */
-	private void displayEvent(ScheduleEvent event, int color) {
+	private void displayEvent(ScheduleEvent event, int color, FragmentManager fragManager) {
 				
 		int height = event.getDuration();
 		int topMargin = event.getStartMinutes() - (current_first_hour * 60);
@@ -153,6 +161,26 @@ public class ScheduleUIHelper {
 		name.setText(event.getName());
 		time.setText(event.getTimeString());
 		location.setText(event.getLocation());
+		
+		// Set click to search for location in campus map
+		final String building = event.getLocation().replaceAll("[0-9]","");
+		final FragmentManager fragmentManager = fragManager;
+		eventLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				FragmentTransaction ft = fragmentManager.beginTransaction();
+				SearchMapFragment fragment = new SearchMapFragment();
+				Bundle args = new Bundle();
+				args.putString("query", building);
+				fragment.setArguments(args);
+				ft.replace(R.id.content_frame, fragment);
+				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+				ft.addToBackStack(null);
+				ft.commit();
+			}
+			
+		});
 
 		// Get parent layout
 		String day = event.getDay().getString();
