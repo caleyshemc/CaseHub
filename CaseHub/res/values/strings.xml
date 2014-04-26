@@ -93,4 +93,29 @@
         <item>BRB Cafe</item>
     	<item>WRB Cafe</item>
     </string-array>
+    
+    <!-- CAMPUS MAP -->
+    <string-array name="maptypearray">
+        <item>@string/academic</item>
+        <item>@string/administrative</item>
+        <item>@string/residential</item>
+        <item>@string/commons</item>
+        <item>@string/restaurants</item>
+        <item>@string/other</item>
+        <item>@string/parkinglots</item>
+        <item>@string/hospital</item>
+        <item>@string/athletic</item>
+    </string-array>
+    <string name="academic">Academic</string>
+    <string name="administrative">Administrative</string>
+    <string name="residential">Residential</string>
+    <string name="commons">Commons</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="other">Other</string>
+    <string name="parkinglots">Parking Lots</string>
+    <string name="hospital">Hospital</string>
+    <string name="athletic">Athletic</string>
+    <string name="searchbox">Search for a location</string>
+  	<string name="searchaction">Search</string>
+  	<string name="displayaction">Show/Hide Categories</string>
 </resources>
