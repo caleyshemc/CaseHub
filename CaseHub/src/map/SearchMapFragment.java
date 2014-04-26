@@ -91,7 +91,7 @@ public class SearchMapFragment extends Fragment implements OnClickListener, OnIt
 				queryString.append(CampusMapPoint.COL_LDAP + " LIKE '%" + searchText[i] + "%' OR ");
 				queryString.append(CampusMapPoint.COL_NAME + " LIKE '%" + searchText[i] + "%' OR ");
 				queryString.append(CampusMapPoint.COL_SIS + " LIKE '%" + searchText[i] + "%'");
-				if(searchText.length > 1 && i != searchText.length){
+				if((searchText.length > 1) && (i != searchText.length - 1)){
 					queryString.append(" OR ");
 				}
 			}
